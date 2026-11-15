@@ -54,3 +54,25 @@
 }
 .tile.coral .pill-label,.tile.sun .pill-label{background:var(--navy);color:#fff}
 .tile.navy .result-list li{border-color:rgba(255,255,255,.2)}
+/* full letters */
+.jump{display:flex;flex-wrap:wrap;gap:.6rem;margin:0 0 2rem}
+.jump a{font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;font-weight:700;text-decoration:none;color:var(--navy);background:#fff;border:2px solid var(--navy);border-radius:999px;padding:.55rem 1rem}
+.jump a:hover{background:var(--sun)}
+.full-letters{background:#fff}
+.full-letter{max-width:46rem;margin:0 auto 3.5rem;background:var(--cream);border:2px solid var(--navy);border-radius:var(--r);padding:clamp(1.5rem,4vw,3rem);scroll-margin-top:6rem;position:relative}
+.full-letter:last-child{margin-bottom:0}
+.full-letter::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;border-radius:16px 16px 0 0;background:var(--band,var(--coral))}
+.full-letter header{margin-bottom:1.6rem}
+.full-letter header h3{font-size:clamp(1.6rem,3vw,2.1rem)}
+.full-letter .lmeta{color:var(--muted);font-weight:600;margin-top:.3rem}
+.letter-body{font-family:var(--serif);font-size:1.28rem;line-height:1.7;color:var(--ink)}
+.letter-body p+p{margin-top:1.1rem}
+.letter-body .dateline{font-family:var(--body);font-size:.95rem;font-weight:700;color:var(--muted)}
+.letter-body .salutation{font-weight:600}
+.signature{margin-top:2rem;padding-top:1.2rem;border-top:2px dashed var(--line);line-height:1.5}
+.signature .sig-name{font-family:var(--script);font-size:2rem;color:var(--navy);line-height:1}
+.signature p{font-size:.98rem;color:var(--muted)}
+.signature p strong{color:var(--navy)}
+.letter-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem}
+.back-top{display:inline-block;margin-top:1rem;font-family:var(--label);text-transform:uppercase;letter-spacing:.1em;font-size:.72rem;font-weight:700;color:var(--coral-dk)}
+.source-note{font-size:.88rem;color:var(--muted);margin-top:1rem}
