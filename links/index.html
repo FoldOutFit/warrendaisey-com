@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Warren Daisey | Links</title>
+  <meta name="description" content="Contact and links for Warren Daisey.">
+  <meta name="theme-color" content="#1D1B1D">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://warrendaisey.com/links/">
+  <link rel="icon" href="/assets/warren-avatar.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1D1B1D;
+      --blush: #F6F2F0;
+      --green: #004225;
+      --burgundy: #7B101B;
+      --white: #FFFFFF;
+      --muted: rgba(246, 242, 240, 0.72);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--ink);
+      color: var(--blush);
+      font-family: "Josefin Sans", sans-serif;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .skip {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      background: var(--blush);
+      color: var(--ink);
+      padding: 0.6rem 1rem;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      z-index: 10;
+    }
+    .skip:focus { top: 1rem; }
+
+    .page {
+      width: 100%;
+      max-width: 28rem;
+      padding: 2.75rem 1.25rem 2.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 7.5rem;
+      height: 7.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--blush);
+      display: block;
+    }
+
+    h1 {
+      font-family: "EB Garamond", Garamond, serif;
+      font-weight: 600;
+      font-size: clamp(2.15rem, 8vw, 2.75rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 1.35rem 0 0.35rem;
+      line-height: 1.05;
+      color: var(--blush);
+    }
+    h1 em {
+      font-style: italic;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      display: inline-block;
+    }
+
+    .handle {
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .links {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      width: 100%;
+      min-height: 3.5rem;
+      padding: 0.95rem 1.25rem;
+      background: var(--blush);
+      color: var(--ink);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+      font-size: 0.82rem;
+      border: 1px solid var(--blush);
+      border-radius: 0;
+      line-height: 1.3;
+      text-align: center;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn .arrow {
+      font-family: "EB Garamond", Garamond, serif;
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: 0;
+      font-size: 1.15em;
+    }
+    .btn:hover,
+    .btn:focus-visible {
+      background: var(--green);
+      border-color: var(--green);
+      color: var(--blush);
+      outline: none;
+    }
+    .btn:active {
+      background: var(--burgundy);
+      border-color: var(--burgundy);
+      color: var(--white);
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 0.35rem;
+      margin: 1.75rem 0 0;
+    }
+    .social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      color: var(--blush);
+      text-decoration: none;
+      border-radius: 0;
+      transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    }
+    .social:hover,
+    .social:focus-visible {
+      color: var(--blush);
+      background: var(--green);
+      outline: none;
+    }
+    .social svg {
+      width: 1.55rem;
+      height: 1.55rem;
+      fill: currentColor;
+      display: block;
+    }
+
+    .home {
+      margin-top: 1.85rem;
+      font-family: "EB Garamond", Garamond, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--blush);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .home:hover,
+    .home:focus-visible {
+      color: var(--white);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      outline: none;
+    }
+    .home .arrow { font-style: italic; }
+
+    footer {
+      width: 100%;
+      max-width: 28rem;
+      padding: 0 1.25rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media (min-width: 800px) {
+      .page { padding-top: 4.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#links">Skip to links</a>
+  <main class="page">
+    <img class="avatar" src="/assets/warren-avatar.jpg" width="800" height="800" alt="Portrait of Warren Daisey">
+    <h1>Warren <em>Daisey</em></h1>
+    <p class="handle">@Warren_Daisey</p>
+
+    <nav id="links" class="links" aria-label="Links">
+      <a class="btn" href="https://vcard.link/card/IOxy.vcf">Add My Contact <span class="arrow" aria-hidden="true">→</span></a>
+    </nav>
+
+    <div class="socials" aria-label="Contact">
+      <a class="social" href="tel:+14844853380" aria-label="Call Warren Daisey">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.95C5.95 4.95 4.91 5.89 5.05 7.14c.2 1.85.78 3.65 1.71 5.26 1.16 2.01 2.84 3.68 4.84 4.84 1.62.94 3.4 1.5 5.23 1.7 1.25.14 2.21-.89 2.21-2.06v-1.37c0-.95-.63-1.79-1.54-2.06l-1.32-.39c-.75-.22-1.57 0-2.11.56-.29.31-.71.36-1 .17a8.1 8.1 0 0 1-2.86-2.86c-.19-.29-.14-.71.17-1 .57-.54.78-1.36.56-2.11l-.39-1.32c-.27-.91-1.11-1.54-2.06-1.54H7.1Z"/></svg>
+      </a>
+      <a class="social" href="mailto:wtdaisey@gmail.com" aria-label="Email Warren Daisey">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.3 7.28c-.17.34-.24.71-.27 1.13C4 8.84 4 9.36 4 10.01v3.98c0 .65 0 1.17.03 1.6.04.44.12.82.3 1.17a2.8 2.8 0 0 0 1.31 1.31c.35.18.74.26 1.17.3.43.03.95.03 1.6.03h7.17c.65 0 1.17 0 1.6-.03.44-.04.82-.12 1.18-.3a2.8 2.8 0 0 0 1.31-1.31c.18-.35.26-.74.3-1.17.03-.43.03-.95.03-1.6v-3.97c0-.65 0-1.18-.03-1.6-.04-.42-.11-.79-.27-1.14l-5.8 4.74a2.8 2.8 0 0 1-3.6 0L4.3 7.28Z"/><path d="M18.96 6.33a3.5 3.5 0 0 0-.6-.4 3.3 3.3 0 0 0-1.17-.3C16.76 5.6 16.24 5.6 15.59 5.6H8.41c-.65 0-1.17 0-1.6.03-.43.04-.82.12-1.17.3-.22.11-.42.25-.6.4l5.82 4.76a1.8 1.8 0 0 0 2.28 0l5.82-4.76Z"/></svg>
+      </a>
+      <a class="social" href="https://www.linkedin.com/in/warren-daisey/" rel="noopener noreferrer" aria-label="Warren Daisey on LinkedIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M9.29 9.29h3.31v1.69h.04c.5-.91 1.99-1.83 3.83-1.83C20.01 9.15 21 11.02 21 14.5V21h-3.51v-5.86c0-1.56-.62-2.92-2.08-2.92-1.76 0-2.6 1.19-2.6 3.16V21H9.29V9.29ZM3.44 21h3.51V9.29H3.44V21ZM7.39 5.19a2.19 2.19 0 1 1-4.39.01 2.19 2.19 0 0 1 4.39-.01Z"/></svg>
+      </a>
+    </div>
+
+    <a class="home" href="/">Back to the home page <span class="arrow" aria-hidden="true">→</span></a>
+  </main>
+  <footer>Warren Daisey</footer>
+</body>
+</html>
