@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pell Card Viewer</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --accent: #7a0019; /* Bloomsburg Maroon */
+      --accent-soft: #fdf2f4;
+      --border: #e5e7eb;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --accent: #e11d48;
+        --accent-soft: #2e1018;
+        --border: #334155;
+        --shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+      gap: 14px;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .counter {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text-main);
+    }
+
+    .jump-select {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      max-width: 210px;
+      outline: none;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    /* Main tappable card */
+    .card-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      max-height: 640px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 26px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      overflow-y: auto;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    .card:active {
+      transform: scale(0.985);
+    }
+
+    .card-header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .student-name {
+      font-size: clamp(1.7rem, 6vw, 2.2rem);
+      font-weight: 800;
+      margin: 0 0 4px 0;
+      line-height: 1.15;
+      color: var(--text-main);
+    }
+
+    .college-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+    }
+
+    .label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .value {
+      font-size: clamp(1.05rem, 3.8vw, 1.25rem);
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-word;
+      line-height: 1.3;
+    }
+
+    .value.mono {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .note-box {
+      margin-top: 8px;
+      padding: 14px 16px;
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+    }
+
+    .note-box.empty {
+      background: transparent;
+      border-left: 4px solid var(--border);
+      opacity: 0.65;
+    }
+
+    .note-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin: 4px 0 0 0;
+      color: var(--text-main);
+    }
+
+    .tap-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    /* Bottom controls */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 12px;
+      flex-shrink: 0;
+      padding-bottom: env(safe-area-inset-bottom, 4px);
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      padding: 15px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-prev {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-next {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top-bar">
+      <div class="counter" id="counter">Card 1 of 54</div>
+      <select class="jump-select" id="jumpSelect" aria-label="Jump to student"></select>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="card-wrapper">
+      <div class="card" id="card" role="button" tabindex="0" aria-label="Student card. Tap to advance to next card.">
+        <div>
+          <div class="card-header">
+            <h1 class="student-name" id="f-name"></h1>
+            <p class="college-name" id="f-college"></p>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <span class="label">Address</span>
+              <span class="value" id="f-address"></span>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <span class="label">Town / City</span>
+                <span class="value" id="f-town"></span>
+              </div>
+              <div class="field">
+                <span class="label">State</span>
+                <span class="value" id="f-state"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="label">Email</span>
+              <span class="value" id="f-email"></span>
+            </div>
+
+            <div class="field">
+              <span class="label">Phone</span>
+              <span class="value mono" id="f-phone"></span>
+            </div>
+
+            <div class="note-box" id="noteBox">
+              <span class="label">Personal Note</span>
+              <p class="note-text" id="f-note"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tap-hint" id="tapHint">Tap anywhere on card for next &rarr;</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-prev" id="prevBtn">&larr; Back</button>
+      <button class="btn-next" id="nextBtn">Next Card &rarr;</button>
+    </div>
+  </div>
+
+  <script>
+    const cards = [
+  {
+    "name": "Theo Lemons",
+    "address": "Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "tkl42779@commonwealthu.edu",
+    "phone": "(610) 225-5506",
+    "note": "Affordable college matters to my family."
+  },
+  {
+    "name": "Emma Martin",
+    "address": "Columbia Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "epm56669@commonwealthu.edu",
+    "phone": "(717) 428-3286",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Evan Babarsky",
+    "address": "Elwell Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "ewb66116@commonwealthu.edu",
+    "phone": "(610) 892-9935",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Nicole Meier",
+    "address": "Lycoming Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "nm71789@commonwealthu.edu",
+    "phone": "(610) 804-7912",
+    "note": "Support students. Double the Pell Grant."
+  },
+  {
+    "name": "Seth Barrick",
+    "address": "Montour Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "sb65903@commonwealthu.edu",
+    "phone": "(570) 230-2535",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Sarah Oberholtzer",
+    "address": "Northumberland Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "sbo50679@commonwealthu.edu",
+    "phone": "(717) 438-9279",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Corinne Wagner",
+    "address": "Schuylkill Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "cew14633@commonwealthu.edu",
+    "phone": "(570) 774-4257",
+    "note": ""
+  },
+  {
+    "name": "Chloe Schwindt",
+    "address": "Luzerne Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "cs93712@commonwealthu.edu",
+    "phone": "(272) 425-8359",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Grace Rothermel",
+    "address": "Honeysuckle Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "gr69528@commonwealthu.edu",
+    "phone": "(215) 206-3615",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Emily Gustie",
+    "address": "East Main Street Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "epg99030@commonwealthu.edu",
+    "phone": "(272) 548-5552",
+    "note": "Affordable college matters to my family."
+  },
+  {
+    "name": "Elliot Febus",
+    "address": "Catherine Street Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "erf48109@commonwealthu.edu",
+    "phone": "(484) 420-6514",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Brianna Gisler",
+    "address": "Montgomery Place Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "bmg54942@commonwealthu.edu",
+    "phone": "(610) 294-7224",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Kellsey Eyer",
+    "address": "Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "kre19674@commonwealthu.edu",
+    "phone": "(610) 567-6635",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Yerely Rodriguez",
+    "address": "Columbia Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "ycr52798@commonwealthu.edu",
+    "phone": "(215) 244-8527",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Rue Marcy",
+    "address": "Elwell Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "rm74551@commonwealthu.edu",
+    "phone": "(610) 587-2291",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Evie Hostetter",
+    "address": "Lycoming Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "elh64104@commonwealthu.edu",
+    "phone": "(215) 843-6925",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Andrew Dziczek",
+    "address": "Montour Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "atd94867@commonwealthu.edu",
+    "phone": "(717) 921-2139",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Parker Ziegenfuss",
+    "address": "Northumberland Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "pz41466@commonwealthu.edu",
+    "phone": "(570) 877-4733",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Megan Walsh",
+    "address": "Schuylkill Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "mw33988@commonwealthu.edu",
+    "phone": "(215) 281-4814",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Maren Coyle",
+    "address": "Luzerne Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "mec67633@commonwealthu.edu",
+    "phone": "(610) 589-5554",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Tyler Ruzicka",
+    "address": "Honeysuckle Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "tjr64354@commonwealthu.edu",
+    "phone": "(814) 850-6977",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Vivian Santiago",
+    "address": "East Main Street Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "vs36830@commonwealthu.edu",
+    "phone": "(484) 579-6820",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Chris Cultraro",
+    "address": "Catherine Street Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "cpc87203@commonwealthu.edu",
+    "phone": "(717) 886-5374",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Delilah Lohmann",
+    "address": "Montgomery Place Apartments",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "del86342@commonwealthu.edu",
+    "phone": "(610) 823-3803",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Benjamin Starner",
+    "address": "Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "bls81185@commonwealthu.edu",
+    "phone": "(717) 367-8573",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Emily Stahley",
+    "address": "Columbia Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "ens39672@commonwealthu.edu",
+    "phone": "(272) 476-4598",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Vincent Contardi",
+    "address": "Elwell Hall, Bloomsburg University",
+    "town": "Bloomsburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "vc31868@commonwealthu.edu",
+    "phone": "(267) 986-1916",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Laura Baumer",
+    "address": "Market St",
+    "town": "Lewisburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "lb99100@commonwealthu.edu",
+    "phone": "(717) 232-6168",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Hannah Glenn",
+    "address": "Baltimore Pike",
+    "town": "Media",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "hlg32857@commonwealthu.edu",
+    "phone": "(272) 474-2084",
+    "note": "Support students. Double the Pell Grant."
+  },
+  {
+    "name": "Fiona Coyne",
+    "address": "Hamilton St",
+    "town": "Allentown",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "fec30521@commonwealthu.edu",
+    "phone": "(717) 780-6155",
+    "note": "Support students. Double the Pell Grant."
+  },
+  {
+    "name": "Payton Bettys",
+    "address": "Main St",
+    "town": "Bethlehem",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "pab63123@commonwealthu.edu",
+    "phone": "(717) 871-9179",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Isaac Locke",
+    "address": "Penn Ave",
+    "town": "Reading",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "il31544@commonwealthu.edu",
+    "phone": "(272) 858-8517",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Julia Huntsinger",
+    "address": "Front St",
+    "town": "Harrisburg",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "jyh80496@commonwealthu.edu",
+    "phone": "(484) 471-3287",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Rebecka Donnelly",
+    "address": "King St",
+    "town": "Lancaster",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "red78833@commonwealthu.edu",
+    "phone": "(717) 962-9830",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Sam Scheibley",
+    "address": "Wyoming Ave",
+    "town": "Scranton",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "sms10424@commonwealthu.edu",
+    "phone": "(215) 964-8019",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Romen Costa",
+    "address": "S River St",
+    "town": "Wilkes-Barre",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "rgc97608@commonwealthu.edu",
+    "phone": "(272) 570-4593",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Markus Kemper",
+    "address": "Market St",
+    "town": "Sunbury",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "mjk50901@commonwealthu.edu",
+    "phone": "(484) 721-9085",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Luisa Winterling",
+    "address": "Main St",
+    "town": "Hazleton",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "lmw86642@commonwealthu.edu",
+    "phone": "(610) 973-1771",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Quinn Dent",
+    "address": "W 4th St",
+    "town": "Williamsport",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "aad82288@commonwealthu.edu",
+    "phone": "(610) 356-3621",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Zoe Winterbottom",
+    "address": "Pottsville Pike",
+    "town": "Shoemakersville",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "zw40510@commonwealthu.edu",
+    "phone": "(272) 810-2040",
+    "note": ""
+  },
+  {
+    "name": "Gracey-mae Baker",
+    "address": "Lancaster Ave",
+    "town": "Wayne",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "gb11260@commonwealthu.edu",
+    "phone": "(272) 590-8668",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Luke Del Rossi",
+    "address": "York Rd",
+    "town": "Jenkintown",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "led25824@commonwealthu.edu",
+    "phone": "(215) 766-1188",
+    "note": "Affordable college matters to my family."
+  },
+  {
+    "name": "Rachel Dawson",
+    "address": "Easton Rd",
+    "town": "Doylestown",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "rad60847@commonwealthu.edu",
+    "phone": "(610) 898-9797",
+    "note": "I'm the first in my family to go to college."
+  },
+  {
+    "name": "Tymir Aimes",
+    "address": "Germantown Pike",
+    "town": "Plymouth Meeting",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "ta44723@commonwealthu.edu",
+    "phone": "(215) 987-6573",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Chantal Fall",
+    "address": "Route 309",
+    "town": "Quakertown",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "caf32515@commonwealthu.edu",
+    "phone": "(610) 500-8123",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Hailey Umpstead",
+    "address": "Centre St",
+    "town": "Pottsville",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "hau24835@commonwealthu.edu",
+    "phone": "(484) 664-1053",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Simon Colau",
+    "address": "Main St",
+    "town": "Berwick",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "sc12496@commonwealthu.edu",
+    "phone": "(215) 712-3927",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Lenix Escalera",
+    "address": "Mill St",
+    "town": "Danville",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "le45692@commonwealthu.edu",
+    "phone": "(610) 840-5889",
+    "note": "Affordable college matters to my family."
+  },
+  {
+    "name": "Leif Tolan",
+    "address": "E Main St",
+    "town": "Lock Haven",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "let46935@commonwealthu.edu",
+    "phone": "(717) 356-7126",
+    "note": "Doubling Pell would change lives on my campus."
+  },
+  {
+    "name": "Angela Pena",
+    "address": "Broad St",
+    "town": "Hatfield",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "anp93263@commonwealthu.edu",
+    "phone": "(484) 752-9689",
+    "note": ""
+  },
+  {
+    "name": "Teagan Henkels",
+    "address": "Ridge Pike",
+    "town": "Conshohocken",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "th78388@commonwealthu.edu",
+    "phone": "(570) 813-6310",
+    "note": "Support students. Double the Pell Grant."
+  },
+  {
+    "name": "Karma Gambardella",
+    "address": "Bridge St",
+    "town": "Phoenixville",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "klg58467@commonwealthu.edu",
+    "phone": "(814) 219-2832",
+    "note": "Please protect and expand Pell Grants."
+  },
+  {
+    "name": "Ayden Dowling",
+    "address": "Gay St",
+    "town": "West Chester",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "acd33836@commonwealthu.edu",
+    "phone": "(267) 514-4923",
+    "note": "Pell Grants made college possible for me."
+  },
+  {
+    "name": "Nicholas Horney",
+    "address": "Concord Rd",
+    "town": "Aston",
+    "state": "PA",
+    "college": "Commonwealth University - Bloomsburg",
+    "email": "nrh85875@commonwealthu.edu",
+    "phone": "(570) 446-2290",
+    "note": "Doubling Pell would change lives on my campus."
+  }
+];
+
+    const STORAGE_KEY = "pell_card_current_index_v1";
+    let currentIndex = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+    if (isNaN(currentIndex) || currentIndex < 0 || currentIndex >= cards.length) {
+      currentIndex = 0;
+    }
+
+    const cardEl = document.getElementById("card");
+    const counterEl = document.getElementById("counter");
+    const progressFillEl = document.getElementById("progressFill");
+    const jumpSelectEl = document.getElementById("jumpSelect");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const tapHintEl = document.getElementById("tapHint");
+
+    const fName = document.getElementById("f-name");
+    const fCollege = document.getElementById("f-college");
+    const fAddress = document.getElementById("f-address");
+    const fTown = document.getElementById("f-town");
+    const fState = document.getElementById("f-state");
+    const fEmail = document.getElementById("f-email");
+    const fPhone = document.getElementById("f-phone");
+    const fNote = document.getElementById("f-note");
+    const noteBox = document.getElementById("noteBox");
+
+    // Populate dropdown
+    cards.forEach((c, idx) => {
+      const opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = `${idx + 1}. ${c.name}`;
+      jumpSelectEl.appendChild(opt);
+    });
+
+    function render() {
+      const c = cards[currentIndex];
+      fName.textContent = c.name;
+      fCollege.textContent = c.college;
+      fAddress.textContent = c.address;
+      fTown.textContent = c.town;
+      fState.textContent = c.state;
+      fEmail.textContent = c.email;
+      fPhone.textContent = c.phone;
+
+      if (c.note && c.note.trim() !== "") {
+        fNote.textContent = c.note;
+        noteBox.classList.remove("empty");
+      } else {
+        fNote.textContent = "(Leave blank)";
+        noteBox.classList.add("empty");
+      }
+
+      counterEl.textContent = `Card ${currentIndex + 1} of ${cards.length}`;
+      progressFillEl.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+      jumpSelectEl.value = currentIndex;
+
+      prevBtn.disabled = currentIndex === 0;
+      if (currentIndex === cards.length - 1) {
+        nextBtn.textContent = "Restart (Card 1) ↻";
+        tapHintEl.textContent = "Last card — tap to restart from Card 1";
+      } else {
+        nextBtn.textContent = "Next Card →";
+        tapHintEl.textContent = "Tap anywhere on card for next →";
+      }
+
+      localStorage.setItem(STORAGE_KEY, currentIndex);
+      cardEl.scrollTop = 0;
+    }
+
+    function nextCard() {
+      if (currentIndex < cards.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      render();
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        render();
+      }
+    }
+
+    // Tap card to go next
+    cardEl.addEventListener("click", nextCard);
+    nextBtn.addEventListener("click", (e) => { e.stopPropagation(); nextCard(); });
+    prevBtn.addEventListener("click", (e) => { e.stopPropagation(); prevCard(); });
+
+    jumpSelectEl.addEventListener("change", (e) => {
+      currentIndex = parseInt(e.target.value, 10);
+      render();
+    });
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+      if (e.target === jumpSelectEl) return;
+      if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        nextCard();
+      } else if (e.key === "ArrowLeft" || e.key === "Backspace") {
+        e.preventDefault();
+        prevCard();
+      }
+    });
+
+    // Swipe support for touchscreens
+    let touchStartX = 0;
+    let touchEndX = 0;
+    cardEl.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    cardEl.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        // Prevent the click event from double-firing after a swipe
+        e.preventDefault();
+        if (diff > 0) {
+          nextCard();
+        } else {
+          prevCard();
+        }
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
