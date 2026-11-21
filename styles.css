@@ -391,3 +391,5 @@ main section{padding:5rem 0}
 @media (max-width:1240px){
   .nav-list .holiday-link{margin-left:0}
 }
+
+.nav-list a[aria-current="page"]{border-color:var(--coral)}
