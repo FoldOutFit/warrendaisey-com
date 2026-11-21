@@ -668,3 +668,65 @@ html { scroll-padding-top: 7.5rem; }
   .bauble-hang { animation: none; transform: rotate(-2deg); }
   .section-lights .bulb { animation: none; filter: none; opacity: 0.95; }
 }
+
+
+/* ========== holiday-fix: desktop-only cleanup (phones ≤768px unchanged) ========== */
+@media (min-width: 1024px) {
+  /* Snow falls over the page, not over the sticky nav */
+  .snow { z-index: 45; }
+
+  /* Baubles sit on the light string inside the header eave,
+     instead of hanging 50px into scrolled section headings */
+  .bauble-hang {
+    top: -36px;
+    width: 22px;
+    height: 36px;
+  }
+  .bauble-hang:nth-child(even) { top: -40px; }
+  .bauble-hang:nth-child(3n) { top: -30px; }
+
+  /* Gift look without a ribbon through the type:
+     drop the body bands, park a small bow on the snow cap */
+  .sticker {
+    background-image: none;
+  }
+  .sticker::after {
+    left: 50%;
+    top: -8px;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 20px;
+  }
+
+  /* Pull hero badges slightly off the wreath so leaves don't cover labels */
+  .s-sun { top: 0; left: -6%; }
+  .s-teal { top: -2%; right: -6%; }
+  .s-coral { bottom: 4%; left: -4%; }
+  .s-violet { bottom: -6%; right: -6%; }
+
+  /* Tighter wreath; hat sits on top of the wreath, not on the 35K badge */
+  .hero-portrait .wreath {
+    inset: -1.05rem;
+    width: calc(100% + 2.1rem);
+    height: calc(100% + 2.1rem);
+  }
+  .hero-portrait .santa-hat {
+    top: -30%;
+    right: auto;
+    left: 54%;
+    width: 38%;
+  }
+
+  /* Keep the sleigh in the sky lane, above the headline */
+  .sleigh-wrap { top: 4px; height: 100px; }
+
+  /* Large cream sections: keep a hint of snowflakes, drop the grid plaid */
+  .about, .experience, .forensics, .education, .volunteering, .skills-sec {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2313213C' stroke-width='1.1' opacity='0.08'%3E%3Cpath d='M22 22 L22 8 M22 22 L22 36 M22 22 L8 22 M22 22 L36 22 M22 22 L12 12 M22 22 L32 32 M22 22 L32 12 M22 22 L12 32'/%3E%3Cpath d='M100 78 L100 66 M100 78 L100 90 M100 78 L88 78 M100 78 L112 78 M100 78 L91 69 M100 78 L109 87 M100 78 L109 69 M100 78 L91 87'/%3E%3Cpath d='M150 140 L150 130 M150 140 L150 150 M150 140 L140 140 M150 140 L160 140 M150 140 L143 133 M150 140 L157 147 M150 140 L157 133 M150 140 L143 147'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .wins {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%2313213C' stroke-width='1.1' opacity='0.08'%3E%3Cpath d='M22 22 L22 8 M22 22 L22 36 M22 22 L8 22 M22 22 L36 22 M22 22 L12 12 M22 22 L32 32 M22 22 L32 12 M22 22 L12 32'/%3E%3Cpath d='M100 78 L100 66 M100 78 L100 90 M100 78 L88 78 M100 78 L112 78 M100 78 L91 69 M100 78 L109 87 M100 78 L109 69 M100 78 L91 87'/%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(180deg, var(--cream), var(--blush));
+  }
+}
