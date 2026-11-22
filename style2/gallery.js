@@ -511,27 +511,32 @@
   let scene = null;
   let camera = null;
   let clickables = [];
+  let workPlaced = []; // {t, x, y, z}
   let exitDock = null;
   let animating = false;
 
   function layoutConfig() {
     const mobile = window.innerWidth < 720;
-    const frameW = mobile ? 1.05 : 1.15;
-    const frameH = mobile ? 1.4 : 1.58;
+    // Larger portraits; hang stays near the 57-inch museum line, high enough
+    // that the placard still clears the floor.
+    const frameW = mobile ? 1.22 : 1.42;
+    const frameH = mobile ? 1.62 : 1.82;
     return {
       mobile,
-      totalAngle: mobile ? 0.48 : 0.88,
-      hallW: mobile ? 3.05 : 5.3,
-      wallH: mobile ? 3.45 : 3.8,
-      eye: 1.57,
-      hang: 1.448,
+      totalAngle: mobile ? 1.7 : 2.35,
+      hallW: mobile ? 2.85 : 4.35,
+      wallH: mobile ? 3.6 : 4.05,
+      eye: mobile ? 1.58 : 1.62,
+      hang: 1.52,
       frameW,
       frameH,
-      bay: (mobile ? 2.05 : 1.95) * frameW,
-      titleBay: mobile ? 6.2 : 6.8,
-      startPad: mobile ? 8 : 10,
-      sectionPad: mobile ? 2.2 : 2.6,
-      endPad: mobile ? 8 : 9
+      bay: (mobile ? 2.0 : 1.9) * frameW,
+      titleBay: mobile ? 5.6 : 6.2,
+      startPad: mobile ? 7 : 8.5,
+      sectionPad: mobile ? 2.0 : 2.3,
+      endPad: mobile ? 7 : 8,
+      lookBias: mobile ? 0.4 : 0.45,
+      camInset: mobile ? 0.06 : 0.08
     };
   }
 
@@ -546,10 +551,11 @@
   }
 
   function leftDir(yaw) {
-    return { x: -Math.cos(yaw), z: -Math.sin(yaw) };
+    // Outward (left / outer wall) from heading. yaw = -theta.
+    return { x: -Math.cos(yaw), z: Math.sin(yaw) };
   }
   function rightDir(yaw) {
-    return { x: Math.cos(yaw), z: Math.sin(yaw) };
+    return { x: Math.cos(yaw), z: -Math.sin(yaw) };
   }
   function fwdDir(yaw) {
     return { x: -Math.sin(yaw), z: -Math.cos(yaw) };
@@ -611,15 +617,14 @@
         return;
       }
       const n = WORKS.filter((w) => w.section === sec.id).length;
-      const slots = cfg.mobile ? n : Math.ceil(n / 2);
-      dist += slots * cfg.bay;
+      dist += n * cfg.bay;
       dist += cfg.sectionPad;
     });
     pathLen = dist + cfg.endPad * 0.2;
   }
 
   function fitPathToLength() {
-    cfg.totalAngle = cfg.mobile ? 0.48 : 0.88;
+    cfg.totalAngle = cfg.mobile ? 1.7 : 2.35;
     cfg.radius = pathLen / cfg.totalAngle;
   }
 
@@ -738,6 +743,44 @@
     geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     geo.setIndex(idx);
     return geo;
+  }
+
+
+  function addBenches() {
+    const wood = new THREE.MeshStandardMaterial({ color: 0x5c3a22, roughness: 0.72, metalness: 0.04 });
+    const dark = new THREE.MeshStandardMaterial({ color: 0x3a2414, roughness: 0.7, metalness: 0.04 });
+    const step = 10;
+    const n = Math.floor(pathLen / step);
+    const seatW = 1.55;
+    const seatD = 0.4;
+    const seatH = 0.07;
+    const h = 0.44;
+    const wallDist = cfg.hallW / 2 - 0.48;
+    for (let i = 1; i < n; i++) {
+      const t = (i * step) / pathLen;
+      if (t < 0.04 || t > 0.93) continue;
+      const p = pathAt(t);
+      const dir = rightDir(p.yaw);
+      const g = new THREE.Group();
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(seatW, seatH, seatD), wood);
+      seat.position.y = h;
+      g.add(seat);
+      const back = new THREE.Mesh(new THREE.BoxGeometry(seatW, 0.28, 0.05), wood);
+      back.position.set(0, h + 0.16, -seatD / 2 + 0.03);
+      g.add(back);
+      [-0.62, 0.62].forEach((x) => {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.07, h, 0.07), dark);
+        leg.position.set(x, h / 2, seatD * 0.28);
+        g.add(leg);
+        const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.07, h, 0.07), dark);
+        leg2.position.set(x, h / 2, -seatD * 0.28);
+        g.add(leg2);
+      });
+      g.position.set(p.x + dir.x * wallDist, 0, p.z + dir.z * wallDist);
+      // Long axis along the hall, back against the right wall
+      g.rotation.y = p.yaw + Math.PI / 2;
+      scene.add(g);
+    }
   }
 
   function buildHallway() {
@@ -864,6 +907,8 @@
     const endP = pathAt(0.97);
     endLight.position.set(endP.x, wallH * 0.7, endP.z);
     scene.add(endLight);
+
+    addBenches();
   }
 
   function artCanvas(work) {
@@ -1066,12 +1111,12 @@
     group.add(art);
 
     const pTex = placardTexture(work);
-    const pH = fw * (420 / 1024);
+    const pH = Math.min(0.46, fw * (380 / 1024));
     const placard = new THREE.Mesh(
       new THREE.PlaneGeometry(fw, pH),
       new THREE.MeshStandardMaterial({ map: pTex, roughness: 0.7, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.12 })
     );
-    placard.position.set(0, -fh / 2 - 0.08 - pH / 2, 0.02);
+    placard.position.set(0, -fh / 2 - 0.05 - pH / 2, 0.02);
     group.add(placard);
 
     art.userData.id = work.id;
@@ -1080,6 +1125,7 @@
     clickables.push(art, mould, inner);
 
     placeOnWall(t, side, cfg.hang, group);
+    workPlaced.push({ t, x: group.position.x, y: group.position.y, z: group.position.z });
   }
 
   function placeTitle(sec, t) {
@@ -1122,10 +1168,11 @@
 
   function placeWorks() {
     clickables = [];
+    workPlaced = [];
     sectionT = { entrance: 0 };
     function tOf(d) { return Math.min(0.985, Math.max(0, d / pathLen)); }
 
-    placeSign(tOf(cfg.startPad * 0.4));
+    placeSign(tOf(cfg.startPad * (cfg.mobile ? 0.88 : 0.4)));
 
     let dist = cfg.startPad;
     SECTIONS.forEach((sec) => {
@@ -1141,20 +1188,10 @@
         return;
       }
 
-      if (cfg.mobile) {
-        works.forEach((work) => {
-          placeWork(work, tOf(dist), "left");
-          dist += cfg.bay;
-        });
-      } else {
-        for (let i = 0; i < works.length; i++) {
-          const side = i % 2 === 0 ? "left" : "right";
-          if (i > 0 && side === "left") dist += cfg.bay;
-          const tw = tOf(dist + (side === "right" ? cfg.bay * 0.42 : 0));
-          placeWork(works[i], tw, side);
-        }
-        if (works.length) dist += cfg.bay;
-      }
+      works.forEach((work) => {
+        placeWork(work, tOf(dist), "left");
+        dist += cfg.bay;
+      });
       dist += cfg.sectionPad;
     });
   }
@@ -1206,11 +1243,11 @@
     if (world) world.style.display = "none";
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c0a08);
-    scene.fog = new THREE.Fog(0x1c1612, Math.max(22, pathLen * 0.5), Math.max(40, pathLen * 1.05));
+    scene.fog = new THREE.Fog(0x1c1612, 16, 44);
 
     const w = stage.clientWidth || window.innerWidth;
     const h = stage.clientHeight || window.innerHeight;
-    camera = new THREE.PerspectiveCamera(52, w / h, 0.08, pathLen + 20);
+    camera = new THREE.PerspectiveCamera(cfg.mobile ? 54 : 50, w / h, 0.08, pathLen + 20);
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
@@ -1270,9 +1307,38 @@
     cameraT = immediate ? target : cameraT + (target - cameraT) * 0.18;
     if (Math.abs(target - cameraT) < 0.0004) cameraT = target;
     const p = pathAt(cameraT);
-    const look = pathAt(Math.min(1, cameraT + 0.018));
-    camera.position.set(p.x, cfg.eye, p.z);
-    camera.lookAt(look.x, cfg.eye, look.z);
+    const hereLeft = leftDir(p.yaw);
+    const inset = cfg.camInset || 0.08;
+    camera.position.set(p.x + hereLeft.x * inset, cfg.eye, p.z + hereLeft.z * inset);
+    // Aim several meters ahead; bias toward the left wall AT that point
+    // so the curve presents art more head-on without yawing into the near wall.
+    const aheadDist = 4.2;
+    const aheadT = Math.min(1, cameraT + aheadDist / pathLen);
+    const ahead = pathAt(aheadT);
+    const aheadLeft = leftDir(ahead.yaw);
+    const bias = cfg.lookBias || 0.45;
+    let lx = ahead.x + aheadLeft.x * bias;
+    let ly = cfg.eye * 0.35 + cfg.hang * 0.65;
+    let lz = ahead.z + aheadLeft.z * bias;
+    let sumW = 0, ax = 0, ay = 0, az = 0;
+    const peak = 4.2;
+    for (let i = 0; i < workPlaced.length; i++) {
+      const w = workPlaced[i];
+      const ds = (w.t - cameraT) * pathLen;
+      if (ds < 2.3 || ds > 7.8) continue;
+      const wt = Math.exp(-((ds - peak) * (ds - peak)) / (2.0 * 2.0));
+      ax += w.x * wt;
+      ay += w.y * wt;
+      az += w.z * wt;
+      sumW += wt;
+    }
+    if (sumW > 1e-4) {
+      const k = Math.min(0.28, 0.16 + 0.12 * Math.min(1, sumW));
+      lx += (ax / sumW - lx) * k;
+      ly += (ay / sumW - ly) * k * 0.35;
+      lz += (az / sumW - lz) * k;
+    }
+    camera.lookAt(lx, ly, lz);
     if (hint && cameraT > 0.03) hint.classList.add("is-hidden");
     updateActiveTab(cameraT);
     if (exitDock) exitDock.hidden = cameraT < (sectionT.contact || 0.92) - 0.01;
@@ -1460,7 +1526,33 @@
     });
   }
 
-  window.__gallery = { openLight: (id) => openLight(id), closeLight, WORKS, sectionT: () => sectionT, snap: () => applyCamera(true) };
+  window.__gallery = {
+      openLight: (id) => openLight(id),
+      closeLight,
+      WORKS,
+      sectionT: () => sectionT,
+      snap: () => applyCamera(true),
+      measure: () => {
+        if (!camera || !workPlaced.length) return null;
+        const t = cameraT;
+        let best = workPlaced[0], bestAbs = 99;
+        workPlaced.forEach((w) => {
+          const ds = (w.t - t) * pathLen;
+          if (ds > -0.4 && Math.abs(ds - 2.2) < bestAbs) {
+            bestAbs = Math.abs(ds - 2.2);
+            best = w;
+          }
+        });
+        const v = new THREE.Vector3(best.x, best.y + cfg.frameH / 2, best.z).project(camera);
+        const v2 = new THREE.Vector3(best.x, best.y - cfg.frameH / 2, best.z).project(camera);
+        const frac = Math.abs(v.y - v2.y) / 2;
+        return {
+          t, pathLen, angle: cfg.totalAngle, radius: cfg.radius,
+          works: workPlaced.length, hallW: cfg.hallW, frameH: cfg.frameH,
+          nearestT: best.t, nearestD: (best.t - t) * pathLen, heightFrac: frac
+        };
+      }
+    };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
