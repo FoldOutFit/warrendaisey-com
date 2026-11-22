@@ -3,105 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shop | Warren Daisey</title>
+  <title>Warren Daisey Shop</title>
   <meta name="description" content="Free 3D-printable downloads from Warren Daisey, starting with the Catan Box Organizer.">
-  <meta name="theme-color" content="#13213C">
+  <meta name="theme-color" content="#122033">
   <link rel="canonical" href="https://warrendaisey.com/shop/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Josefin+Sans:wght@400;600;700&family=Caveat:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="../pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Josefin+Sans:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shop.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="logo" href="../" aria-label="Warren Daisey home">
-        <span class="logo-mark" aria-hidden="true">WD</span>
-        <span class="logo-name">Warren <em>Daisey</em></span>
+  <header class="store-bar">
+    <div class="store-bar-inner">
+      <a class="brand" href="/shop/" aria-label="Warren Daisey Shop">
+        <span class="brand-name">Warren Daisey</span>
+        <span class="brand-shop">Shop</span>
       </a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
-      <nav aria-label="Primary" id="site-nav">
-        <ul class="nav-list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/links/">Links</a></li>
-          <li><a href="/awards/">Awards</a></li>
-          <li><a href="/speaking/">Speaking</a></li>
-          <li><a href="/resume/">Resume</a></li>
-          <li><a href="/projects/">Projects</a></li>
-          <li><a href="/shop/" aria-current="page">Shop</a></li>
-          <li><a href="/recommendations/">Kind words</a></li>
-          <li><a href="/chatbot/">Chatbot</a></li>
-          <li><a href="/contact/" class="nav-cta">Let’s connect</a></li>
-          <li><a href="/holiday/" class="holiday-link">Holiday</a></li>
-        </ul>
+      <nav class="store-nav" aria-label="Shop">
+        <a href="/shop/" aria-current="page">Shop</a>
+        <a href="#listing">Catan Box Organizer</a>
       </nav>
     </div>
   </header>
-  <section class="page-hero">
-    <div class="blob blob-1" aria-hidden="true"></div>
-    <div class="blob blob-2" aria-hidden="true"></div>
-    <div class="wrap">
-      <p class="script">from the workbench</p>
-      <h1>THE <em>shop</em></h1>
-      <p class="lead">Free 3D-printable files you can download and make yourself.</p>
-    </div>
-  </section>
   <main id="main">
-    <section>
-      <div class="wrap">
-        <article class="shop-product reveal">
-          <figure class="shop-hero-fig">
-            <img src="catan/catan_box_hero.webp" width="1800" height="1550" alt="Assembled Catan Box Organizer with a rust-red decorative lid and a navy storage base.">
-          </figure>
-          <div class="shop-copy">
-            <p class="pill-label">3D printable</p>
-            <h2>Catan Box Organizer (3D printable)</h2>
-            <p class="shop-price">Free for now</p>
-            <p class="lead-in">A 3D-printed Catan storage box with a card holder, top tray, 6 resource bins, a magnetic lid with a dice and card insert, latches, and an optional handle.</p>
-            <a class="btn btn-navy btn-big" href="catan/Catan_Box_Organizer.zip" download="Catan_Box_Organizer.zip">Download <span aria-hidden="true">↓</span></a>
-          </div>
-        </article>
-        <div class="shop-gallery">
-          <figure class="reveal">
-            <img src="catan/catan_box_exploded.webp" width="1800" height="2050" alt="Exploded view of the Catan Box Organizer, showing the lid, lid inlay, lid insert, top tray, card holder, and base.">
-          </figure>
-          <figure class="reveal">
-            <img src="catan/catan_box_parts.webp" width="2100" height="2000" alt="Individual printed parts of the Catan Box Organizer: base, card holder, top tray, resource bins, lid, lid inlay, lid insert, latches, and handle.">
-          </figure>
+    <div class="wrap">
+      <header class="store-intro">
+        <p class="eyebrow">3D printable downloads</p>
+        <h1>Warren Daisey <em>Shop</em></h1>
+        <p class="lede">Free files you can download and print yourself, starting with a Catan storage box.</p>
+      </header>
+      <article class="product" id="listing">
+        <figure class="product-photo">
+          <img src="catan/catan_box_hero.webp" width="1800" height="1550" alt="Assembled Catan Box Organizer with a rust-red decorative lid and a navy storage base.">
+        </figure>
+        <div class="product-copy">
+          <p class="tag">3D printable</p>
+          <h2>Catan Box Organizer (3D printable)</h2>
+          <p class="price">Free for now</p>
+          <p class="desc">A 3D-printed Catan storage box with a card holder, top tray, 6 resource bins, a magnetic lid with a dice and card insert, latches, and an optional handle.</p>
+          <a class="btn" href="catan/Catan_Box_Organizer.zip" download="Catan_Box_Organizer.zip">Download <span aria-hidden="true">↓</span></a>
         </div>
-        <div class="shop-hardware reveal">
-          <h3>Hardware You Need</h3>
-          <ul>
-            <li>8mm x 2mm magnets (8x)</li>
-            <li>30mm M3 Bolts (6x)</li>
-          </ul>
-          <p>Or if you want to print the handle as well</p>
-          <ul>
-            <li>8mm x 2mm magnets (8x)</li>
-            <li>35mm M3 Bolts (2x)</li>
-            <li>30mm M3 Bolts (4x)</li>
-          </ul>
-        </div>
+      </article>
+      <div class="gallery">
+        <figure>
+          <img src="catan/catan_box_exploded.webp" width="1800" height="2050" alt="Exploded view of the Catan Box Organizer, showing the lid, lid inlay, lid insert, top tray, card holder, and base.">
+        </figure>
+        <figure>
+          <img src="catan/catan_box_parts.webp" width="2100" height="2000" alt="Individual printed parts of the Catan Box Organizer: base, card holder, top tray, resource bins, lid, lid inlay, lid insert, latches, and handle.">
+        </figure>
       </div>
-    </section>
-    <section class="next-pages">
-      <div class="wrap">
-        <p class="kicker">Keep exploring</p>
-        <nav class="next-list" aria-label="More pages"><a href="../">Home →</a><a href="../projects/">Projects →</a><a href="../resume/">Resume →</a><a href="../recommendations/">Recommendations →</a><a href="../awards/">Awards →</a><a href="../contact/">Contact →</a></nav>
-      </div>
-    </section>
+      <section class="hardware" aria-labelledby="hardware-heading">
+        <h3 id="hardware-heading">Hardware You Need</h3>
+        <ul>
+          <li>8mm x 2mm magnets (8x)</li>
+          <li>30mm M3 Bolts (6x)</li>
+        </ul>
+        <p>Or if you want to print the handle as well</p>
+        <ul>
+          <li>8mm x 2mm magnets (8x)</li>
+          <li>35mm M3 Bolts (2x)</li>
+          <li>30mm M3 Bolts (4x)</li>
+        </ul>
+      </section>
+    </div>
   </main>
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p><span class="logo-mark small" aria-hidden="true">WD</span> Warren Daisey · Bloomsburg, Pennsylvania</p>
-      <p class="footer-links">
-        <a href="https://www.linkedin.com/in/warren-daisey" rel="noopener noreferrer" target="_blank">LinkedIn</a>
-        <a href="https://foldoutfit.com" rel="noopener noreferrer" target="_blank">foldoutfit.com</a>
-      </p>
+  <footer class="store-foot">
+    <div class="store-foot-inner">
+      <p>Warren Daisey Shop</p>
+      <a href="https://warrendaisey.com/">warrendaisey.com</a>
     </div>
   </footer>
-  <script src="../script.js"></script>
 </body>
 </html>
