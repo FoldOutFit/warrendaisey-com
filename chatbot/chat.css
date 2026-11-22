@@ -129,6 +129,8 @@
 .bubble a{color:var(--coral-dk);font-weight:700}
 .msg.user .bubble a{color:var(--sun)}
 .msg.note .bubble{background:#fff;border-style:dashed}
+.wait-note{margin:.45rem 0 0;color:var(--muted);font-size:.9rem}
+.retry-btn{margin-top:.85rem}
 
 .dots{display:inline-flex;gap:5px;align-items:center;min-height:1.15rem;padding:.15rem .1rem}
 .dots i{
