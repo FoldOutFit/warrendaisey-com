@@ -1,7 +1,5 @@
 (function () {
-  var ENDPOINT = "https://text.pollinations.ai/openai";
   var GREETING = "Hi — I’m the assistant on Warren Daisey’s site. Ask me about his studies, projects, awards, speaking, or how to reach him. If I don’t have a fact, I’ll say so and point you to Let’s Connect.";
-  var FALLBACK = "I couldn’t reach the assistant just now. Please try again in a moment, or visit Let’s Connect and Warren can take it from there: https://warrendaisey.com/contact/";
   var SYSTEM_PROMPT = [
     "You are the friendly website assistant for Warren Daisey (he/him). You are not Warren. Speak in a warm, concise, professional voice and help visitors learn about him.",
     "Use only the facts in this prompt. They come from the public pages on warrendaisey.com: home, projects, résumé, awards, speaking, kind words, and Let’s Connect. Do not invent, guess, or embellish biographical details, numbers, dates, jobs, awards, quotes, or opinions.",
@@ -192,11 +190,33 @@
     who.textContent = "Assistant";
     var bubble = document.createElement("div");
     bubble.className = "bubble";
-    bubble.innerHTML = '<span class="dots" role="status" aria-label="Assistant is typing"><i></i><i></i><i></i></span>';
+    var dots = document.createElement("span");
+    dots.className = "dots";
+    dots.setAttribute("role", "status");
+    dots.setAttribute("aria-label", "Assistant is typing");
+    dots.appendChild(document.createElement("i"));
+    dots.appendChild(document.createElement("i"));
+    dots.appendChild(document.createElement("i"));
+    var note = document.createElement("p");
+    note.className = "wait-note";
+    note.id = "wait-note";
+    note.hidden = true;
+    bubble.appendChild(dots);
+    bubble.appendChild(note);
     item.appendChild(who);
     item.appendChild(bubble);
     log.appendChild(item);
     scrollLog();
+  }
+
+  function setWaitNote(text) {
+    var note = document.getElementById("wait-note");
+    var dots = document.querySelector("#typing .dots");
+    if (note) {
+      note.hidden = !text;
+      note.textContent = text || "";
+    }
+    if (dots && text) dots.setAttribute("aria-label", text);
   }
 
   function hideTyping() {
@@ -209,73 +229,183 @@
     input.style.height = Math.min(input.scrollHeight, 136) + "px";
   }
 
-  function replyText(data) {
-    if (!data || !data.choices || !data.choices[0] || !data.choices[0].message) return "";
-    var content = data.choices[0].message.content;
-    return typeof content === "string" ? content.trim() : "";
-  }
+  // Fresh anonymous replies are limited to about one every 45 seconds per IP.
+  // Over the limit, Pollinations returns HTTP 402 with Retry-After. Cached replies do not count.
+  var ATTEMPT_MS = 22000;
+  var HISTORY_LIMIT = 6;
+  var ROUTES = [
+    { kind: "chat", url: "https://text.pollinations.ai/openai", model: "openai" },
+    { kind: "chat", url: "https://text.pollinations.ai/openai", model: "openai-fast" },
+    { kind: "chat", url: "https://text.pollinations.ai/v1/chat/completions", model: "openai-fast" },
+    { kind: "plain", url: "https://text.pollinations.ai/" },
+    { kind: "get" }
+  ];
 
-  function requestReply(messages) {
-    var controller = new AbortController();
-    var timer = window.setTimeout(function () { controller.abort(); }, 50000);
-    return fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "openai",
-        messages: messages,
-        temperature: 0.4,
-        private: true,
-        referrer: "https://warrendaisey.com/chatbot"
-      }),
-      signal: controller.signal
-    }).then(function (res) {
-      window.clearTimeout(timer);
-      if (!res.ok) throw new Error("Request failed");
-      return res.json();
-    }).then(function (data) {
-      var text = replyText(data);
-      if (!text) throw new Error("Empty reply");
-      return text;
-    }).catch(function (err) {
-      window.clearTimeout(timer);
-      throw err;
-    });
+  function makeError(status, retryAfter) {
+    var err = new Error("request failed");
+    err.status = status || 0;
+    err.retryAfter = retryAfter || 0;
+    return err;
   }
 
   function wait(ms) {
     return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
   }
 
-  function ask() {
-    var recent = history.slice(-10);
-    var messages = [{ role: "system", content: SYSTEM_PROMPT }].concat(recent);
-    return requestReply(messages).catch(function () {
-      return wait(1200).then(function () { return requestReply(messages); });
+  function readRetryAfter(res, raw) {
+    var header = parseInt(res.headers.get("retry-after"), 10);
+    if (header > 0 && header < 180) return header;
+    var match = /retry after (\d+)/i.exec(raw || "");
+    return match ? parseInt(match[1], 10) : 0;
+  }
+
+  function extractText(raw) {
+    var trimmed = String(raw || "").trim();
+    if (!trimmed || /free limit reached/i.test(trimmed)) return "";
+    if (trimmed.charAt(0) !== "{") return trimmed;
+    try {
+      var data = JSON.parse(trimmed);
+      if (!data || data.error || data.success === false) return "";
+      var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+      return typeof content === "string" ? content.trim() : "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function buildMessages() {
+    var recent = history.slice(-HISTORY_LIMIT).map(function (item) {
+      return { role: item.role, content: String(item.content).slice(0, 800) };
     });
+    return [{ role: "system", content: SYSTEM_PROMPT }].concat(recent);
+  }
+
+  function buildGetUrl(messages) {
+    var system = "";
+    var lines = [];
+    messages.forEach(function (item) {
+      if (item.role === "system") system = item.content;
+      else lines.push(item.role + ": " + item.content);
+    });
+    var last = lines.length ? lines[lines.length - 1].replace(/^user:\s*/i, "") : "Hello";
+    var memory = lines.slice(0, -1).slice(-4).join("\n");
+    var sys = system;
+    if (memory) sys += "\n\nRecent conversation:\n" + memory;
+    var url = "https://text.pollinations.ai/" + encodeURIComponent(last.slice(0, 500))
+      + "?model=openai-fast&private=true&referrer=" + encodeURIComponent("https://warrendaisey.com/chatbot")
+      + "&system=" + encodeURIComponent(sys);
+    if (url.length > 12000) {
+      url = "https://text.pollinations.ai/" + encodeURIComponent(last.slice(0, 500))
+        + "?model=openai-fast&private=true&referrer=" + encodeURIComponent("https://warrendaisey.com/chatbot")
+        + "&system=" + encodeURIComponent(sys.slice(0, 2200));
+    }
+    return url;
+  }
+
+  function callRoute(route, messages) {
+    var controller = new AbortController();
+    var timer = window.setTimeout(function () { controller.abort(); }, ATTEMPT_MS);
+    var url = route.kind === "get" ? buildGetUrl(messages) : route.url;
+    var options = { method: route.kind === "get" ? "GET" : "POST", signal: controller.signal };
+    if (route.kind !== "get") {
+      options.headers = { "Content-Type": "application/json" };
+      options.body = JSON.stringify({
+        model: route.model || "openai-fast",
+        messages: messages,
+        temperature: 0.4,
+        private: true,
+        referrer: "https://warrendaisey.com/chatbot"
+      });
+    }
+    return fetch(url, options).then(function (res) {
+      window.clearTimeout(timer);
+      return res.text().then(function (raw) {
+        if (!res.ok) throw makeError(res.status, readRetryAfter(res, raw));
+        var text = extractText(raw);
+        if (!text) throw makeError(res.status, readRetryAfter(res, raw));
+        return text;
+      });
+    }, function (err) {
+      window.clearTimeout(timer);
+      if (err && err.status) throw err;
+      throw makeError(0, 0);
+    });
+  }
+
+  function nextDelay(err, state) {
+    var limited = err && (err.status === 402 || err.status === 429);
+    if (limited) {
+      if (state.limitWaits >= 2) return -1;
+      state.limitWaits += 1;
+      var seconds = err.retryAfter || 45;
+      return Math.min(seconds * 1000 + 700, 48000);
+    }
+    state.other += 1;
+    if (state.other > 3) return -1;
+    return Math.min(700 * Math.pow(2, state.other - 1), 5000);
+  }
+
+  function ask() {
+    var messages = buildMessages();
+    var state = { limitWaits: 0, other: 0 };
+    function step(index) {
+      if (index >= ROUTES.length) return Promise.reject(makeError(0, 0));
+      return callRoute(ROUTES[index], messages).catch(function (err) {
+        var delay = nextDelay(err, state);
+        if (delay < 0 || index === ROUTES.length - 1) return Promise.reject(err);
+        setWaitNote("Still working. Trying again in a moment.");
+        return wait(delay).then(function () { return step(index + 1); });
+      });
+    }
+    return step(0);
+  }
+
+  function finishReply(answer) {
+    hideTyping();
+    history.push({ role: "assistant", content: answer });
+    addMessage("bot", answer);
+    setBusy(false);
+    input.focus();
+  }
+
+  function showError() {
+    hideTyping();
+    var previous = document.getElementById("chat-error");
+    if (previous) previous.remove();
+    var item = addMessage("bot", "I couldn’t reach the assistant just now. Please try again, or visit Let’s Connect: https://warrendaisey.com/contact/", "note");
+    item.id = "chat-error";
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "text-btn retry-btn";
+    btn.textContent = "Try again";
+    btn.addEventListener("click", retryLast);
+    item.querySelector(".bubble").appendChild(btn);
+    setBusy(false);
+    btn.focus();
+  }
+
+  function retryLast() {
+    if (busy || !history.length) return;
+    var previous = document.getElementById("chat-error");
+    if (previous) previous.remove();
+    setBusy(true);
+    showTyping("");
+    ask().then(finishReply, showError);
   }
 
   function send(text) {
     var message = String(text || "").trim();
     if (!message || busy) return;
     if (message.length > 1500) message = message.slice(0, 1500);
+    var previous = document.getElementById("chat-error");
+    if (previous) previous.remove();
     setBusy(true);
     addMessage("user", message);
     history.push({ role: "user", content: message });
     input.value = "";
     resizeInput();
     showTyping();
-    ask().then(function (answer) {
-      hideTyping();
-      history.push({ role: "assistant", content: answer });
-      addMessage("bot", answer);
-    }).catch(function () {
-      hideTyping();
-      addMessage("bot", FALLBACK, "note");
-    }).then(function () {
-      setBusy(false);
-      input.focus();
-    });
+    ask().then(finishReply, showError);
   }
 
   function resetChat() {
