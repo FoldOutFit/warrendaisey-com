@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/warren-avatar.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,24 +17,21 @@
 
   <header class="site-header">
     <div class="header-inner">
+      <a class="wordmark" href="#top">Warren Daisey</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav id="site-nav" class="site-nav" aria-label="Primary">
         <ul>
-          <li><a href="#top" aria-current="page">Home</a></li>
-          <li><a href="#doors" data-open-door="inventing">Fold-Out-Fit</a></li>
-          <li><a href="#doors" data-open-door="sales">Sales</a></li>
-          <li><a href="#doors" data-open-door="speaking">Speaking</a></li>
-          <li><a href="#doors" data-open-door="awards">Awards</a></li>
-          <li><a href="#story">My story</a></li>
-          <li><a href="#connect">Contact</a></li>
           <li><a href="/">Main site</a></li>
+          <li><a href="#top" aria-current="page">Home</a></li>
+          <li><a href="#doors">Work</a></li>
+          <li><a href="#story">My story</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#connect">Contact</a></li>
         </ul>
       </nav>
-      <div class="time-pill">
-        <span class="time-label">Local time</span>
-        <time id="local-time">—</time>
-        <span class="time-sep" aria-hidden="true">–</span>
-        <span id="local-date"></span>
+      <div class="header-meta">
+        <p class="local-time"><span class="meta-label">Local time</span> <time id="local-time" datetime="">—</time></p>
+        <p class="local-date" id="local-date"></p>
       </div>
     </div>
   </header>
@@ -53,76 +50,147 @@
             <span class="hero-hi">Hi, I’m Warren.</span>
             <span class="hero-am">I am a</span>
           </h1>
-          <div class="notepad" aria-live="polite">
-            <div class="notepad-rings" aria-hidden="true"></div>
-            <div class="notepad-stack" aria-hidden="true"></div>
-            <div class="notepad-page">
-              <p class="role-text" data-roles='["Founder of Fold-Out-Fit","Inventor","Sales &amp; Technical Lead","Speaker","Student"]'>Founder of Fold-Out-Fit</p>
-              <p class="role-count"><span class="role-index">01</span> / 05</p>
+          <div class="role-board" aria-live="polite">
+            <div class="role-spiral" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
+            <p class="role-text" data-roles='["Entrepreneur","Sales Professional","Technical Professional","Inventor","Speaker"]'>Entrepreneur</p>
+            <p class="role-count"><span class="role-index">01</span> / 05</p>
           </div>
           <div class="hero-actions">
-            <a class="btn btn-solid" href="#connect">Start a project <span class="btn-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12M13 6l6 6-6 6"/></svg></span></a>
-            <a class="text-link" href="#doors">See my work</a>
+            <a class="btn btn-solid" href="#connect">Start a project <span class="btn-arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="#doors">See my work</a>
           </div>
         </div>
         <div class="hero-portrait">
-          <img src="assets/warren-cutout.png" width="800" height="800" alt="Black-and-white portrait of Warren Daisey in a suit and tie, smiling.">
-          <a class="ability-pill" href="/resume/">Résumé</a>
+          <img src="assets/warren-cutout.png" width="779" height="771" alt="Warren Daisey, smiling, wearing a dark suit, blue shirt, and dotted tie.">
         </div>
       </div>
       <div class="hero-bar">
         <p>Open to sales opportunities</p>
         <p>Bloomsburg, Pennsylvania</p>
-        <p>Scroll to explore</p>
+        <p>Commonwealth University–Bloomsburg</p>
       </div>
     </section>
 
     <section class="room doors-section" id="doors">
-      <div class="room-vignette" aria-hidden="true"></div>
-      <h2 class="glow-title">Magic happens behind the doors</h2>
+      <div class="room-inner">
+        <h2 class="room-title">Magic happens behind the doors</h2>
+        <p class="room-lead">Open a door to see a side of the work — inventing, sales, speaking, awards, and projects — each drawn from the record, not a pitch deck.</p>
 
-      <div class="door-stage">
-        <button class="carousel-btn prev" type="button" aria-label="Previous door">‹</button>
-        <div class="door-window" data-carousel>
-          <!-- doors rendered / positioned by JS; static markup for no-JS -->
-          <button class="door" type="button" data-door="inventing" style="--door:#1f3d7a" aria-expanded="false">
-            <span class="door-frame"><span class="door-leaf"><span class="door-ribs"></span><span class="door-plate">Fold-Out-Fit</span><span class="door-handle"></span><span class="door-keyhole"></span></span></span>
-            <span class="visually-hidden">Fold-Out-Fit</span>
-          </button>
-          <button class="door" type="button" data-door="sales" style="--door:#5d5872" aria-expanded="false">
-            <span class="door-frame"><span class="door-leaf"><span class="door-ribs"></span><span class="door-plate">Sales</span><span class="door-handle"></span><span class="door-keyhole"></span></span></span>
-            <span class="visually-hidden">Sales</span>
-          </button>
-          <button class="door" type="button" data-door="speaking" style="--door:#7a9a68" aria-expanded="false">
-            <span class="door-frame"><span class="door-leaf"><span class="door-ribs"></span><span class="door-plate">Speaking</span><span class="door-handle"></span><span class="door-keyhole"></span></span></span>
-            <span class="visually-hidden">Speaking</span>
-          </button>
-          <button class="door" type="button" data-door="awards" style="--door:#c56a32" aria-expanded="false">
-            <span class="door-frame"><span class="door-leaf"><span class="door-ribs"></span><span class="door-plate">Awards</span><span class="door-handle"></span><span class="door-keyhole"></span></span></span>
-            <span class="visually-hidden">Awards</span>
-          </button>
-          <button class="door" type="button" data-door="projects" style="--door:#3e6d6e" aria-expanded="false">
-            <span class="door-frame"><span class="door-leaf"><span class="door-ribs"></span><span class="door-plate">Projects</span><span class="door-handle"></span><span class="door-keyhole"></span></span></span>
-            <span class="visually-hidden">Projects</span>
-          </button>
+        <div class="door-row" data-doors>
+          <div class="door-cell">
+            <button class="door" type="button" data-door="inventing" style="--door:#1f3d7a" aria-expanded="false">
+              <span class="door-interior" aria-hidden="true">
+                <span class="interior-kicker"></span>
+                <span class="interior-title"></span>
+                <ul class="interior-list"></ul>
+              </span>
+              <span class="door-swing">
+                <span class="door-frame">
+                  <span class="door-leaf">
+                    <span class="door-ribs" aria-hidden="true"></span>
+                    <span class="door-plate">Fold-Out-Fit</span>
+                    <span class="door-handle" aria-hidden="true"></span>
+                    <span class="door-keyhole" aria-hidden="true"></span>
+                  </span>
+                </span>
+              </span>
+              <span class="visually-hidden">Fold-Out-Fit / Inventing</span>
+            </button>
+            <div class="door-panel" data-door-panel="inventing" hidden></div>
+          </div>
+          <div class="door-cell">
+            <button class="door" type="button" data-door="sales" style="--door:#5d5872" aria-expanded="false">
+              <span class="door-interior" aria-hidden="true">
+                <span class="interior-kicker"></span>
+                <span class="interior-title"></span>
+                <ul class="interior-list"></ul>
+              </span>
+              <span class="door-swing">
+                <span class="door-frame">
+                  <span class="door-leaf">
+                    <span class="door-ribs" aria-hidden="true"></span>
+                    <span class="door-plate">Sales</span>
+                    <span class="door-handle" aria-hidden="true"></span>
+                    <span class="door-keyhole" aria-hidden="true"></span>
+                  </span>
+                </span>
+              </span>
+              <span class="visually-hidden">Sales</span>
+            </button>
+            <div class="door-panel" data-door-panel="sales" hidden></div>
+          </div>
+          <div class="door-cell">
+            <button class="door" type="button" data-door="speaking" style="--door:#7a9a68" aria-expanded="false">
+              <span class="door-interior" aria-hidden="true">
+                <span class="interior-kicker"></span>
+                <span class="interior-title"></span>
+                <ul class="interior-list"></ul>
+              </span>
+              <span class="door-swing">
+                <span class="door-frame">
+                  <span class="door-leaf">
+                    <span class="door-ribs" aria-hidden="true"></span>
+                    <span class="door-plate">Speaking</span>
+                    <span class="door-handle" aria-hidden="true"></span>
+                    <span class="door-keyhole" aria-hidden="true"></span>
+                  </span>
+                </span>
+              </span>
+              <span class="visually-hidden">Speaking</span>
+            </button>
+            <div class="door-panel" data-door-panel="speaking" hidden></div>
+          </div>
+          <div class="door-cell">
+            <button class="door" type="button" data-door="awards" style="--door:#c56a32" aria-expanded="false">
+              <span class="door-interior" aria-hidden="true">
+                <span class="interior-kicker"></span>
+                <span class="interior-title"></span>
+                <ul class="interior-list"></ul>
+              </span>
+              <span class="door-swing">
+                <span class="door-frame">
+                  <span class="door-leaf">
+                    <span class="door-ribs" aria-hidden="true"></span>
+                    <span class="door-plate">Awards</span>
+                    <span class="door-handle" aria-hidden="true"></span>
+                    <span class="door-keyhole" aria-hidden="true"></span>
+                  </span>
+                </span>
+              </span>
+              <span class="visually-hidden">Awards</span>
+            </button>
+            <div class="door-panel" data-door-panel="awards" hidden></div>
+          </div>
+          <div class="door-cell">
+            <button class="door" type="button" data-door="projects" style="--door:#3e6d6e" aria-expanded="false">
+              <span class="door-interior" aria-hidden="true">
+                <span class="interior-kicker"></span>
+                <span class="interior-title"></span>
+                <ul class="interior-list"></ul>
+              </span>
+              <span class="door-swing">
+                <span class="door-frame">
+                  <span class="door-leaf">
+                    <span class="door-ribs" aria-hidden="true"></span>
+                    <span class="door-plate">Projects</span>
+                    <span class="door-handle" aria-hidden="true"></span>
+                    <span class="door-keyhole" aria-hidden="true"></span>
+                  </span>
+                </span>
+              </span>
+              <span class="visually-hidden">Projects</span>
+            </button>
+            <div class="door-panel" data-door-panel="projects" hidden></div>
+          </div>
         </div>
-        <div class="door-copy">
-          <h3 data-detail-title>Fold-Out-Fit</h3>
-          <p class="detail-kicker" data-detail-kicker>Product, patent pending</p>
-          <ul class="check-list" data-detail-list></ul>
-        </div>
-        <button class="enter-tip" type="button" data-enter>Click to enter</button>
-        <button class="carousel-btn next" type="button" aria-label="Next door">›</button>
-      </div>
 
-      <div class="door-row" data-door-row aria-label="All areas">
-        <!-- populated as clones of the same five doors for the side-by-side row -->
+        <div class="door-preview" data-door-preview hidden></div>
       </div>
     </section>
 
     <section class="room story-section" id="story">
-      <canvas class="dust" aria-hidden="true"></canvas>
       <div class="story-glow" aria-hidden="true"></div>
       <div class="story-grid">
         <div class="story-sticky">
@@ -130,21 +198,17 @@
           <h2>Let’s go back in time.</h2>
           <p class="story-year" data-story-year>2026</p>
           <p class="story-range" data-story-range>Feb 2026 — Present</p>
-          <p class="story-count">
-            <span class="clock-icon" aria-hidden="true"></span>
-            <span data-story-index>01</span> / <span data-story-total>07</span>
-            <span class="story-progress" aria-hidden="true"><span class="story-progress-bar"></span></span>
-          </p>
+          <p class="story-count"><span data-story-index>01</span> / <span data-story-total>07</span></p>
         </div>
         <div class="story-entries">
-          <article class="entry is-active" data-year="2026" data-range="Feb 2026 — Present">
+          <article class="entry" data-year="2026" data-range="Feb 2026 — Present">
             <p class="entry-dates">Feb 2026 — Present</p>
             <h3>Sales &amp; Technical Lead</h3>
             <p class="entry-org">Pridefit · Part-time · Remote</p>
             <ul>
-              <li>Lead generation, outreach, pipeline, and closing — including 8,000+ members added and a 25% close rate across 1,000+ clients</li>
-              <li>Configure CRM and sales systems, and code apps, websites, and internal tools (3 apps and websites supporting the sales team)</li>
-              <li>Data analytics and KPIs, plus executive assistant duties</li>
+              <li>Lead generation, outreach, pipeline, and closing: 8,000+ members added and a 25% close rate across 1,000+ clients</li>
+              <li>Configure CRM and sales systems, and code 3 apps and websites for the sales team</li>
+              <li>Data analytics, KPIs, and executive assistant duties</li>
             </ul>
           </article>
           <article class="entry" data-year="2026" data-range="Jan 2026 — Present">
@@ -152,9 +216,9 @@
             <h3>Founder, Fold-Out-Fit</h3>
             <p class="entry-org">Patent pending · U.S. provisional application 64/189,208</p>
             <ul>
-              <li>A carry bag, about 16 by 11.5 inches, that unfolds into three shelves and hangs from a stall-door hook</li>
-              <li>Prototype built, manufacturers sourced at a unit cost of about $7–8, waitlist at foldoutfit.com</li>
-              <li>1st Place and $3,500, Husky Dog Pound; 35K+ Fold-Out-Fit content views</li>
+              <li>Carry bag, about 16 by 11.5 inches, that unfolds into three shelves and hangs from a stall-door hook</li>
+              <li>Prototype built; manufacturers sourced at about $7–8 a unit; waitlist at foldoutfit.com</li>
+              <li>1st Place and $3,500, Husky Dog Pound; 35K+ content views</li>
             </ul>
           </article>
           <article class="entry" data-year="2026" data-range="2026">
@@ -163,7 +227,8 @@
             <p class="entry-org">Sales competitions, forensics, and campus speaking</p>
             <ul>
               <li>1st of 65, Quick Pitch Sales Challenge, Susquehanna University, October 2026 ($500, Fastenal-sponsored)</li>
-              <li>1st Place, Nest Sales Summit, Saint Joseph’s University, April 2026; 1st Place, PA FBLA Foundations of Selling</li>
+              <li>1st Place, Nest Sales Summit, Saint Joseph’s University, April 2026</li>
+              <li>1st Place, PA FBLA Foundations of Selling</li>
               <li>“Money 101: The Financial Playbook Every College Student Needs,” 2026 PASSHE Summit, Kutztown University, October 28, 2026</li>
             </ul>
           </article>
@@ -172,8 +237,8 @@
             <h3>Sales Manager</h3>
             <p class="entry-org">Matt and Roxana Zoppetti</p>
             <ul>
-              <li>Lead 60+ closes for Best Student Housing through 20+ property tours and prospective-resident outreach; distributed 10,000+ flyers</li>
-              <li>Revamped Best Student Housing Instagram layout and created a 4-week social media content schedule for La Malbec</li>
+              <li>60+ closes for Best Student Housing from 20+ property tours and outreach; 10,000+ flyers distributed</li>
+              <li>Revamped the Best Student Housing Instagram layout and built a 4-week content schedule for La Malbec</li>
             </ul>
           </article>
           <article class="entry" data-year="2025" data-range="Jan 2025 — Apr 2025">
@@ -181,9 +246,10 @@
             <h3>Leadership, organizing &amp; campus work</h3>
             <p class="entry-org">Sunrise Movement, honor societies, and Project 26</p>
             <ul>
-              <li>Logistics Coordinator, Sunrise Movement (Jan 2025–Present): climate advocacy rallies and workshops for 100+ people; coordinated with Bloomsburg Police on safety</li>
+              <li>Logistics Coordinator, Sunrise Movement (Jan 2025–Present): rallies and workshops for 100+ people; coordinated safety with Bloomsburg Police</li>
               <li>Member, Pi Sigma Epsilon and the National Society of Leadership and Success (Jan 2025–Present)</li>
-              <li>Completed the Bent Leadership Bootcamp and leadership certification (April 2025). Honor societies in 2025: Sigma Alpha Pi (NSLS), Pi Sigma Epsilon, and Pi Kappa Delta</li>
+              <li>Bent Leadership Bootcamp and leadership certification, April 2025</li>
+              <li>Honor societies, 2025: Sigma Alpha Pi (NSLS), Pi Sigma Epsilon, and Pi Kappa Delta</li>
               <li>“Unleash Your Uniqueness: Standing Out in a Sea of Sameness,” PASSHE Summit 2025 (October 29–30)</li>
               <li>Keystone Sales Challenge 2025 (Sherwin-Williams) semifinalist, 2nd in room</li>
             </ul>
@@ -193,10 +259,10 @@
             <h3>Commonwealth University–Bloomsburg</h3>
             <p class="entry-org">Bachelor’s in Biomedical Science and Political Science · Pre-Law concentration · Class of 2028</p>
             <ul>
-              <li>Minors in Professional Sales and Black Studies. Started July 2024.</li>
-              <li>Fellow, Project 26 (Sep 2024–Apr 2025): canvassed and registered 200+ voters; outreach strategy for first-time and youth voters</li>
+              <li>Minors in Professional Sales and Black Studies; started July 2024</li>
+              <li>Project 26 Fellow (Sep 2024–Apr 2025): canvassed and registered 200+ voters, with outreach for first-time and youth voters</li>
               <li>CGA Senator (Sep 2024–Present); Outstanding Senator, Fall 2024 (Dr. John J. Trathen student leadership scholarship)</li>
-              <li>The Voice: writer (Sep–Dec 2024), then HOWL Editor (Dec 2024–Present), leading 8 writers, with the section reaching 8,000+ students and 27 articles</li>
+              <li>The Voice: writer (Sep–Dec 2024), then HOWL Editor (Dec 2024–Present), leading 8 writers; the section reached 8,000+ students and 27 articles</li>
               <li>Bloomsburg Forensics Team, PRSSA, Cru, FBLA, ZIPD, and POSSA (member Sep–Dec 2024; Secretary from Dec 2024)</li>
             </ul>
           </article>
@@ -205,7 +271,7 @@
             <h3>Fundraising Volunteer</h3>
             <p class="entry-org">American Red Cross · Member from August 2024</p>
             <ul>
-              <li>Supports fundraising through posts and event donations, and participates in blood donation</li>
+              <li>Fundraising through posts and event donations; participates in blood donation</li>
             </ul>
           </article>
           <article class="entry" data-year="2019" data-range="2019 — Present">
@@ -213,7 +279,7 @@
             <h3>Jack &amp; Jill of America</h3>
             <p class="entry-org">Chester County Chapter</p>
             <ul>
-              <li>Involvement includes Gavel Club, the Executive Board, and speaking competitions</li>
+              <li>Gavel Club, the Executive Board, and speaking competitions</li>
             </ul>
           </article>
           <article class="entry" data-year="2018" data-range="May 2018 — Sep 2018">
@@ -236,20 +302,91 @@
     <section class="connect-section" id="connect">
       <div class="connect-card">
         <p class="kicker light"><span class="kicker-dot green" aria-hidden="true"></span> Available for new conversations</p>
-        <h2><span class="line-white">Got a project?</span><span class="line-grey">Let’s build it together.</span></h2>
+        <h2>Got a project?<br>Let’s build it together.</h2>
         <p class="connect-lead">Recruiting for biomedical or technical sales, or want to talk about <span class="nowrap">Fold-Out-Fit</span>? I’d love to hear from you.</p>
         <div class="hero-actions">
-          <a class="btn btn-light" href="/contact/">Let’s connect <span class="btn-orb" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12M13 6l6 6-6 6"/></svg></span></a>
-          <a class="btn btn-ghost-pill" href="mailto:wtdaisey@gmail.com">Email Warren</a>
-          <a class="btn btn-ghost-pill" href="https://www.linkedin.com/in/warren-daisey" rel="noopener noreferrer" target="_blank">LinkedIn</a>
+          <a class="btn btn-solid" href="/contact/">Let’s connect <span class="btn-arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="mailto:wtdaisey@gmail.com">Email Warren</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/warren-daisey" rel="noopener noreferrer" target="_blank">LinkedIn</a>
         </div>
       </div>
     </section>
-  </main>
 
-  <div class="zoom-layer" data-zoom hidden aria-hidden="true">
-    <div class="zoom-door" aria-hidden="true"></div>
-  </div>
+    <section class="projects-section" id="projects">
+      <div class="projects-intro">
+        <h2>Projects</h2>
+        <p>A patent-pending product, an AI sales-coaching demo, and the tools I build for sales teams.</p>
+      </div>
+
+      <article class="project-card">
+        <div class="project-copy">
+          <p class="project-tag">Product · Jan 2026 — Present</p>
+          <h3>Fold-Out-Fit</h3>
+          <p>A carry bag, about 16 by 11.5 inches, that unfolds into three shelves for clothes and hangs from a stall-door hook. A prototype has been built, investor materials prepared, and manufacturers sourced at a unit cost of about $7–8.</p>
+          <ul class="chips">
+            <li>Patent pending 64/189,208</li>
+            <li>35K+ content views</li>
+            <li>1st Place, Husky Dog Pound</li>
+          </ul>
+          <a class="btn btn-solid" href="https://foldoutfit.com" rel="noopener noreferrer" target="_blank">Visit foldoutfit.com <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen">
+            <img src="assets/foldoutfit-screen.jpg" width="1280" height="800" alt="The Fold-Out-Fit website, with the headline “Your clean closet, anywhere” and a photo of the bag hanging from a stall hook.">
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">foldoutfit.com on a desktop display</figcaption>
+        </figure>
+      </article>
+
+      <article class="project-card reverse">
+        <div class="project-copy">
+          <p class="project-tag">AI sales coaching</p>
+          <h3>Morgan AI Sales Manager</h3>
+          <p>A demo of two AI sales coaches working together. Quinn reviews reps’ recorded calls and outbound emails; Morgan turns those reviews into coaching, current issues, and trainings for sales managers.</p>
+          <ul class="chips">
+            <li>Interactive demo</li>
+            <li>warrendaisey.info</li>
+          </ul>
+          <a class="btn btn-solid" href="https://warrendaisey.info" rel="noopener noreferrer" target="_blank">Try the demo <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen">
+            <img src="assets/morgan-screen.jpg" width="1280" height="800" alt="The Morgan AI Sales Manager demo, showing a sales-manager workspace with coaching, current issues, trainings, and chat.">
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">warrendaisey.info on a desktop display</figcaption>
+        </figure>
+      </article>
+
+      <article class="project-card">
+        <div class="project-copy">
+          <p class="project-tag">Feb 2026 — Present</p>
+          <h3>Sales tools at Pridefit</h3>
+          <p>Configured CRM and sales systems and coded 3 apps and websites that support the sales team, alongside running the pipeline from prospecting to close.</p>
+          <ul class="chips">
+            <li>Sales &amp; Technical Lead</li>
+            <li>Remote</li>
+          </ul>
+          <a class="btn btn-ghost" href="/projects/">More on projects <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen typographic">
+            <p class="mon-kicker">Pridefit</p>
+            <p class="mon-title">Sales tools</p>
+            <p class="mon-body">CRM configuration, three apps and websites, and the pipeline from prospecting to close.</p>
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">A typographic card for the Pridefit sales tools, which do not have a public product screenshot</figcaption>
+        </figure>
+      </article>
+
+      <p class="projects-foot"><a class="btn btn-ghost" href="#doors">← Back to the doors</a> <a class="btn btn-ghost" href="/projects/">All projects on the main site</a></p>
+    </section>
+  </main>
 
   <section class="door-page" data-door-page hidden>
     <div class="door-page-inner">
@@ -276,6 +413,7 @@
       "title": "Fold-Out-Fit",
       "plate": "Fold-Out-Fit",
       "color": "#1f3d7a",
+      "href": "/projects/",
       "intro": "A carry bag that unfolds into hanging shelves, now on a public waitlist.",
       "items": [
         "A carry bag that unfolds into three hanging shelves — hook it on a stall-door hook",
@@ -302,6 +440,7 @@
       "title": "Sales",
       "plate": "Sales",
       "color": "#5d5872",
+      "href": "/resume/",
       "intro": "Sales and technical work at Pridefit, plus the competitions and pipeline roles already on the record.",
       "items": [
         "Sales & Technical Lead at Pridefit (Feb 2026–Present): outreach, pipeline, systems, and analytics",
@@ -327,6 +466,7 @@
       "title": "Speaking",
       "plate": "Speaking",
       "color": "#7a9a68",
+      "href": "/speaking/",
       "intro": "Workshops, panels, posters, and pitches — every talk collected from the site and LinkedIn.",
       "items": [
         "“Money 101: The Financial Playbook Every College Student Needs,” 2026 PASSHE Summit, Kutztown University",
@@ -352,6 +492,7 @@
       "title": "Awards",
       "plate": "Awards",
       "color": "#c56a32",
+      "href": "/awards/",
       "intro": "Selected wins from sales competitions, forensics, and campus leadership. The full list lives on the awards page.",
       "items": [
         "1st of 65, Quick Pitch Sales Challenge ($500); 1st Place and $3,500, Husky Dog Pound; 1st Place, Nest Sales Summit",
@@ -377,6 +518,7 @@
       "title": "Projects",
       "plate": "Projects",
       "color": "#3e6d6e",
+      "href": "#projects",
       "intro": "A patent-pending product, an AI sales-coaching demo, and the tools I build for sales teams.",
       "items": [
         "Fold-Out-Fit, patent-pending product with a live waitlist at foldoutfit.com",
@@ -422,6 +564,7 @@
     }
   }
   </script>
+
   <script src="main.js"></script>
 </body>
 </html>
