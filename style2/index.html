@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Gallery of Accomplishments | Warren Daisey</title>
+  <meta name="description" content="A walk-through gallery of Warren Daisey’s events, presentations, inventions, awards, and projects.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#flat-gallery">Skip to gallery content</a>
+
+  <header class="topbar">
+    <a class="wordmark" href="#entrance">Warren <span>Daisey</span></a>
+    <nav class="tabs" aria-label="Gallery sections">
+      <button type="button" data-go="entrance">Entrance</button>
+      <button type="button" data-go="events">Events</button>
+      <button type="button" data-go="presenting">Presenting</button>
+      <button type="button" data-go="inventions">Inventions</button>
+      <button type="button" data-go="awards">Awards</button>
+      <button type="button" data-go="projects">Projects</button>
+      <button type="button" data-go="story">Story</button>
+      <button type="button" data-go="contact">Contact</button>
+    </nav>
+    <a class="home-link" href="/">Main site</a>
+  </header>
+
+  <div id="stage">
+    <div class="vignette" aria-hidden="true"></div>
+    <div id="world"></div>
+    <p class="scroll-hint" id="scroll-hint">Scroll to walk forward</p>
+  </div>
+  <div id="scroll-track" aria-hidden="true"></div>
+
+  <main id="flat-gallery" class="flat" hidden>
+    <header class="flat-intro">
+      <p class="kicker">A gallery of accomplishments</p>
+      <h1>Warren Daisey</h1>
+      <p>A student at Commonwealth University–Bloomsburg — events, presentations, inventions, awards, and projects, gathered like a museum walk.</p>
+    </header>
+  </main>
+
+  <dialog id="lightbox" aria-labelledby="lb-title">
+    <div class="lb-inner">
+      <button type="button" class="lb-close" aria-label="Close">&times;</button>
+      <div class="lb-visual" id="lb-visual"></div>
+      <div class="lb-meta">
+        <p class="lb-kicker" id="lb-kicker"></p>
+        <h2 id="lb-title"></h2>
+        <p class="lb-place" id="lb-place"></p>
+        <p class="lb-desc" id="lb-desc"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="gallery.js" defer></script>
+</body>
+</html>
