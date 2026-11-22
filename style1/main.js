@@ -5,7 +5,26 @@
   const doorData = (() => {
     const el = document.getElementById("door-data");
     try { return JSON.parse(el.textContent); } catch { return {}; }
-  })();
+  
+  /* Header inverts over dark rooms so the thin bar matches the reel */
+  const header = document.querySelector(".site-header");
+  const darkZones = [...document.querySelectorAll(".room, .connect-section")];
+  const syncHeader = () => {
+    if (!header) return;
+    const y = header.getBoundingClientRect().bottom + 12;
+    const overPage = page && !page.hidden;
+    const over = overPage || darkZones.some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top < y && r.bottom > 0;
+    });
+    header.classList.toggle("is-over-dark", over);
+  };
+  window.addEventListener("scroll", syncHeader, { passive: true });
+  window.addEventListener("resize", syncHeader);
+  syncHeader();
+  window.syncHeader = syncHeader;
+
+})();
 
   /* Theme + pull bounce */
   const pull = document.querySelector(".theme-pull");
@@ -64,7 +83,7 @@
   const rings = document.querySelector(".notepad-rings");
   if (rings) {
     rings.innerHTML = "";
-    for (let i = 0; i < 9; i++) rings.appendChild(document.createElement("span"));
+    for (let i = 0; i < 11; i++) rings.appendChild(document.createElement("span"));
   }
   const roleEl = document.querySelector(".role-text");
   const indexEl = document.querySelector(".role-index");
@@ -218,7 +237,7 @@
     if (withMotion) host.style.transition = "transform 1.05s cubic-bezier(.4,0,.2,1), opacity .4s ease";
     const hr = handle.getBoundingClientRect();
     const wr = host.getBoundingClientRect();
-    const hx = hr.left + hr.width * 0.12;
+    const hx = hr.left + hr.width * 0.82;
     const hy = hr.top + hr.height / 2;
     const ox = hx - wr.left;
     const oy = hy - wr.top;
@@ -264,6 +283,7 @@
       page.scrollTop = 0;
       document.querySelectorAll(".site-nav a[aria-current]").forEach((a) => a.removeAttribute("aria-current"));
       document.querySelector(`.site-nav a[data-open-door="${key}"]`)?.setAttribute("aria-current", "page");
+      window.syncHeader?.();
     };
     if (reduce) { finish(); return; }
     paint(zoomDoor);
@@ -284,6 +304,7 @@
     page.hidden = true;
     document.querySelectorAll(".site-nav a[aria-current]").forEach((a) => a.removeAttribute("aria-current"));
     document.getElementById("doors")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    window.syncHeader?.();
   });
   document.querySelectorAll("[data-open-door]").forEach((a) => {
     a.addEventListener("click", (e) => {
@@ -412,4 +433,23 @@
     }, { rootMargin: "-40% 0px -50% 0px", threshold: 0 });
     sections.forEach((s) => sio.observe(s));
   }
+
+  /* Header inverts over dark rooms so the thin bar matches the reel */
+  const header = document.querySelector(".site-header");
+  const darkZones = [...document.querySelectorAll(".room, .connect-section")];
+  const syncHeader = () => {
+    if (!header) return;
+    const y = header.getBoundingClientRect().bottom + 12;
+    const overPage = page && !page.hidden;
+    const over = overPage || darkZones.some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.top < y && r.bottom > 0;
+    });
+    header.classList.toggle("is-over-dark", over);
+  };
+  window.addEventListener("scroll", syncHeader, { passive: true });
+  window.addEventListener("resize", syncHeader);
+  syncHeader();
+  window.syncHeader = syncHeader;
+
 })();
