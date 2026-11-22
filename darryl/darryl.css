@@ -1,0 +1,97 @@
+/* Darryl tribute — uses the site's type and color, with a quieter archival tone. */
+.darryl-sub{background:var(--blush);border-bottom:2px solid var(--navy)}
+.darryl-sub .wrap{display:flex;flex-wrap:wrap;gap:.45rem .7rem;padding:.7rem 0}
+.darryl-sub a{font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:700;text-decoration:none;color:var(--navy);background:#fff;border:2px solid var(--navy);border-radius:999px;padding:.45rem .8rem}
+.darryl-sub a:hover,.darryl-sub a[aria-current="page"]{background:var(--sun)}
+
+.darryl-hero .hero-inner{grid-template-columns:1.15fr .85fr;align-items:center}
+.darryl-hero .portrait-frame{justify-self:center;width:min(22rem,100%);background:#fff;padding:.7rem .7rem .55rem;border:2px solid var(--navy);box-shadow:8px 8px 0 var(--sun);transform:rotate(-1.5deg)}
+.darryl-hero .portrait-frame img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:50% 20%}
+.darryl-hero .portrait-frame figcaption{font-family:var(--script);font-size:1.45rem;color:var(--navy);text-align:center;padding-top:.25rem}
+
+.fact-band{background:var(--sun);border-block:2px solid var(--navy);padding:2.2rem 0}
+.fact-card{background:#fff;border:2px solid var(--navy);border-radius:var(--r);padding:1.4rem 1.5rem 1.3rem;box-shadow:7px 7px 0 var(--navy)}
+.fact-card h2{font-size:clamp(1.7rem,3vw,2.3rem);margin:.2rem 0 .6rem}
+.fact-card .fact-body{font-size:1.08rem}
+.fact-where{margin-top:.8rem;color:var(--navy);font-size:.98rem}
+.fact-where a{font-weight:700}
+.fact-note{margin-top:.7rem;font-family:var(--label);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+
+.story p+p{margin-top:1rem}
+.story h2{margin-top:.2rem}
+.story h3{margin:1.6rem 0 .4rem;font-size:1.7rem}
+.cite-sup{font-size:.72em;line-height:0}
+.cite-sup a{text-decoration:none;font-weight:700;color:var(--coral-dk)}
+
+.photo-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;margin:1.4rem 0}
+.photo-grid.three{grid-template-columns:repeat(3,1fr)}
+.photo-grid.pair{grid-template-columns:1fr 1fr}
+.shot{margin:0;background:#fff;border:2px solid var(--navy);border-radius:14px;overflow:hidden;box-shadow:5px 5px 0 var(--line)}
+.shot img{display:block;width:100%;height:auto;max-height:460px;object-fit:cover;background:#efe7da;cursor:zoom-in}
+.shot figcaption{padding:.65rem .8rem .8rem;font-size:.86rem;color:var(--muted);line-height:1.4}
+.shot.tall img{max-height:560px;object-position:50% 20%}
+
+.life-list{position:relative;margin:1rem 0 0;padding-left:1.6rem}
+.life-list::before{content:"";position:absolute;left:.35rem;top:.4rem;bottom:.4rem;width:3px;background:linear-gradient(var(--coral),var(--sun),var(--teal),var(--violet));border-radius:3px}
+.life-list li{position:relative;display:grid;grid-template-columns:7.2rem 1fr;gap:.6rem 1rem;padding:.85rem 0;border-bottom:1px dashed var(--line)}
+.life-list li::before{content:"";position:absolute;left:-1.55rem;top:1.15rem;width:.85rem;height:.85rem;border-radius:50%;background:var(--sun);border:3px solid var(--navy)}
+.life-list time{font-family:var(--label);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--navy);padding-top:.2rem}
+
+.pull{margin:1.3rem 0;padding:1rem 1.2rem;border-left:6px solid var(--coral);background:var(--blush);font-family:var(--serif);font-size:1.45rem;line-height:1.35;color:var(--navy)}
+.honor-table{width:100%;border-collapse:collapse;margin-top:1rem;background:#fff;border:2px solid var(--navy)}
+.honor-table th,.honor-table td{text-align:left;padding:.7rem .8rem;border-bottom:1px solid var(--line);vertical-align:top}
+.honor-table th{font-family:var(--label);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.honor-table tr:last-child td{border-bottom:0}
+.self{font-size:.82rem;font-weight:700;color:#7a4b00}
+
+.santa-band{background:var(--navy);color:#fff}
+.santa-band h2,.santa-band h3{color:#fff}
+.santa-band h2 em{color:var(--sun)}
+.santa-band .kicker{color:var(--sun)}
+.santa-band .shot{box-shadow:none}
+.santa-band p{color:rgba(255,255,255,.9)}
+
+.ask{background:linear-gradient(180deg,var(--cream),#fff)}
+.ask-layout{display:grid;grid-template-columns:1fr;gap:1rem}
+.chat-shell{background:#fff;border:2px solid var(--navy);border-radius:22px;box-shadow:8px 8px 0 var(--coral);display:flex;flex-direction:column;min-height:28rem;overflow:hidden}
+.chat-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1rem;border-bottom:2px solid var(--navy);background:var(--blush)}
+.suggestions{display:flex;flex-wrap:wrap;gap:.45rem;padding:.8rem 1rem 0}
+.suggestions button,.text-btn{font-family:var(--label);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:.45rem .75rem;cursor:pointer}
+.suggestions button:hover,.text-btn:hover{background:var(--sun)}
+.text-btn{background:transparent}
+.log{flex:1;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem;max-height:28rem}
+.bubble{max-width:42rem;padding:.8rem 1rem;border-radius:16px;line-height:1.5}
+.bubble.user{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:4px}
+.bubble.guide{align-self:flex-start;background:var(--cream);border:2px solid var(--navy);border-bottom-left-radius:4px}
+.bubble .who{font-family:var(--label);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:.25rem}
+.bubble.user .who{color:var(--sun)}
+.bubble.guide .who{color:var(--coral-dk)}
+.bubble .refs{margin-top:.55rem;font-size:.88rem}
+.bubble .refs a{font-weight:700}
+.composer{display:grid;grid-template-columns:1fr auto;gap:.6rem;padding:.8rem 1rem 1rem;border-top:2px solid var(--navy)}
+.composer textarea{font:inherit;border:2px solid var(--navy);border-radius:14px;padding:.7rem .8rem;resize:vertical;min-height:3.2rem;background:var(--cream)}
+.composer button.send{font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-weight:700;background:var(--coral);color:var(--navy);border:2px solid var(--navy);border-radius:999px;padding:.7rem 1.1rem;cursor:pointer}
+.composer button.send:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--navy)}
+.composer-note{grid-column:1/-1;font-size:.86rem;color:var(--muted)}
+
+.source-list{display:flex;flex-direction:column;gap:1rem}
+.source-list li{background:#fff;border:2px solid var(--navy);border-radius:var(--r);padding:1.1rem 1.2rem;scroll-margin-top:5.5rem}
+.source-list h2{font-size:1.35rem;margin:.15rem 0 .35rem}
+.src-num{font-family:var(--label);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--coral-dk)}
+.src-meta{color:var(--muted);font-weight:600}
+.used{margin-top:.45rem;font-size:.88rem;color:var(--muted)}
+.sources-sec{padding:2.5rem 0 4rem;background:var(--cream)}
+
+#lightbox{border:0;padding:0;background:transparent;max-width:min(960px,94vw)}
+#lightbox::backdrop{background:rgba(19,33,60,.82)}
+#lightbox img{display:block;width:100%;height:auto;border:2px solid #fff;border-radius:8px}
+#lightbox button{margin-top:.6rem;font-family:var(--label);text-transform:uppercase;letter-spacing:.12em;font-weight:700;background:var(--sun);color:var(--navy);border:2px solid #fff;border-radius:999px;padding:.55rem 1rem;cursor:pointer}
+
+@media (max-width:820px){
+  .darryl-hero .hero-inner,.photo-grid,.photo-grid.three,.photo-grid.pair{grid-template-columns:1fr}
+  .life-list li{grid-template-columns:1fr;gap:.15rem}
+  .darryl-hero .portrait-frame{transform:none;margin-top:1.5rem}
+  .shot img{max-height:320px}
+  .log{max-height:22rem}
+  .honor-table{display:block;overflow-x:auto}
+}
