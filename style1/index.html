@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Warren Daisey — Style 1</title>
+  <meta name="description" content="Warren Daisey is an award-winning Biomedical Science and Political Science student at Commonwealth University–Bloomsburg, pursuing a career in biomedical sales.">
+  <meta name="theme-color" content="#f3eee6">
+  <link rel="icon" href="assets/warren-avatar.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#top">Warren Daisey</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary">
+        <ul>
+          <li><a href="/">Main site</a></li>
+          <li><a href="#top" aria-current="page">Home</a></li>
+          <li><a href="#doors">Work</a></li>
+          <li><a href="#story">My story</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#connect">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-meta">
+        <p class="local-time"><span class="meta-label">Local time</span> <time id="local-time" datetime="">—</time></p>
+        <p class="local-date" id="local-date"></p>
+      </div>
+    </div>
+  </header>
+
+  <button class="theme-pull" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Toggle light and dark">
+    <span class="theme-cord" aria-hidden="true"></span>
+    <span class="theme-knob" aria-hidden="true"></span>
+  </button>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span> Award-winning student</p>
+          <h1>
+            <span class="hero-hi">Hi, I’m Warren.</span>
+            <span class="hero-am">I am a</span>
+          </h1>
+          <div class="role-board" aria-live="polite">
+            <div class="role-spiral" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="role-text" data-roles='["Founder of Fold-Out-Fit","Inventor","Sales &amp; Technical Lead","Speaker","Student"]'>Founder of Fold-Out-Fit</p>
+            <p class="role-count"><span class="role-index">01</span> / 05</p>
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-solid" href="#connect">Start a project <span class="btn-arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="#doors">See my work</a>
+          </div>
+        </div>
+        <div class="hero-portrait">
+          <img src="assets/warren-cutout.png" width="779" height="771" alt="Warren Daisey, smiling, wearing a dark suit, blue shirt, and dotted tie.">
+        </div>
+      </div>
+      <div class="hero-bar">
+        <p>Open to sales opportunities</p>
+        <p>Bloomsburg, Pennsylvania</p>
+        <p>Commonwealth University–Bloomsburg</p>
+      </div>
+    </section>
+
+    <section class="room doors-section" id="doors">
+      <div class="room-inner">
+        <h2 class="room-title">Magic happens behind the doors</h2>
+        <p class="room-lead">Open a door to see a side of the work — inventing, sales, speaking, awards, and projects — each drawn from the record, not a pitch deck.</p>
+
+        <div class="door-row" data-doors>
+          <button class="door" type="button" data-door="inventing" style="--door:#23437a" aria-expanded="false">
+            <span class="door-leaf">
+              <span class="door-ribs" aria-hidden="true"></span>
+              <span class="door-plate">Fold-Out-Fit</span>
+              <span class="door-handle" aria-hidden="true"></span>
+            </span>
+            <span class="visually-hidden">Open Fold-Out-Fit / Inventing</span>
+          </button>
+          <button class="door" type="button" data-door="sales" style="--door:#5d5872" aria-expanded="false">
+            <span class="door-leaf">
+              <span class="door-ribs" aria-hidden="true"></span>
+              <span class="door-plate">Sales</span>
+              <span class="door-handle" aria-hidden="true"></span>
+            </span>
+            <span class="visually-hidden">Open Sales</span>
+          </button>
+          <button class="door" type="button" data-door="speaking" style="--door:#6f8c5e" aria-expanded="false">
+            <span class="door-leaf">
+              <span class="door-ribs" aria-hidden="true"></span>
+              <span class="door-plate">Speaking</span>
+              <span class="door-handle" aria-hidden="true"></span>
+            </span>
+            <span class="visually-hidden">Open Speaking</span>
+          </button>
+          <button class="door" type="button" data-door="awards" style="--door:#c56a32" aria-expanded="false">
+            <span class="door-leaf">
+              <span class="door-ribs" aria-hidden="true"></span>
+              <span class="door-plate">Awards</span>
+              <span class="door-handle" aria-hidden="true"></span>
+            </span>
+            <span class="visually-hidden">Open Awards</span>
+          </button>
+          <button class="door" type="button" data-door="projects" style="--door:#3e6d6e" aria-expanded="false">
+            <span class="door-leaf">
+              <span class="door-ribs" aria-hidden="true"></span>
+              <span class="door-plate">Projects</span>
+              <span class="door-handle" aria-hidden="true"></span>
+            </span>
+            <span class="visually-hidden">Open Projects</span>
+          </button>
+        </div>
+
+        <div class="door-detail" data-door-detail hidden>
+          <div class="door-detail-stage">
+            <div class="door-detail-door" data-detail-door aria-hidden="true"></div>
+            <div class="door-detail-copy">
+              <p class="detail-kicker" data-detail-kicker></p>
+              <h3 data-detail-title></h3>
+              <ul data-detail-list></ul>
+              <div class="detail-actions">
+                <a class="btn btn-solid" data-detail-link href="#">Visit page <span class="btn-arrow" aria-hidden="true">→</span></a>
+                <button class="btn btn-ghost door-back" type="button">Back to the doors</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="room story-section" id="story">
+      <div class="story-glow" aria-hidden="true"></div>
+      <div class="story-grid">
+        <div class="story-sticky">
+          <p class="kicker light"><span class="kicker-dot" aria-hidden="true"></span> My story</p>
+          <h2>Let’s go back in time.</h2>
+          <p class="story-year" data-story-year>2026</p>
+          <p class="story-range" data-story-range>Feb 2026 — Present</p>
+          <p class="story-count"><span data-story-index>01</span> / <span data-story-total>06</span></p>
+        </div>
+        <div class="story-entries">
+          <article class="entry" data-year="2026" data-range="Feb 2026 — Present">
+            <p class="entry-dates">Feb 2026 — Present</p>
+            <h3>Sales &amp; Technical Lead</h3>
+            <p class="entry-org">Pridefit · Part-time · Remote</p>
+            <ul>
+              <li>Lead generation, outreach, pipeline, and closing — including 8,000+ members added and a 25% close rate across 1,000+ clients</li>
+              <li>Configure CRM and sales systems, and code apps, websites, and internal tools (3 apps and websites supporting the sales team)</li>
+              <li>Data analytics and KPIs, plus executive assistant duties</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2026" data-range="Jan 2026 — Present">
+            <p class="entry-dates">Jan 2026 — Present</p>
+            <h3>Founder, Fold-Out-Fit</h3>
+            <p class="entry-org">Patent pending · U.S. provisional application 64/189,208</p>
+            <ul>
+              <li>A carry bag, about 16 by 11.5 inches, that unfolds into three shelves and hangs from a stall-door hook</li>
+              <li>Prototype built, manufacturers sourced at a unit cost of about $7–8, waitlist at foldoutfit.com</li>
+              <li>1st Place and $3,500, Husky Dog Pound; 35K+ Fold-Out-Fit content views</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2026" data-range="2026">
+            <p class="entry-dates">2026</p>
+            <h3>Selected honors &amp; talks</h3>
+            <p class="entry-org">Sales competitions, forensics, and campus speaking</p>
+            <ul>
+              <li>1st of 65, Quick Pitch Sales Challenge, Susquehanna University, October 2026 ($500, Fastenal-sponsored)</li>
+              <li>1st Place, Nest Sales Summit, Saint Joseph’s University, April 2026; 1st Place, PA FBLA Foundations of Selling</li>
+              <li>“Money 101: The Financial Playbook Every College Student Needs,” 2026 PASSHE Summit, Kutztown University, October 28, 2026</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2025" data-range="Dec 2025 — Present">
+            <p class="entry-dates">Dec 2025 — Present</p>
+            <h3>Sales Manager</h3>
+            <p class="entry-org">Matt and Roxana Zoppetti</p>
+            <ul>
+              <li>Lead 60+ closes for Best Student Housing through 20+ property tours and prospective-resident outreach; distributed 10,000+ flyers</li>
+              <li>Revamped Best Student Housing Instagram layout and created a 4-week social media content schedule for La Malbec</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2025" data-range="Jan 2025 — Apr 2025">
+            <p class="entry-dates">2025</p>
+            <h3>Leadership, organizing &amp; campus work</h3>
+            <p class="entry-org">Sunrise Movement, honor societies, and Project 26</p>
+            <ul>
+              <li>Logistics Coordinator, Sunrise Movement (Jan 2025–Present): climate advocacy rallies and workshops for 100+ people; coordinated with Bloomsburg Police on safety</li>
+              <li>Member, Pi Sigma Epsilon and the National Society of Leadership and Success (Jan 2025–Present)</li>
+              <li>Completed the Bent Leadership Bootcamp and leadership certification (April 2025). Honor societies in 2025: Sigma Alpha Pi (NSLS), Pi Sigma Epsilon, and Pi Kappa Delta</li>
+              <li>“Unleash Your Uniqueness: Standing Out in a Sea of Sameness,” PASSHE Summit 2025 (October 29–30)</li>
+              <li>Keystone Sales Challenge 2025 (Sherwin-Williams) semifinalist, 2nd in room</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2024" data-range="Jul 2024 — Dec 2024">
+            <p class="entry-dates">Jul 2024 — 2028</p>
+            <h3>Commonwealth University–Bloomsburg</h3>
+            <p class="entry-org">Bachelor’s in Biomedical Science and Political Science · Pre-Law concentration · Class of 2028</p>
+            <ul>
+              <li>Minors in Professional Sales and Black Studies. Started July 2024.</li>
+              <li>Fellow, Project 26 (Sep 2024–Apr 2025): canvassed and registered 200+ voters; outreach strategy for first-time and youth voters</li>
+              <li>CGA Senator (Sep 2024–Present); Outstanding Senator, Fall 2024 (Dr. John J. Trathen student leadership scholarship)</li>
+              <li>The Voice: writer (Sep–Dec 2024), then HOWL Editor (Dec 2024–Present), leading 8 writers, with the section reaching 8,000+ students and 27 articles</li>
+              <li>Bloomsburg Forensics Team, PRSSA, Cru, FBLA, ZIPD, and POSSA (member Sep–Dec 2024; Secretary from Dec 2024)</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2022" data-range="Mar 2022 — Present">
+            <p class="entry-dates">Mar 2022 — Present</p>
+            <h3>Fundraising Volunteer</h3>
+            <p class="entry-org">American Red Cross · Member from August 2024</p>
+            <ul>
+              <li>Supports fundraising through posts and event donations, and participates in blood donation</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2019" data-range="2019 — Present">
+            <p class="entry-dates">2019 — Present</p>
+            <h3>Jack &amp; Jill of America</h3>
+            <p class="entry-org">Chester County Chapter</p>
+            <ul>
+              <li>Involvement includes Gavel Club, the Executive Board, and speaking competitions</li>
+            </ul>
+          </article>
+          <article class="entry" data-year="2018" data-range="May 2018 — Sep 2018">
+            <p class="entry-dates">May 2018 — Sep 2018</p>
+            <h3>Counselor</h3>
+            <p class="entry-org">Camp Invention</p>
+            <ul>
+              <li>Counselor for a STEAM program</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="connect-section" id="connect">
+      <div class="connect-card">
+        <p class="kicker light"><span class="kicker-dot green" aria-hidden="true"></span> Available for new conversations</p>
+        <h2>Got a project?<br>Let’s build it together.</h2>
+        <p class="connect-lead">Recruiting for biomedical or technical sales, or want to talk about <span class="nowrap">Fold-Out-Fit</span>? I’d love to hear from you.</p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="/contact/">Let’s connect <span class="btn-arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="mailto:wtdaisey@gmail.com">Email Warren</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/warren-daisey" rel="noopener noreferrer" target="_blank">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="projects-section" id="projects">
+      <div class="projects-intro">
+        <h2>Projects</h2>
+        <p>A patent-pending product, an AI sales-coaching demo, and the tools I build for sales teams.</p>
+      </div>
+
+      <article class="project-card">
+        <div class="project-copy">
+          <p class="project-tag">Product · Jan 2026 — Present</p>
+          <h3>Fold-Out-Fit</h3>
+          <p>A carry bag, about 16 by 11.5 inches, that unfolds into three shelves for clothes and hangs from a stall-door hook. A prototype has been built, investor materials prepared, and manufacturers sourced at a unit cost of about $7–8.</p>
+          <ul class="chips">
+            <li>Patent pending 64/189,208</li>
+            <li>35K+ content views</li>
+            <li>1st Place, Husky Dog Pound</li>
+          </ul>
+          <a class="btn btn-solid" href="https://foldoutfit.com" rel="noopener noreferrer" target="_blank">Visit foldoutfit.com <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen">
+            <img src="assets/foldoutfit-screen.jpg" width="1280" height="800" alt="The Fold-Out-Fit website, with the headline “Your clean closet, anywhere” and a photo of the bag hanging from a stall hook.">
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">foldoutfit.com on a desktop display</figcaption>
+        </figure>
+      </article>
+
+      <article class="project-card reverse">
+        <div class="project-copy">
+          <p class="project-tag">AI sales coaching</p>
+          <h3>Morgan AI Sales Manager</h3>
+          <p>A demo of two AI sales coaches working together. Quinn reviews reps’ recorded calls and outbound emails; Morgan turns those reviews into coaching, current issues, and trainings for sales managers.</p>
+          <ul class="chips">
+            <li>Interactive demo</li>
+            <li>warrendaisey.info</li>
+          </ul>
+          <a class="btn btn-solid" href="https://warrendaisey.info" rel="noopener noreferrer" target="_blank">Try the demo <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen">
+            <img src="assets/morgan-screen.jpg" width="1280" height="800" alt="The Morgan AI Sales Manager demo, showing a sales-manager workspace with coaching, current issues, trainings, and chat.">
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">warrendaisey.info on a desktop display</figcaption>
+        </figure>
+      </article>
+
+      <article class="project-card">
+        <div class="project-copy">
+          <p class="project-tag">Feb 2026 — Present</p>
+          <h3>Sales tools at Pridefit</h3>
+          <p>Configured CRM and sales systems and coded 3 apps and websites that support the sales team, alongside running the pipeline from prospecting to close.</p>
+          <ul class="chips">
+            <li>Sales &amp; Technical Lead</li>
+            <li>Remote</li>
+          </ul>
+          <a class="btn btn-ghost" href="/projects/">More on projects <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <figure class="monitor">
+          <div class="monitor-screen typographic">
+            <p class="mon-kicker">Pridefit</p>
+            <p class="mon-title">Sales tools</p>
+            <p class="mon-body">CRM configuration, three apps and websites, and the pipeline from prospecting to close.</p>
+          </div>
+          <div class="monitor-stand" aria-hidden="true"></div>
+          <div class="monitor-base" aria-hidden="true"></div>
+          <figcaption class="visually-hidden">A typographic card for the Pridefit sales tools, which do not have a public product screenshot</figcaption>
+        </figure>
+      </article>
+
+      <p class="projects-foot"><a class="btn btn-ghost" href="#doors">← Back to the doors</a> <a class="btn btn-ghost" href="/projects/">All projects on the main site</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><a href="/">warrendaisey.com</a></p>
+    <p>
+      <a href="https://www.linkedin.com/in/warren-daisey" rel="noopener noreferrer" target="_blank">LinkedIn</a>
+      <a href="mailto:wtdaisey@gmail.com">wtdaisey@gmail.com</a>
+    </p>
+  </footer>
+
+  <template id="door-data">
+    <script type="application/json">
+    {
+      "inventing": {
+        "kicker": "Product, patent pending",
+        "title": "Fold-Out-Fit / Inventing",
+        "plate": "Fold-Out-Fit",
+        "color": "#23437a",
+        "href": "/projects/",
+        "link": "See projects",
+        "items": [
+          "A carry bag that unfolds into three hanging shelves — hook it on a stall-door hook",
+          "U.S. provisional patent application 64/189,208",
+          "1st Place and $3,500, Husky Dog Pound, spring 2026",
+          "35K+ Fold-Out-Fit content views; waitlist at foldoutfit.com"
+        ]
+      },
+      "sales": {
+        "kicker": "Pipeline, systems, and competitions",
+        "title": "Sales",
+        "plate": "Sales",
+        "color": "#5d5872",
+        "href": "/resume/",
+        "link": "See résumé",
+        "items": [
+          "Sales & Technical Lead at Pridefit (Feb 2026–Present): outreach, pipeline, systems, and analytics",
+          "Sales Manager for Matt and Roxana Zoppetti (Dec 2025–Present), including 60+ closes for Best Student Housing",
+          "1st of 65, Quick Pitch Sales Challenge, Susquehanna University, October 2026",
+          "1st Place, Nest Sales Summit, April 2026; semifinalist at Keystone 2026 and the Cintas sales contest"
+        ]
+      },
+      "speaking": {
+        "kicker": "Workshops, panels, and forensics",
+        "title": "Speaking",
+        "plate": "Speaking",
+        "color": "#6f8c5e",
+        "href": "/speaking/",
+        "link": "See speaking",
+        "items": [
+          "“Money 101: The Financial Playbook Every College Student Needs,” 2026 PASSHE Summit, Kutztown University",
+          "“Unleash Your Uniqueness,” PASSHE Summit 2025; panels including Honors College Speak Out and “Queer Joy”",
+          "Speaker at the 2026 Alumni Awards Ceremony; Fold-Out-Fit poster at Topics That Matter, April 2026",
+          "Bloomsburg Forensics Team (Sep 2024–Present): impromptu, informative, persuasive, prose, poetry, declamation, and parliamentary debate"
+        ]
+      },
+      "awards": {
+        "kicker": "Highlights, not a complete list",
+        "title": "Awards",
+        "plate": "Awards",
+        "color": "#c56a32",
+        "href": "/awards/",
+        "link": "See all awards",
+        "items": [
+          "1st of 65, Quick Pitch Sales Challenge ($500); 1st Place and $3,500, Husky Dog Pound; 1st Place, Nest Sales Summit",
+          "PA FBLA Collegiate: 1st in Foundations of Selling; 2nd Best Presenter, CRS Collegiate Challenge",
+          "John B. Mingus Pan-Interp Award, Florida Sun and Sand; CGA Outstanding Senator, Fall 2024",
+          "The full awards list — including forensics placements — lives on the awards page"
+        ]
+      },
+      "projects": {
+        "kicker": "Things I’ve built",
+        "title": "Projects",
+        "plate": "Projects",
+        "color": "#3e6d6e",
+        "href": "#projects",
+        "link": "See projects below",
+        "items": [
+          "Fold-Out-Fit, patent-pending product with a live waitlist at foldoutfit.com",
+          "Morgan AI Sales Manager, an interactive demo at warrendaisey.info",
+          "Sales tools at Pridefit: CRM configuration plus 3 apps and websites for the sales team",
+          "Money 101, a personal finance workshop presented at Kutztown University in October 2026"
+        ]
+      }
+    }
+    </script>
+  </template>
+
+  <script src="main.js"></script>
+</body>
+</html>
