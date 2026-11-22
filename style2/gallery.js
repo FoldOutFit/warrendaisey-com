@@ -502,31 +502,36 @@
   const lightbox = document.getElementById("lightbox");
 
   let cfg = layoutConfig();
-  let placed = []; // {work, t, side, el}
   let sectionT = {};
   let pathLen = 1;
   let cameraT = 0;
   let wandering = false;
 
+  let renderer = null;
+  let scene = null;
+  let camera = null;
+  let clickables = [];
+  let exitDock = null;
+  let animating = false;
+
   function layoutConfig() {
     const mobile = window.innerWidth < 720;
-    const M = mobile ? 200 : 260; // px per meter — fill the viewport
+    const frameW = mobile ? 1.05 : 1.15;
+    const frameH = mobile ? 1.4 : 1.58;
     return {
       mobile,
-      M,
-      radius: (mobile ? 30 : 48) * M,
-      totalAngle: mobile ? 0.95 : 1.15,
-      hallW: (mobile ? 3.2 : 5.4) * M,
-      wallH: (mobile ? 3.5 : 3.85) * M,
-      eye: (mobile ? 1.5 : 1.58) * M,
-      segLen: (mobile ? 0.85 : 1.05) * M,
-      frameW: (mobile ? 1.05 : 1.22) * M,
-      frameH: (mobile ? 1.38 : 1.62) * M,
-      hang: (mobile ? 1.7 : 1.82) * M,
-      startPad: 11 * M,
-      bay: (mobile ? 3.1 : 3.35) * M,
-      sectionPad: 4.2 * M,
-      endPad: 10 * M
+      totalAngle: mobile ? 0.48 : 0.88,
+      hallW: mobile ? 3.05 : 5.3,
+      wallH: mobile ? 3.45 : 3.8,
+      eye: 1.57,
+      hang: 1.448,
+      frameW,
+      frameH,
+      bay: (mobile ? 2.05 : 1.95) * frameW,
+      titleBay: mobile ? 6.2 : 6.8,
+      startPad: mobile ? 8 : 10,
+      sectionPad: mobile ? 2.2 : 2.6,
+      endPad: mobile ? 8 : 9
     };
   }
 
@@ -535,7 +540,8 @@
     return {
       x: cfg.radius * (1 - Math.cos(theta)),
       z: -cfg.radius * Math.sin(theta),
-      yaw: -theta
+      yaw: -theta,
+      theta
     };
   }
 
@@ -546,19 +552,8 @@
     return { x: Math.cos(yaw), z: Math.sin(yaw) };
   }
   function fwdDir(yaw) {
-    return { x: Math.sin(yaw), z: -Math.cos(yaw) };
+    return { x: -Math.sin(yaw), z: -Math.cos(yaw) };
   }
-
-  function setFace(el, w, h, transform, extraClass) {
-    el.className = "face " + (extraClass || "");
-    el.style.width = w + "px";
-    el.style.height = h + "px";
-    el.style.marginLeft = -w / 2 + "px";
-    el.style.marginTop = -h / 2 + "px";
-    el.style.transform = transform;
-    return el;
-  }
-
 
   function conceptSVG(i) {
     const hues = [32, 28, 38, 24, 42, 20, 34, 30, 26, 36, 22, 40, 18, 33, 29];
@@ -606,193 +601,662 @@
     }[c]));
   }
 
-  function buildHallway() {
-    world.innerHTML = "";
-    const arc = cfg.radius * cfg.totalAngle;
-    const segs = Math.ceil(arc / (cfg.segLen * 0.55)) + 4;
-    const slab = cfg.segLen * 1.7;
-    const wallH = cfg.wallH * 1.55;
-    const wallY = -cfg.wallH * 0.28;
-    for (let i = 0; i < segs; i++) {
-      const t = i / (segs - 1);
-      const p = pathAt(t);
-      const seg = document.createElement("div");
-      seg.className = "seg";
-      seg.style.transform = `translate3d(${p.x}px, 0px, ${p.z}px) rotateY(${p.yaw}rad)`;
-      const fl = setFace(document.createElement("div"), cfg.hallW * 1.08, slab, "rotateX(90deg)", "floor");
-      const cl = setFace(document.createElement("div"), cfg.hallW * 1.08, slab, `translateY(${-cfg.wallH}px) rotateX(90deg)`, "ceiling");
-      const lw = setFace(document.createElement("div"), slab, wallH, `translate3d(${-cfg.hallW / 2}px, ${wallY}px, 0) rotateY(90deg)`, "wall left");
-      const rw = setFace(document.createElement("div"), slab, wallH, `translate3d(${cfg.hallW / 2}px, ${wallY}px, 0) rotateY(-90deg)`, "wall right");
-      seg.append(fl, cl, lw, rw);
-      world.appendChild(seg);
-    }
-
-    const end = pathAt(1);
-    const endEl = document.createElement("div");
-    endEl.className = "seg";
-    endEl.style.transform = `translate3d(${end.x}px, 0px, ${end.z}px) rotateY(${end.yaw}rad)`;
-    endEl.appendChild(setFace(document.createElement("div"), cfg.hallW + 12, wallH, `translate3d(0, ${wallY}px, ${-cfg.segLen * 0.25}px)`, "end-wall"));
-    world.appendChild(endEl);
-  }
-
-  function placeWorks() {
-    placed = [];
-    sectionT = { entrance: 0 };
-    let dist = cfg.startPad;
-
-    function tOf(d) { return Math.min(0.98, d / pathLen); }
-
-    // entrance sign a few meters in, facing the walker
-    placeSign("entrance", dist * 0.45);
-
-    SECTIONS.forEach((sec) => {
-      if (sec.id === "entrance") return;
-      const works = WORKS.filter((w) => w.section === sec.id);
-      sectionT[sec.id] = tOf(Math.max(0, dist - cfg.M * 0.4));
-      if (sec.wall) placeTitle(sec, tOf(dist + cfg.M * 0.4));
-      dist += cfg.sectionPad * 0.55;
-
-      if (sec.id === "contact") {
-        placeExit(tOf(dist + cfg.M * 1.2));
-        dist += cfg.endPad;
-        return;
-      }
-
-      for (let i = 0; i < works.length; i++) {
-        const side = i % 2 === 0 ? "left" : "right";
-        if (side === "left" && i > 0) dist += cfg.bay;
-        const t = tOf(dist + (side === "right" ? cfg.bay * 0.08 : 0));
-        placeWork(works[i], t, side);
-      }
-      if (works.length) dist += cfg.bay;
-      dist += cfg.sectionPad * 0.45;
-    });
-  }
-
   function estimatePath() {
     let dist = cfg.startPad;
     SECTIONS.forEach((sec) => {
       if (sec.id === "entrance") return;
-      const works = WORKS.filter((w) => w.section === sec.id);
-      dist += cfg.sectionPad * 0.55;
+      dist += cfg.titleBay;
       if (sec.id === "contact") {
         dist += cfg.endPad;
         return;
       }
-      const pairs = Math.ceil(works.length / 2);
-      dist += pairs * cfg.bay;
-      dist += cfg.sectionPad * 0.45;
+      const n = WORKS.filter((w) => w.section === sec.id).length;
+      const slots = cfg.mobile ? n : Math.ceil(n / 2);
+      dist += slots * cfg.bay;
+      dist += cfg.sectionPad;
     });
-    pathLen = dist + cfg.endPad * 0.3;
+    pathLen = dist + cfg.endPad * 0.2;
+  }
+
+  function fitPathToLength() {
+    cfg.totalAngle = cfg.mobile ? 0.48 : 0.88;
+    cfg.radius = pathLen / cfg.totalAngle;
+  }
+
+  function makeCanvasTexture(w, h, draw) {
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d");
+    draw(ctx, w, h);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = renderer ? renderer.capabilities.getMaxAnisotropy() : 4;
+    return tex;
+  }
+
+  function plasterTexture() {
+    return makeCanvasTexture(512, 512, (ctx, w, h) => {
+      const img = ctx.createImageData(w, h);
+      for (let i = 0; i < w * h; i++) {
+        const j = i * 4;
+        const n = (Math.random() - 0.5) * 14;
+        img.data[j] = 235 + n;
+        img.data[j + 1] = 224 + n;
+        img.data[j + 2] = 204 + n * 0.8;
+        img.data[j + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    });
+  }
+
+  function woodTexture() {
+    return makeCanvasTexture(1024, 256, (ctx, w, h) => {
+      ctx.fillStyle = "#4e2f18";
+      ctx.fillRect(0, 0, w, h);
+      const plank = 64;
+      for (let y = 0, k = 0; y < h; y += plank, k++) {
+        const shade = (k % 3 === 0 ? 16 : k % 3 === 1 ? 0 : -10);
+        ctx.fillStyle = `rgb(${112 + shade},${72 + shade},${42 + shade})`;
+        ctx.fillRect(0, y, w, plank - 3);
+        ctx.fillStyle = "#3a2412";
+        ctx.fillRect(0, y + plank - 3, w, 3);
+      }
+    });
+  }
+
+  function wrapTex(tex, rx, ry) {
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(rx, ry);
+    return tex;
+  }
+
+  // Ribbon of a vertical cylinder about the hall's circle center (radius, 0, 0).
+  function cylinderBand(Rwall, th0, th1, y0, y1, inward, segs) {
+    const pos = [];
+    const nrm = [];
+    const uv = [];
+    const idx = [];
+    const arc = Math.abs(Rwall * (th1 - th0));
+    for (let i = 0; i <= segs; i++) {
+      const t = i / segs;
+      const th = th0 + (th1 - th0) * t;
+      const x = cfg.radius - Rwall * Math.cos(th);
+      const z = -Rwall * Math.sin(th);
+      pos.push(x, y0, z, x, y1, z);
+      const nx = inward === "left" ? Math.cos(th) : -Math.cos(th);
+      const nz = inward === "left" ? Math.sin(th) : -Math.sin(th);
+      nrm.push(nx, 0, nz, nx, 0, nz);
+      uv.push((arc * t) / 4, 0, (arc * t) / 4, 1);
+    }
+    for (let i = 0; i < segs; i++) {
+      const a = i * 2, b = a + 1, c = a + 2, d = a + 3;
+      if (inward === "left") {
+        idx.push(a, b, c, b, d, c);
+      } else {
+        idx.push(a, c, b, b, c, d);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("normal", new THREE.Float32BufferAttribute(nrm, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    return geo;
+  }
+
+  function floorGeo(Rinner, Router, th0, th1, segs, y, normalUp) {
+    const pos = [], nrm = [], uv = [], idx = [];
+    const radial = 8;
+    for (let i = 0; i <= segs; i++) {
+      const t = i / segs;
+      const th = th0 + (th1 - th0) * t;
+      for (let j = 0; j <= radial; j++) {
+        const s = j / radial;
+        const Rw = Rinner + (Router - Rinner) * s;
+        const x = cfg.radius - Rw * Math.cos(th);
+        const z = -Rw * Math.sin(th);
+        pos.push(x, y, z);
+        nrm.push(0, normalUp ? 1 : -1, 0);
+        uv.push((cfg.radius * th) / 2.6, (s * (Router - Rinner)) / 0.2);
+      }
+    }
+    const stride = radial + 1;
+    for (let i = 0; i < segs; i++) {
+      for (let j = 0; j < radial; j++) {
+        const a = i * stride + j;
+        const b = a + 1;
+        const c = a + stride;
+        const d = c + 1;
+        if (normalUp) idx.push(a, c, b, b, c, d);
+        else idx.push(a, b, c, b, d, c);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("normal", new THREE.Float32BufferAttribute(nrm, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    return geo;
+  }
+
+  function buildHallway() {
+    const R = cfg.radius;
+    const half = cfg.hallW / 2;
+    const Rleft = R + half;
+    const Rright = Math.max(R - half, 1.2);
+    const th0 = -0.1;
+    const th1 = cfg.totalAngle + 0.08;
+    const segs = Math.max(80, Math.round(pathLen * 1.4));
+    const wallH = cfg.wallH;
+
+    const plaster = wrapTex(plasterTexture(), 1, 1);
+    const wallMat = new THREE.MeshStandardMaterial({
+      map: plaster,
+      color: 0xefe4d0,
+      roughness: 0.9,
+      metalness: 0.02,
+      side: THREE.DoubleSide
+    });
+    const baseMat = new THREE.MeshStandardMaterial({
+      color: 0x4a2e18,
+      roughness: 0.75,
+      metalness: 0.05,
+      side: THREE.DoubleSide
+    });
+    const crownMat = new THREE.MeshStandardMaterial({
+      color: 0xd7c4a6,
+      roughness: 0.7,
+      metalness: 0.04,
+      side: THREE.DoubleSide
+    });
+    const ceilMat = new THREE.MeshStandardMaterial({
+      color: 0x3a3330,
+      roughness: 0.88,
+      metalness: 0,
+      side: THREE.DoubleSide
+    });
+    const wood = wrapTex(woodTexture(), 1, 1);
+    const floorMat = new THREE.MeshStandardMaterial({
+      map: wood,
+      roughness: 0.72,
+      metalness: 0.04,
+      side: THREE.DoubleSide
+    });
+
+    scene.add(new THREE.Mesh(cylinderBand(Rleft, th0, th1, 0, wallH, "left", segs), wallMat));
+    scene.add(new THREE.Mesh(cylinderBand(Rright, th0, th1, 0, wallH, "right", segs), wallMat));
+    // Baseboard and crown, slightly into the hall so they sit cleanly on the plaster
+    const inset = 0.012;
+    scene.add(new THREE.Mesh(cylinderBand(Rleft - inset, th0, th1, 0, 0.14, "left", segs), baseMat));
+    scene.add(new THREE.Mesh(cylinderBand(Rright + inset, th0, th1, 0, 0.14, "right", segs), baseMat));
+    scene.add(new THREE.Mesh(cylinderBand(Rleft - inset, th0, th1, wallH - 0.1, wallH, "left", segs), crownMat));
+    scene.add(new THREE.Mesh(cylinderBand(Rright + inset, th0, th1, wallH - 0.1, wallH, "right", segs), crownMat));
+
+    scene.add(new THREE.Mesh(floorGeo(Rright, Rleft, th0, th1, segs, 0, true), floorMat));
+    scene.add(new THREE.Mesh(floorGeo(Rright, Rleft, th0, th1, segs, wallH, false), ceilMat));
+
+    // End wall
+    const end = pathAt(1);
+    const endGeo = new THREE.PlaneGeometry(cfg.hallW + 0.08, wallH);
+    const endMesh = new THREE.Mesh(endGeo, wallMat.clone());
+    const f = fwdDir(end.yaw);
+    endMesh.position.set(end.x + f.x * 0.04, wallH / 2, end.z + f.z * 0.04);
+    endMesh.rotation.y = end.yaw;
+    scene.add(endMesh);
+
+    scene.add(new THREE.HemisphereLight(0xfff6e8, 0x6a4a30, 1.55));
+    scene.add(new THREE.AmbientLight(0x9a8a74, 0.9));
+
+    const nLights = Math.max(7, Math.round(pathLen / 5.6));
+    const fixtureMat = new THREE.MeshStandardMaterial({ color: 0x3a332c, roughness: 0.45, metalness: 0.4 });
+    const bulbMat = new THREE.MeshStandardMaterial({
+      color: 0xfff0c8,
+      emissive: 0xffdca0,
+      emissiveIntensity: 3.2,
+      roughness: 0.35
+    });
+    const beamMat = new THREE.MeshBasicMaterial({
+      color: 0xffd9a0,
+      transparent: true,
+      opacity: 0.08,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    let prev = null;
+    for (let i = 0; i <= nLights; i++) {
+      const p = pathAt(i / nLights);
+      const spot = new THREE.SpotLight(0xffe0b0, 22, 14, Math.PI / 6.5, 0.5, 1.0);
+      spot.position.set(p.x, wallH - 0.06, p.z);
+      spot.target.position.set(p.x, 0.05, p.z);
+      scene.add(spot);
+      scene.add(spot.target);
+      const wash = new THREE.PointLight(0xffe3b8, 3.2, 7.5, 1.4);
+      wash.position.set(p.x, wallH - 0.35, p.z);
+      scene.add(wash);
+
+      if (prev) {
+        const mid = pathAt((i - 0.5) / nLights);
+        const dx = p.x - prev.x, dz = p.z - prev.z;
+        const len = Math.sqrt(dx * dx + dz * dz) + 0.04;
+        const track = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.03, len), fixtureMat);
+        track.position.set(mid.x, wallH - 0.015, mid.z);
+        track.rotation.y = mid.yaw;
+        scene.add(track);
+      }
+      prev = p;
+
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.025, 0.05), fixtureMat);
+      rail.position.set(p.x, wallH - 0.03, p.z);
+      rail.rotation.y = p.yaw;
+      scene.add(rail);
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.12, 0.035), fixtureMat);
+      arm.position.set(p.x, wallH - 0.09, p.z);
+      scene.add(arm);
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 14, 10), bulbMat);
+      bulb.position.set(p.x, wallH - 0.16, p.z);
+      scene.add(bulb);
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(1.05, 2.5, 20, 1, true), beamMat);
+      cone.position.set(p.x, wallH - 0.16 - 1.25, p.z);
+      scene.add(cone);
+    }
+    const endLight = new THREE.PointLight(0xffe6c0, 8, 12, 1.2);
+    const endP = pathAt(0.97);
+    endLight.position.set(endP.x, wallH * 0.7, endP.z);
+    scene.add(endLight);
+  }
+
+  function artCanvas(work) {
+    const W = 768, H = 1024;
+    return makeCanvasTexture(W, H, (ctx) => {
+      if (work.empty === "concept") {
+        const n = parseInt((work.no || "0").replace(/\D/g, ""), 10) || 2;
+        const g = ctx.createLinearGradient(0, 0, W, H);
+        g.addColorStop(0, "#1f1a16");
+        g.addColorStop(0.5, "#2c241c");
+        g.addColorStop(1, "#3a2e22");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = "rgba(212,184,130,0.4)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 220 + (n % 5) * 8, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 130 + (n % 7) * 6, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = "rgba(232,214,180,0.78)";
+        ctx.font = "600 42px 'Cormorant Garamond', serif";
+        ctx.textAlign = "center";
+        ctx.letterSpacing = "8px";
+        ctx.fillText("CONCEPT", W / 2, H * 0.5);
+        ctx.font = "600 18px 'Source Sans 3', sans-serif";
+        ctx.fillStyle = "rgba(232,214,180,0.55)";
+        ctx.fillText("IMAGE COMING SOON", W / 2, H * 0.5 + 36);
+        ctx.font = "500 22px 'Cormorant Garamond', serif";
+        ctx.fillText(String(n).padStart(2, "0"), W / 2, H * 0.86);
+      } else if (work.empty === "plaque") {
+        const g = ctx.createRadialGradient(W / 2, H * 0.4, 40, W / 2, H * 0.5, 520);
+        g.addColorStop(0, "#c4a265");
+        g.addColorStop(1, "#7a5a2e");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = "#2a1d0e";
+        ctx.textAlign = "center";
+        ctx.font = "600 46px 'Cormorant Garamond', serif";
+        wrapText(ctx, work.title, W / 2, H * 0.46, W * 0.78, 56);
+        ctx.font = "600 20px 'Source Sans 3', sans-serif";
+        ctx.fillText((work.date || "Award").toUpperCase(), W / 2, H * 0.62);
+      } else {
+        const g = ctx.createLinearGradient(0, 0, W, H);
+        g.addColorStop(0, "#efe6d6");
+        g.addColorStop(1, "#c9b79a");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = "rgba(80,58,32,0.55)";
+        ctx.textAlign = "center";
+        ctx.font = "600 36px 'Cormorant Garamond', serif";
+        wrapText(ctx, work.emptyLabel || "Photo coming soon", W / 2, H * 0.5, W * 0.7, 44);
+      }
+    });
+  }
+
+  function wrapText(ctx, text, x, y, maxW, lineH) {
+    const words = String(text).split(" ");
+    const lines = [];
+    let line = "";
+    words.forEach((w) => {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW && line) {
+        lines.push(line);
+        line = w;
+      } else line = test;
+    });
+    if (line) lines.push(line);
+    const start = y - ((lines.length - 1) * lineH) / 2;
+    lines.forEach((ln, i) => ctx.fillText(ln, x, start + i * lineH));
+  }
+
+  function placardTexture(work) {
+    const W = 1024, H = 420;
+    return makeCanvasTexture(W, H, (ctx) => {
+      ctx.fillStyle = "#f3eadc";
+      ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = "#d7c7a8";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(2, 2, W - 4, H - 4);
+      let y = 56;
+      ctx.textAlign = "left";
+      if (work.no) {
+        ctx.fillStyle = "#8d6d3e";
+        ctx.font = "700 28px 'Source Sans 3', sans-serif";
+        ctx.fillText(String(work.no).toUpperCase(), 40, y);
+        y += 52;
+      }
+      ctx.fillStyle = "#1c1712";
+      ctx.font = "600 44px 'Cormorant Garamond', serif";
+      wrapTextLeft(ctx, work.title, 40, y, W - 80, 50);
+      y += 50 * Math.max(1, Math.ceil(ctx.measureText(work.title).width / (W - 80))) + 18;
+      const meta = [work.date, work.place].filter(Boolean).join("  ·  ");
+      if (meta) {
+        ctx.fillStyle = "#4a4036";
+        ctx.font = "400 26px 'Source Sans 3', sans-serif";
+        ctx.fillText(meta, 40, y);
+        y += 42;
+      }
+      if (work.line) {
+        ctx.fillStyle = "#2e271f";
+        ctx.font = "400 28px 'Source Sans 3', sans-serif";
+        wrapTextLeft(ctx, work.line, 40, y, W - 80, 36);
+      }
+    });
+  }
+
+  function wrapTextLeft(ctx, text, x, y, maxW, lineH) {
+    const words = String(text).split(" ");
+    let line = "";
+    words.forEach((w) => {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW && line) {
+        ctx.fillText(line, x, y);
+        y += lineH;
+        line = w;
+      } else line = test;
+    });
+    if (line) ctx.fillText(line, x, y);
+  }
+
+  function titleTexture(kicker, title, sub) {
+    const W = 1024, H = 420;
+    return makeCanvasTexture(W, H, (ctx) => {
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, "#f6efe3");
+      g.addColorStop(1, "#e6d8c2");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = "#c4a574";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(3, 3, W - 6, H - 6);
+      ctx.strokeStyle = "#8d6d3e";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(18, 18, W - 36, H - 36);
+      ctx.textAlign = "center";
+      if (kicker) {
+        ctx.fillStyle = "#8d6d3e";
+        ctx.font = "700 24px 'Source Sans 3', sans-serif";
+        ctx.fillText(String(kicker).toUpperCase(), W / 2, 90);
+      }
+      ctx.fillStyle = "#1c1712";
+      ctx.font = "600 54px 'Cormorant Garamond', serif";
+      wrapText(ctx, title, W / 2, sub ? 190 : 220, W - 120, 62);
+      if (sub) {
+        ctx.fillStyle = "#4a4036";
+        ctx.font = "italic 500 28px 'Cormorant Garamond', serif";
+        wrapText(ctx, sub, W / 2, 330, W - 140, 36);
+      }
+    });
+  }
+
+  function placeOnWall(t, side, y, mesh) {
+    const p = pathAt(t);
+    const dir = side === "left" ? leftDir(p.yaw) : rightDir(p.yaw);
+    const wallDist = cfg.hallW / 2 - 0.03;
+    mesh.position.set(p.x + dir.x * wallDist, y, p.z + dir.z * wallDist);
+    mesh.rotation.y = side === "left" ? p.yaw + Math.PI / 2 : p.yaw - Math.PI / 2;
+    scene.add(mesh);
+    return mesh;
   }
 
   function placeWork(work, t, side) {
-    const p = pathAt(t);
-    const dir = side === "left" ? leftDir(p.yaw) : rightDir(p.yaw);
-    const wallDist = cfg.hallW / 2 - 8;
-    const x = p.x + dir.x * wallDist;
-    const z = p.z + dir.z * wallDist;
-    const y = -cfg.hang;
-    // Face inward: left wall faces right, so yaw + 0? frame hangs on wall, facing center.
-    // left wall's inward normal is rightDir, so rotation should be p.yaw + PI (or face toward path).
-    const yaw = side === "left" ? p.yaw + Math.PI / 2 : p.yaw - Math.PI / 2;
-    // Wait: if yaw=0, facing -Z, left is -X. Frame on left wall should face +X (toward center), which is rotateY(-90deg) or +90?
-    // A default element faces the camera when at z<0 with no rotation (faces +Z? Default CSS element at z=0 faces toward +Z? Actually an element's front faces the viewer, i.e. toward +Z? No: a div's face is toward the user, which is +Z in CSS (positive Z comes toward viewer). So the "front" of a frame with no rotation faces +Z.
-    // We want the frame on the left wall (x negative) to face +X (toward hall center). rotateY(-90deg) maps +Z toward +X? rotateY(θ) rotates around Y: z' = z cos θ + x sin θ, x' = x cos θ - z sin θ...
-    // Standard: rotateY(90deg) sends a point on +Z toward -X? In CSS, rotateY(90deg) rotates clockwise when looking down? CSS rotateY(90deg) rotates so the right edge comes toward you: the face that pointed +Z now points +X. Yes: rotateY(-90deg) faces -X; rotateY(90deg) faces +X.
-    // Left wall (negative X): want to face +X, so rotateY(90deg). When path yaw=0, left frame yaw = +90deg = +π/2.
-    // Our p.yaw is 0 at start. side left: p.yaw + π/2. Yes.
-    // Right wall: face -X: p.yaw - π/2.
+    const group = new THREE.Group();
+    const fw = cfg.frameW;
+    const fh = cfg.frameH;
+    const gold = new THREE.MeshStandardMaterial({
+      color: 0xc4a574,
+      roughness: 0.35,
+      metalness: 0.6,
+      emissive: 0x2a1c08,
+      emissiveIntensity: 0.22
+    });
+    const matInner = new THREE.MeshStandardMaterial({
+      color: 0x1a1612,
+      roughness: 0.6,
+      metalness: 0
+    });
+    const mould = new THREE.Mesh(new THREE.BoxGeometry(fw + 0.08, fh + 0.08, 0.04), gold);
+    mould.position.z = 0.01;
+    group.add(mould);
+    const inner = new THREE.Mesh(new THREE.BoxGeometry(fw, fh, 0.01), matInner);
+    inner.position.z = 0.028;
+    group.add(inner);
 
-    const el = document.createElement("article");
-    el.className = "piece";
-    el.dataset.id = work.id;
-    el.dataset.t = t;
-    const orient = (work.image && /portrait|tall/.test(work.id)) ? "portrait" : "";
-    const isLandscape = work.image && (work.id === "ev-rally" || work.id === "ev-pa-state" || work.id === "ev-wilkes" || work.id === "ev-sunrise" || work.id === "pr-queer-joy" || work.id === "aw-quick" || work.id === "aw-nsls" || work.id === "aw-plaque" || work.id === "pj-fof" || work.id === "pj-morgan");
-    const w = isLandscape ? cfg.frameW * 1.22 : cfg.frameW;
-    const h = isLandscape ? cfg.frameH * 0.86 : (work.empty === "concept" ? cfg.frameH * 1.02 : cfg.frameH);
-    el.style.width = w + "px";
-    el.style.height = h + "px";
-    el.style.marginLeft = -w / 2 + "px";
-    el.style.marginTop = -h / 2 + "px";
-    el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${yaw}rad)`;
-    el.innerHTML = `<button type="button" class="hit" data-open="${work.id}" aria-label="Open ${escapeHtml(work.title)}">
-        <div class="spot-beam"></div>
-        <div class="frame">
-          <div class="frame-inner">${visualHTML(work, true)}<div class="frame-glare"></div></div>
-        </div>
-        ${placardHTML(work)}
-        <div class="spot-pool"></div>
-      </button>`;
-    world.appendChild(el);
-    placed.push({ work, t, side, el });
+    const artMat = new THREE.MeshStandardMaterial({
+      roughness: 0.48,
+      metalness: 0.02
+    });
+    if (work.image) {
+      const loader = new THREE.TextureLoader();
+      loader.load(ASSET + work.image, (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        artMat.map = tex;
+        artMat.needsUpdate = true;
+      });
+    } else {
+      artMat.map = artCanvas(work);
+    }
+    const art = new THREE.Mesh(new THREE.PlaneGeometry(fw - 0.02, fh - 0.02), artMat);
+    art.position.z = 0.036;
+    group.add(art);
+
+    const pTex = placardTexture(work);
+    const pH = fw * (420 / 1024);
+    const placard = new THREE.Mesh(
+      new THREE.PlaneGeometry(fw, pH),
+      new THREE.MeshStandardMaterial({ map: pTex, roughness: 0.7, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.12 })
+    );
+    placard.position.set(0, -fh / 2 - 0.08 - pH / 2, 0.02);
+    group.add(placard);
+
+    art.userData.id = work.id;
+    mould.userData.id = work.id;
+    inner.userData.id = work.id;
+    clickables.push(art, mould, inner);
+
+    placeOnWall(t, side, cfg.hang, group);
   }
 
   function placeTitle(sec, t) {
-    const p = pathAt(t);
-    const dir = leftDir(p.yaw);
-    const wallDist = cfg.hallW / 2 - 6;
-    const x = p.x + dir.x * wallDist;
-    const z = p.z + dir.z * wallDist;
-    const y = -cfg.wallH * 0.72;
-    const yaw = p.yaw + Math.PI / 2;
-    const el = document.createElement("div");
-    el.className = "title-card";
-    el.innerHTML = `<div class="plate"><p class="kicker">${escapeHtml(sec.kicker)}</p><h2>${escapeHtml(sec.wall)}</h2></div>`;
-    el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${yaw}rad)`;
-    world.appendChild(el);
+    const tex = titleTexture(sec.kicker, sec.wall);
+    const w = 1.7, h = 0.7;
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, h),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+    );
+    placeOnWall(t, "left", cfg.hang + 0.1, mesh);
   }
 
-  function placeSign(kind, dist) {
-    const t = Math.min(0.08, (2.2 * cfg.M) / pathLen);
-    const p = pathAt(t);
-    const dir = leftDir(p.yaw);
-    const wallDist = cfg.hallW / 2 - 8;
-    const x = p.x + dir.x * wallDist;
-    const z = p.z + dir.z * wallDist;
-    const y = -cfg.wallH * 0.58;
-    const yaw = p.yaw + Math.PI / 2;
-    const el = document.createElement("div");
-    el.className = "title-card entrance-plaque";
-    el.innerHTML = `<div class="plate entrance">
-      <p class="kicker">Warren Daisey</p>
-      <h2>A Gallery of Accomplishments</h2>
-      <p class="subline">Scroll to walk forward through the hall</p>
-    </div>`;
-    el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${yaw}rad)`;
-    world.appendChild(el);
+  function placeSign(t) {
+    const tex = titleTexture("Warren Daisey", "A Gallery of Accomplishments", "Scroll to walk forward through the hall");
+    const w = 1.9, h = 0.85;
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, h),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+    );
+    placeOnWall(t, "left", cfg.hang + 0.05, mesh);
   }
 
   function placeExit(t) {
+    const tex = titleTexture("The exit", "Let’s Connect", "Recruiting for biomedical or technical sales, or want to talk about Fold-Out-Fit?");
+    const w = 2.1, h = 0.95;
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, h),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+    );
     const p = pathAt(t);
     const f = fwdDir(p.yaw);
-    // Sit on the end wall, facing the incoming walker (local +Z of a yaw-aligned plane).
-    const x = p.x + f.x * cfg.M * 0.35;
-    const z = p.z + f.z * cfg.M * 0.35;
-    const y = -cfg.wallH * 0.55;
-    const el = document.createElement("div");
-    el.className = "exit-sign";
-    el.innerHTML = `<p class="kicker">The exit</p>
-      <h2>Let’s Connect</h2>
-      <p>Recruiting for biomedical or technical sales, or want to talk about Fold-Out-Fit?</p>
-      <div class="exit-links">
-        <a href="/contact/">Let’s connect</a>
-        <a class="ghost" href="/">Back to the main site</a>
-      </div>`;
-    el.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${p.yaw + Math.PI}rad)`;
-    world.appendChild(el);
-    sectionT.contact = Math.max(0, t - (3.2 * cfg.M) / pathLen);
+    mesh.material.side = THREE.DoubleSide;
+    const end = pathAt(1);
+    const fe = fwdDir(end.yaw);
+    mesh.position.set(end.x - fe.x * 0.1, cfg.hang + 0.15, end.z - fe.z * 0.1);
+    mesh.rotation.y = end.yaw;
+    scene.add(mesh);
+    sectionT.contact = Math.max(0, 1 - 4.2 / pathLen);
+  }
+
+  function placeWorks() {
+    clickables = [];
+    sectionT = { entrance: 0 };
+    function tOf(d) { return Math.min(0.985, Math.max(0, d / pathLen)); }
+
+    placeSign(tOf(cfg.startPad * 0.4));
+
+    let dist = cfg.startPad;
+    SECTIONS.forEach((sec) => {
+      if (sec.id === "entrance") return;
+      const works = WORKS.filter((w) => w.section === sec.id);
+      sectionT[sec.id] = tOf(dist + 0.4);
+      if (sec.wall) placeTitle(sec, tOf(dist + cfg.titleBay * 0.5));
+      dist += cfg.titleBay;
+
+      if (sec.id === "contact") {
+        placeExit(tOf(dist + 1.4));
+        dist += cfg.endPad;
+        return;
+      }
+
+      if (cfg.mobile) {
+        works.forEach((work) => {
+          placeWork(work, tOf(dist), "left");
+          dist += cfg.bay;
+        });
+      } else {
+        for (let i = 0; i < works.length; i++) {
+          const side = i % 2 === 0 ? "left" : "right";
+          if (i > 0 && side === "left") dist += cfg.bay;
+          const tw = tOf(dist + (side === "right" ? cfg.bay * 0.42 : 0));
+          placeWork(works[i], tw, side);
+        }
+        if (works.length) dist += cfg.bay;
+      }
+      dist += cfg.sectionPad;
+    });
+  }
+
+  function ensureExitDock() {
+    if (exitDock) return;
+    exitDock = document.createElement("div");
+    exitDock.id = "exit-dock";
+    exitDock.hidden = true;
+    exitDock.innerHTML = `<a href="/contact/">Let’s connect</a><a class="ghost" href="/">Back to the main site</a>`;
+    document.body.appendChild(exitDock);
+  }
+
+  function disposeScene() {
+    if (renderer) {
+      renderer.dispose();
+      if (renderer.domElement && renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
+    }
+    if (scene) {
+      scene.traverse((obj) => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          mats.forEach((m) => {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          });
+        }
+      });
+    }
+    renderer = null;
+    scene = null;
+    camera = null;
+    clickables = [];
   }
 
   function build3D() {
+    if (typeof THREE === "undefined") {
+      console.error("three.js failed to load");
+      return;
+    }
+    disposeScene();
     cfg = layoutConfig();
     estimatePath();
+    fitPathToLength();
+
+    if (world) world.style.display = "none";
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0c0a08);
+    scene.fog = new THREE.Fog(0x1c1612, Math.max(22, pathLen * 0.5), Math.max(40, pathLen * 1.05));
+
+    const w = stage.clientWidth || window.innerWidth;
+    const h = stage.clientHeight || window.innerHeight;
+    camera = new THREE.PerspectiveCamera(52, w / h, 0.08, pathLen + 20);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.setSize(w, h);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.45;
+    renderer.domElement.id = "gallery-gl";
+    renderer.domElement.setAttribute("aria-hidden", "true");
+    stage.appendChild(renderer.domElement);
+
     buildHallway();
     placeWorks();
-    const px = Math.round(pathLen * 2.35);
-    track.style.height = px + "px";
+    ensureExitDock();
+    bindCanvasClicks();
+
+    track.style.height = Math.round(pathLen * 260 * 2.2) + "px";
     applyCamera(true);
+    if (!animating) {
+      animating = true;
+      requestAnimationFrame(tick);
+    }
+    stage.dataset.ready = "1";
+  }
+
+  function bindCanvasClicks() {
+    const el = renderer.domElement;
+    const ray = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    function setMouse(e) {
+      const r = el.getBoundingClientRect();
+      mouse.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      mouse.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    }
+    el.addEventListener("mousemove", (e) => {
+      setMouse(e);
+      ray.setFromCamera(mouse, camera);
+      const hits = ray.intersectObjects(clickables, false);
+      el.style.cursor = hits.length ? "pointer" : "default";
+    });
+    el.addEventListener("click", (e) => {
+      setMouse(e);
+      ray.setFromCamera(mouse, camera);
+      const hits = ray.intersectObjects(clickables, false);
+      if (hits[0] && hits[0].object.userData.id) openLight(hits[0].object.userData.id);
+    });
   }
 
   function tFromScroll() {
@@ -801,34 +1265,23 @@
   }
 
   function applyCamera(immediate) {
+    if (!camera) return;
     const target = tFromScroll();
     cameraT = immediate ? target : cameraT + (target - cameraT) * 0.18;
     if (Math.abs(target - cameraT) < 0.0004) cameraT = target;
     const p = pathAt(cameraT);
-    // Look slightly ahead along the path
-    const look = pathAt(Math.min(1, cameraT + 0.012));
-    const yaw = Math.atan2(look.x - p.x, -(look.z - p.z));
-    // Camera at (p.x, -cfg.eye, p.z), yaw about Y
-    world.style.transform = `rotateY(${-yaw}rad) translate3d(${-p.x}px, ${cfg.eye}px, ${-p.z}px)`;
+    const look = pathAt(Math.min(1, cameraT + 0.018));
+    camera.position.set(p.x, cfg.eye, p.z);
+    camera.lookAt(look.x, cfg.eye, look.z);
     if (hint && cameraT > 0.03) hint.classList.add("is-hidden");
     updateActiveTab(cameraT);
-    cullPieces(cameraT);
-    if (!immediate && Math.abs(target - cameraT) > 0.0004) {
-      wandering = true;
-      requestAnimationFrame(() => applyCamera(false));
-    } else {
-      wandering = false;
-    }
+    if (exitDock) exitDock.hidden = cameraT < (sectionT.contact || 0.92) - 0.01;
   }
 
-  function cullPieces(t) {
-    placed.forEach((item) => {
-      const d = item.t - t;
-      const show = d > -0.012 && d < 0.16;
-      if (item.el.dataset.on === String(show)) return;
-      item.el.dataset.on = String(show);
-      item.el.style.visibility = show ? "visible" : "hidden";
-    });
+  function tick() {
+    applyCamera(false);
+    if (renderer && scene && camera) renderer.render(scene, camera);
+    requestAnimationFrame(tick);
   }
 
   function updateActiveTab(t) {
@@ -860,9 +1313,11 @@
       const e = k < 0.5 ? 2 * k * k : -1 + (4 - 2 * k) * k;
       window.scrollTo(0, start + (dest - start) * e);
       if (k < 1) requestAnimationFrame(step);
+      else applyCamera(true);
     }
     requestAnimationFrame(step);
   }
+
 
   function buildFlat() {
     const intro = flat.querySelector(".flat-intro");
@@ -977,19 +1432,25 @@
       track.style.display = "none";
     } else {
       flat.hidden = true;
-      build3D();
-      window.addEventListener("scroll", () => {
-        if (!wandering) {
-          wandering = true;
-          requestAnimationFrame(() => applyCamera(false));
-        }
-      }, { passive: true });
+      const start = () => build3D();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(start, start);
+      else start();
       window.addEventListener("resize", () => {
-        const y = tFromScroll();
-        build3D();
-        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        window.scrollTo(0, y * max);
-        applyCamera(true);
+        if (!renderer || !camera) return;
+        const mobile = window.innerWidth < 720;
+        if (mobile !== cfg.mobile) {
+          const y = tFromScroll();
+          build3D();
+          const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          window.scrollTo(0, y * max);
+          applyCamera(true);
+        } else {
+          const w = stage.clientWidth || window.innerWidth;
+          const h = stage.clientHeight || window.innerHeight;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
       });
     }
     initNav();
@@ -999,7 +1460,7 @@
     });
   }
 
-  window.__gallery = { openLight: (id) => openLight(id), closeLight, WORKS, sectionT: () => sectionT };
+  window.__gallery = { openLight: (id) => openLight(id), closeLight, WORKS, sectionT: () => sectionT, snap: () => applyCamera(true) };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();

@@ -41,7 +41,8 @@ body {
   right: 0;
   width: 100%;
   max-width: 100vw;
-  z-index: 40;
+  z-index: 50;
+  transform: translateZ(0);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -68,7 +69,10 @@ body {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  mask-image: linear-gradient(90deg, #000 94%, transparent);
+  min-width: 0;
+  padding-right: 1.25rem;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 32px), transparent);
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 32px), transparent);
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs button {
@@ -105,9 +109,49 @@ body {
 }
 .home-link:hover { text-decoration: underline; }
 
+#gallery-gl, #stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+#world { display: none; }
+#exit-dock {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  bottom: 3.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  pointer-events: auto;
+}
+#exit-dock[hidden] { display: none !important; }
+#exit-dock a {
+  color: #1c1712;
+  background: var(--gold);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 0.75rem 1.1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+#exit-dock a.ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(196,165,116,0.55);
+}
+#exit-dock a:hover { filter: brightness(1.08); }
 #stage {
   position: fixed;
   inset: 0;
+  z-index: 1;
   perspective: 1100px;
   perspective-origin: 50% 50%;
   overflow: hidden;
@@ -190,25 +234,74 @@ body {
   background:
     linear-gradient(to bottom,
       #cbb89a 0%,
-      #e7d9c3 7%,
-      #efe4d0 52%,
-      #d7c6ab 78%,
-      #c4b090 84%,
-      #3f2a1a 84.2%,
-      #5a3a22 92%,
+      #e7d9c3 4%,
+      #efe4d0 50%,
+      #e4d5bc 92%,
+      #c4b090 95.6%,
+      #3f2a1a 96%,
+      #5a3a22 98%,
       #2e1c10 100%);
   box-shadow: none;
 }
-.wall.left, .wall.right { box-shadow: inset 0 16px 18px rgba(80, 50, 20, 0.08); }
-.end-wall {
-  background:
-    linear-gradient(to bottom,
-      #c4b091 0%, #e4d6bf 12%, #efe4d0 58%, #c9b493 84%,
-      #3f2a1a 84.2%, #5a3a22 94%, #2e1c10 100%);
+.wall.left, .wall.right { box-shadow: inset 0 18px 20px rgba(80, 50, 20, 0.07); }
+.wall-back {
+  background: #efe4d0;
+  box-shadow: none;
+}
+.subfloor {
+  background: #5a361e;
+  box-shadow: none;
 }
 .end-wall {
   background:
-    linear-gradient(to bottom, #c4b091 0%, #e4d6bf 14%, #efe4d0 60%, #c9b493 100%);
+    linear-gradient(to bottom,
+      #c4b091 0%, #e4d6bf 8%, #efe4d0 55%, #c9b493 95.6%,
+      #3f2a1a 96%, #5a3a22 98%, #2e1c10 100%);
+}
+
+.light-fixture,
+.floor-pool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+.light-fixture .track-rail {
+  position: absolute;
+  left: -70px;
+  top: -3px;
+  width: 140px;
+  height: 6px;
+  background: linear-gradient(180deg, #3a322c, #1a1512);
+  border-radius: 2px;
+}
+.light-fixture .bulb {
+  position: absolute;
+  left: -8px;
+  top: 2px;
+  width: 16px;
+  height: 11px;
+  border-radius: 50% 50% 40% 40%;
+  background: radial-gradient(circle at 50% 30%, #fff6d4, #e0b75a 70%);
+  box-shadow: 0 0 16px 7px rgba(255, 214, 140, 0.55), 0 0 36px 14px rgba(255, 200, 110, 0.22);
+}
+.light-fixture .beam {
+  position: absolute;
+  left: -55px;
+  top: 10px;
+  width: 110px;
+  height: 160px;
+  background: linear-gradient(to bottom, rgba(255, 220, 150, 0.22), rgba(255, 220, 150, 0.06) 45%, transparent);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  opacity: 0.85;
+}
+.floor-pool {
+  width: 320px;
+  height: 200px;
+  margin-left: -160px;
+  margin-top: -100px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 210, 130, 0.16), transparent 68%);
 }
 
 /* Artwork */
@@ -337,8 +430,8 @@ body {
   left: 50%;
   top: calc(100% + 14px);
   transform: translateX(-50%);
-  width: max(160px, 88%);
-  max-width: 240px;
+  width: 100%;
+  max-width: 100%;
   background: #f3eadc;
   color: var(--ink);
   padding: 0.45rem 0.55rem 0.5rem;
@@ -373,6 +466,14 @@ body {
   color: #2e271f;
 }
 
+.title-card {
+  width: 360px;
+  margin-left: -180px;
+}
+.title-card.entrance-plaque {
+  width: 400px;
+  margin-left: -200px;
+}
 .title-card .plate {
   background: linear-gradient(180deg, #f6efe3, #e6d8c2);
   color: var(--ink);
@@ -630,9 +731,53 @@ body {
   .topbar { padding: 0.35rem 0.6rem; gap: 0.5rem; }
   .wordmark { font-size: 0.9rem; }
   .home-link { display: none; }
-  .tabs button { padding: 0.4rem 0.48rem; font-size: 0.64rem; }
+  .tabs {
+    padding-right: 1.4rem;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 36px), transparent);
+  }
+  .tabs button { padding: 0.42rem 0.55rem; font-size: 0.7rem; color: rgba(244, 239, 230, 0.88); }
   .tabs button[data-go="entrance"] { display: none; }
-  #stage { perspective: 850px; }
+  #gallery-gl, #stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+#world { display: none; }
+#exit-dock {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  bottom: 3.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  pointer-events: auto;
+}
+#exit-dock[hidden] { display: none !important; }
+#exit-dock a {
+  color: #1c1712;
+  background: var(--gold);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 0.75rem 1.1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+#exit-dock a.ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(196,165,116,0.55);
+}
+#exit-dock a:hover { filter: brightness(1.08); }
+#stage { perspective: 850px; }
   .lb-inner { grid-template-columns: 1fr; }
   .lb-visual { max-height: 50vh; }
   .entrance-sign h1, .exit-sign h2 { font-size: 1.7rem; }
