@@ -505,15 +505,40 @@
   let sectionT = {};
   let pathLen = 1;
   let cameraT = 0;
-  let wandering = false;
+  let targetT = 0;
+  let lastTs = 0;
+  let glide = null;
+  let keyFwd = false;
+  let keyBack = false;
+  let drag = null;
+  let suppressClick = false;
+  let lookReady = false;
+  let lastTab = "";
+  let hintHidden = false;
+  let exitShown = false;
+  let progressFill = null;
+  let texLoader = null;
+  let _camPos = null;
+  let _lookAt = null;
+  let _lookDesired = null;
+  let _path = { x: 0, z: 0, yaw: 0, theta: 0 };
+  let _ahead = { x: 0, z: 0, yaw: 0, theta: 0 };
+  let walkBound = false;
 
   let renderer = null;
   let scene = null;
   let camera = null;
   let clickables = [];
-  let workPlaced = []; // {t, x, y, z}
+  let workPlaced = []; // {t, x, y, z, artMat, image, texState}
   let exitDock = null;
   let animating = false;
+
+  const KEY_SPEED = 2.7;
+  const PX_TO_M = 0.028;
+  const POS_RATE = 8.5;
+  const LOOK_RATE = 7.5;
+  const KEY_FWD = new Set(["ArrowDown", "ArrowRight", "w", "W", "d", "D"]);
+  const KEY_BACK = new Set(["ArrowUp", "ArrowLeft", "s", "S", "a", "A"]);
 
   function layoutConfig() {
     const mobile = window.innerWidth < 720;
@@ -540,14 +565,18 @@
     };
   }
 
-  function pathAt(t) {
+  function clamp01(t) {
+    return t < 0 ? 0 : t > 1 ? 1 : t;
+  }
+
+  function pathAt(t, out) {
     const theta = t * cfg.totalAngle;
-    return {
-      x: cfg.radius * (1 - Math.cos(theta)),
-      z: -cfg.radius * Math.sin(theta),
-      yaw: -theta,
-      theta
-    };
+    const p = out || {};
+    p.x = cfg.radius * (1 - Math.cos(theta));
+    p.z = -cfg.radius * Math.sin(theta);
+    p.yaw = -theta;
+    p.theta = theta;
+    return p;
   }
 
   function leftDir(yaw) {
@@ -1095,15 +1124,7 @@
       roughness: 0.48,
       metalness: 0.02
     });
-    if (work.image) {
-      const loader = new THREE.TextureLoader();
-      loader.load(ASSET + work.image, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        artMat.map = tex;
-        artMat.needsUpdate = true;
-      });
-    } else {
+    if (!work.image) {
       artMat.map = artCanvas(work);
     }
     const art = new THREE.Mesh(new THREE.PlaneGeometry(fw - 0.02, fh - 0.02), artMat);
@@ -1125,7 +1146,15 @@
     clickables.push(art, mould, inner);
 
     placeOnWall(t, side, cfg.hang, group);
-    workPlaced.push({ t, x: group.position.x, y: group.position.y, z: group.position.z });
+    workPlaced.push({
+      t,
+      x: group.position.x,
+      y: group.position.y,
+      z: group.position.z,
+      artMat,
+      image: work.image || null,
+      texState: 0
+    });
   }
 
   function placeTitle(sec, t) {
@@ -1139,7 +1168,7 @@
   }
 
   function placeSign(t) {
-    const tex = titleTexture("Warren Daisey", "A Gallery of Accomplishments", "Scroll to walk forward through the hall");
+    const tex = titleTexture("Warren Daisey", "A Gallery of Accomplishments", "Scroll or swipe to walk through the hall");
     const w = 1.9, h = 0.85;
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
@@ -1249,8 +1278,16 @@
     const h = stage.clientHeight || window.innerHeight;
     camera = new THREE.PerspectiveCamera(cfg.mobile ? 54 : 50, w / h, 0.08, pathLen + 20);
 
+    if (!_camPos) {
+      _camPos = new THREE.Vector3();
+      _lookAt = new THREE.Vector3();
+      _lookDesired = new THREE.Vector3();
+    }
+    lookReady = false;
+    texLoader = new THREE.TextureLoader();
+
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.setPixelRatio(Math.min(cfg.mobile ? 1.5 : 2, window.devicePixelRatio || 1));
     renderer.setSize(w, h);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1264,10 +1301,17 @@
     ensureExitDock();
     bindCanvasClicks();
 
-    track.style.height = Math.round(pathLen * 260 * 2.2) + "px";
-    applyCamera(true);
+    track.style.height = "0px";
+    track.style.display = "none";
+    document.documentElement.classList.add("is-walking");
+    if (!progressFill) {
+      progressFill = document.querySelector("#walk-progress > span");
+    }
+    loadNearbyTextures();
+    applyCamera(true, 0);
     if (!animating) {
       animating = true;
+      lastTs = 0;
       requestAnimationFrame(tick);
     }
     stage.dataset.ready = "1";
@@ -1289,6 +1333,10 @@
       el.style.cursor = hits.length ? "pointer" : "default";
     });
     el.addEventListener("click", (e) => {
+      if (suppressClick) {
+        suppressClick = false;
+        return;
+      }
       setMouse(e);
       ray.setFromCamera(mouse, camera);
       const hits = ray.intersectObjects(clickables, false);
@@ -1296,94 +1344,264 @@
     });
   }
 
-  function tFromScroll() {
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    return Math.min(1, Math.max(0, window.scrollY / max));
+  function isWalkUi(target) {
+    if (!target || !target.closest) return false;
+    return !!(
+      target.closest(".tabs") ||
+      target.closest(".topbar") ||
+      target.closest("#lightbox") ||
+      target.closest("dialog") ||
+      target.closest("#exit-dock") ||
+      target.closest(".skip")
+    );
   }
 
-  function applyCamera(immediate) {
+  function lightOpen() {
+    return !!(lightbox && (lightbox.open || lightbox.hasAttribute("open")));
+  }
+
+  function cancelGlide() {
+    glide = null;
+  }
+
+  function loadNearbyTextures() {
+    if (!texLoader || !workPlaced.length) return;
+    const ahead = 18;
+    const behind = 8;
+    for (let i = 0; i < workPlaced.length; i++) {
+      const w = workPlaced[i];
+      if (!w.image || w.texState || !w.artMat) continue;
+      const ds = (w.t - cameraT) * pathLen;
+      if (ds < -behind || ds > ahead) continue;
+      w.texState = 1;
+      texLoader.load(ASSET + w.image, (tex) => {
+        if (!renderer || !w.artMat) {
+          tex.dispose();
+          return;
+        }
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        w.artMat.map = tex;
+        w.artMat.needsUpdate = true;
+      });
+    }
+  }
+
+  function nudgeTarget(meters) {
+    targetT = clamp01(targetT + meters / pathLen);
+  }
+
+  function onWheel(e) {
+    if (reduced || lightOpen() || isWalkUi(e.target)) return;
+    e.preventDefault();
+    cancelGlide();
+    let dy = e.deltaY;
+    if (e.deltaMode === 1) dy *= 16;
+    else if (e.deltaMode === 2) dy *= window.innerHeight;
+    nudgeTarget(dy * PX_TO_M);
+  }
+
+  function onPointerDown(e) {
+    if (reduced || lightOpen() || isWalkUi(e.target)) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    drag = { id: e.pointerId, y: e.clientY, t: targetT, moved: false };
+    try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+  }
+
+  function onPointerMove(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dy) < 8) return;
+    drag.moved = true;
+    suppressClick = true;
+    cancelGlide();
+    if (e.cancelable) e.preventDefault();
+    targetT = clamp01(drag.t - dy * PX_TO_M / pathLen);
+  }
+
+  function onPointerUp(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (drag.moved) suppressClick = true;
+    drag = null;
+  }
+
+  function onTouchMove(e) {
+    if (reduced || lightOpen() || !drag) return;
+    if (isWalkUi(e.target)) return;
+    if (e.cancelable) e.preventDefault();
+  }
+
+  function onKeyDown(e) {
+    if (e.key === "Escape") {
+      closeLight();
+      return;
+    }
+    if (reduced || lightOpen()) return;
+    if (KEY_FWD.has(e.key)) {
+      e.preventDefault();
+      cancelGlide();
+      keyFwd = true;
+    } else if (KEY_BACK.has(e.key)) {
+      e.preventDefault();
+      cancelGlide();
+      keyBack = true;
+    }
+  }
+
+  function onKeyUp(e) {
+    if (KEY_FWD.has(e.key)) keyFwd = false;
+    if (KEY_BACK.has(e.key)) keyBack = false;
+  }
+
+  function bindWalkInput() {
+    if (walkBound) return;
+    walkBound = true;
+    window.addEventListener("wheel", onWheel, { passive: false });
+    stage.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    stage.addEventListener("touchmove", onTouchMove, { passive: false });
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", () => { keyFwd = false; keyBack = false; drag = null; });
+  }
+
+  function applyCamera(immediate, dt) {
     if (!camera) return;
-    const target = tFromScroll();
-    cameraT = immediate ? target : cameraT + (target - cameraT) * 0.18;
-    if (Math.abs(target - cameraT) < 0.0004) cameraT = target;
-    const p = pathAt(cameraT);
-    const hereLeft = leftDir(p.yaw);
+    const dts = dt == null ? 1 / 60 : dt;
+
+    if (keyFwd || keyBack) {
+      cancelGlide();
+      const dir = (keyFwd ? 1 : 0) + (keyBack ? -1 : 0);
+      targetT = clamp01(targetT + dir * (KEY_SPEED / pathLen) * dts);
+    }
+
+    if (glide) {
+      const k = Math.min(1, (performance.now() - glide.t0) / glide.dur);
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      targetT = glide.from + (glide.to - glide.from) * e;
+      if (k >= 1) {
+        targetT = glide.to;
+        glide = null;
+      }
+    }
+
+    targetT = clamp01(targetT);
+    if (immediate || glide) {
+      cameraT = targetT;
+    } else {
+      const a = 1 - Math.exp(-POS_RATE * dts);
+      cameraT += (targetT - cameraT) * a;
+      if (Math.abs(targetT - cameraT) < 0.00015) cameraT = targetT;
+    }
+
+    const p = pathAt(cameraT, _path);
+    const yaw = p.yaw;
+    const lxdir = -Math.cos(yaw);
+    const lzdir = Math.sin(yaw);
     const inset = cfg.camInset || 0.08;
-    camera.position.set(p.x + hereLeft.x * inset, cfg.eye, p.z + hereLeft.z * inset);
-    // Aim several meters ahead; bias toward the left wall AT that point
-    // so the curve presents art more head-on without yawing into the near wall.
+    _camPos.set(p.x + lxdir * inset, cfg.eye, p.z + lzdir * inset);
+    camera.position.copy(_camPos);
+
     const aheadDist = 4.2;
     const aheadT = Math.min(1, cameraT + aheadDist / pathLen);
-    const ahead = pathAt(aheadT);
-    const aheadLeft = leftDir(ahead.yaw);
+    const ahead = pathAt(aheadT, _ahead);
+    const axdir = -Math.cos(ahead.yaw);
+    const azdir = Math.sin(ahead.yaw);
     const bias = cfg.lookBias || 0.45;
-    let lx = ahead.x + aheadLeft.x * bias;
+    let lx = ahead.x + axdir * bias;
     let ly = cfg.eye * 0.35 + cfg.hang * 0.65;
-    let lz = ahead.z + aheadLeft.z * bias;
-    let sumW = 0, ax = 0, ay = 0, az = 0;
+    let lz = ahead.z + azdir * bias;
+    let sumW = 0, wx = 0, wy = 0, wz = 0;
     const peak = 4.2;
+    const sigma = 2.15;
+    const twoSig = 2 * sigma * sigma;
     for (let i = 0; i < workPlaced.length; i++) {
       const w = workPlaced[i];
       const ds = (w.t - cameraT) * pathLen;
-      if (ds < 2.3 || ds > 7.8) continue;
-      const wt = Math.exp(-((ds - peak) * (ds - peak)) / (2.0 * 2.0));
-      ax += w.x * wt;
-      ay += w.y * wt;
-      az += w.z * wt;
+      if (ds < 1.4 || ds > 8.4) continue;
+      const d = ds - peak;
+      const wt = Math.exp(-(d * d) / twoSig);
+      if (wt < 0.02) continue;
+      wx += w.x * wt;
+      wy += w.y * wt;
+      wz += w.z * wt;
       sumW += wt;
     }
     if (sumW > 1e-4) {
       const k = Math.min(0.28, 0.16 + 0.12 * Math.min(1, sumW));
-      lx += (ax / sumW - lx) * k;
-      ly += (ay / sumW - ly) * k * 0.35;
-      lz += (az / sumW - lz) * k;
+      lx += (wx / sumW - lx) * k;
+      ly += (wy / sumW - ly) * k * 0.35;
+      lz += (wz / sumW - lz) * k;
     }
-    camera.lookAt(lx, ly, lz);
-    if (hint && cameraT > 0.03) hint.classList.add("is-hidden");
+    _lookDesired.set(lx, ly, lz);
+    if (immediate || !lookReady) {
+      _lookAt.copy(_lookDesired);
+      lookReady = true;
+    } else {
+      _lookAt.lerp(_lookDesired, 1 - Math.exp(-LOOK_RATE * dts));
+    }
+    camera.lookAt(_lookAt);
+
+    loadNearbyTextures();
+
+    if (hint && !hintHidden && cameraT > 0.03) {
+      hint.classList.add("is-hidden");
+      hintHidden = true;
+    } else if (hint && hintHidden && cameraT <= 0.02) {
+      hint.classList.remove("is-hidden");
+      hintHidden = false;
+    }
     updateActiveTab(cameraT);
-    if (exitDock) exitDock.hidden = cameraT < (sectionT.contact || 0.92) - 0.01;
+    const showExit = cameraT >= (sectionT.contact || 0.92) - 0.01;
+    if (exitDock && showExit !== exitShown) {
+      exitDock.hidden = !showExit;
+      exitShown = showExit;
+    }
+    if (progressFill) progressFill.style.transform = "scaleX(" + cameraT + ")";
   }
 
-  function tick() {
-    applyCamera(false);
+  function tick(now) {
+    const dt = lastTs ? Math.min(0.05, (now - lastTs) / 1000) : 0.016;
+    lastTs = now;
+    applyCamera(false, dt);
     if (renderer && scene && camera) renderer.render(scene, camera);
     requestAnimationFrame(tick);
   }
 
   function updateActiveTab(t) {
-    const ids = SECTIONS.map((s) => s.id);
+    const ids = SECTIONS;
     let current = "entrance";
-    for (const id of ids) {
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i].id;
       if (sectionT[id] != null && t + 0.01 >= sectionT[id]) current = id;
     }
-    document.querySelectorAll(".tabs button").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.dataset.go === current);
-    });
+    if (current === lastTab) return;
+    lastTab = current;
+    const buttons = document.querySelectorAll(".tabs button");
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].classList.toggle("is-active", buttons[i].dataset.go === current);
+    }
   }
 
   function scrollToSection(id) {
     const t = sectionT[id] != null ? sectionT[id] : 0;
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const y = t * max;
     if (reduced) {
       const el = document.getElementById("flat-" + id);
       if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
       return;
     }
-    const start = window.scrollY;
-    const dest = y;
-    const dur = 1100;
-    const t0 = performance.now();
-    function step(now) {
-      const k = Math.min(1, (now - t0) / dur);
-      const e = k < 0.5 ? 2 * k * k : -1 + (4 - 2 * k) * k;
-      window.scrollTo(0, start + (dest - start) * e);
-      if (k < 1) requestAnimationFrame(step);
-      else applyCamera(true);
+    cancelGlide();
+    const from = cameraT;
+    const dist = Math.abs(t - from) * pathLen;
+    const dur = Math.min(2200, Math.max(700, (dist / 9) * 1000));
+    if (dist < 0.05) {
+      targetT = t;
+      return;
     }
-    requestAnimationFrame(step);
+    glide = { from, to: t, t0: performance.now(), dur };
   }
-
 
   function buildFlat() {
     const intro = flat.querySelector(".flat-intro");
@@ -1496,25 +1714,29 @@
       flat.hidden = false;
       stage.hidden = true;
       track.style.display = "none";
+      document.documentElement.classList.remove("is-walking");
     } else {
       flat.hidden = true;
-      const start = () => build3D();
+      const start = () => {
+        build3D();
+        if (renderer) bindWalkInput();
+      };
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(start, start);
       else start();
       window.addEventListener("resize", () => {
         if (!renderer || !camera) return;
         const mobile = window.innerWidth < 720;
         if (mobile !== cfg.mobile) {
-          const y = tFromScroll();
+          const t = targetT;
           build3D();
-          const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-          window.scrollTo(0, y * max);
-          applyCamera(true);
+          targetT = cameraT = clamp01(t);
+          applyCamera(true, 0);
         } else {
           const w = stage.clientWidth || window.innerWidth;
           const h = stage.clientHeight || window.innerHeight;
           camera.aspect = w / h;
           camera.updateProjectionMatrix();
+          renderer.setPixelRatio(Math.min(cfg.mobile ? 1.5 : 2, window.devicePixelRatio || 1));
           renderer.setSize(w, h);
         }
       });
@@ -1531,7 +1753,23 @@
       closeLight,
       WORKS,
       sectionT: () => sectionT,
-      snap: () => applyCamera(true),
+      progress: () => ({ t: cameraT, target: targetT }),
+      goto: (t, immediate) => {
+        cancelGlide();
+        targetT = clamp01(t);
+        if (immediate) {
+          cameraT = targetT;
+          lookReady = false;
+          applyCamera(true, 0);
+          if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+      },
+      snap: () => {
+        cameraT = targetT;
+        lookReady = false;
+        applyCamera(true, 0);
+        if (renderer && scene && camera) renderer.render(scene, camera);
+      },
       measure: () => {
         if (!camera || !workPlaced.length) return null;
         const t = cameraT;
