@@ -985,3 +985,7 @@ body.door-open { overflow: hidden; }
   }
 }
 
+
+html.is-paused, html.is-paused * {
+  animation-play-state: paused !important;
+}

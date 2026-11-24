@@ -465,6 +465,7 @@
       .stage, .links-wrap { max-width: 560px; }
     }
 
+    html.is-paused, html.is-paused * { animation-play-state: paused !important; }
     @media (prefers-reduced-motion: reduce) {
       .bg-video { display: none; }
       .sleigh-wrap { display: none; }
@@ -1427,6 +1428,15 @@
       }
       var video = document.querySelector(".bg-video");
       if (video && reduce) video.removeAttribute("autoplay");
+      function syncPause() {
+        var hidden = document.hidden;
+        document.documentElement.classList.toggle("is-paused", hidden);
+        var v = document.querySelector(".bg-video");
+        if (!v) return;
+        if (hidden) { try { v.pause(); } catch (e) {} }
+        else if (!reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      }
+      document.addEventListener("visibilitychange", syncPause);
     })();
   </script>
 </body>

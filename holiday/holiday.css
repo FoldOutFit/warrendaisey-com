@@ -730,3 +730,7 @@ html { scroll-padding-top: 7.5rem; }
       linear-gradient(180deg, var(--cream), var(--blush));
   }
 }
+
+html.is-paused, html.is-paused * {
+  animation-play-state: paused !important;
+}

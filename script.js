@@ -25,3 +25,24 @@
   }, { threshold: 0.12 });
   items.forEach(function (el) { io.observe(el); });
 })();
+
+(function () {
+  function syncPause() {
+    var hidden = document.hidden;
+    document.documentElement.classList.toggle("is-paused", hidden);
+    var videos = document.querySelectorAll("video");
+    for (var i = 0; i < videos.length; i++) {
+      var v = videos[i];
+      if (hidden) {
+        if (!v.paused) v.setAttribute("data-was-playing", "1");
+        try { v.pause(); } catch (e) {}
+      } else if (v.hasAttribute("data-was-playing") || v.hasAttribute("autoplay")) {
+        v.removeAttribute("data-was-playing");
+        var play = v.play();
+        if (play && play.catch) play.catch(function () {});
+      }
+    }
+  }
+  document.addEventListener("visibilitychange", syncPause);
+  syncPause();
+})();

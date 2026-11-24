@@ -531,7 +531,16 @@
   let clickables = [];
   let workPlaced = []; // {t, x, y, z, artMat, image, texState}
   let exitDock = null;
-  let animating = false;
+  let raf = 0;
+  let pageHidden = false;
+  let canvasOffscreen = false;
+  let qualityDropped = false;
+  let slowFrames = 0;
+  let lookErr = 0;
+  let lastProgressT = -1;
+  let pauseBound = false;
+  let resizeTimer = 0;
+  let sharedFrame = null;
 
   const KEY_SPEED = 2.7;
   const PX_TO_M = 0.028;
@@ -567,6 +576,65 @@
 
   function clamp01(t) {
     return t < 0 ? 0 : t > 1 ? 1 : t;
+  }
+
+  function pixelCap() {
+    const dpr = window.devicePixelRatio || 1;
+    if (qualityDropped) return Math.min(1, dpr);
+    return Math.min(1.35, dpr);
+  }
+
+  function useAntialias() {
+    return (window.devicePixelRatio || 1) <= 1.01;
+  }
+
+  function pageIsPaused() {
+    return pageHidden || canvasOffscreen;
+  }
+
+  function shouldKeepRendering() {
+    if (pageIsPaused()) return false;
+    if (keyFwd || keyBack || drag || glide) return true;
+    if (Math.abs(targetT - cameraT) > 0.00012) return true;
+    if (lookErr > 1e-6) return true;
+    return false;
+  }
+
+  function kickRender() {
+    if (pageIsPaused() || !renderer) return;
+    if (raf) return;
+    lastTs = 0;
+    raf = requestAnimationFrame(tick);
+  }
+
+  function stopRender() {
+    if (raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  }
+
+  function capTexture(tex, maxSize) {
+    tex.generateMipmaps = true;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.anisotropy = Math.min(4, renderer ? renderer.capabilities.getMaxAnisotropy() : 4);
+    const img = tex.image;
+    if (img && img.width && img.height) {
+      const maxDim = Math.max(img.width, img.height);
+      if (maxDim > maxSize) {
+        const scale = maxSize / maxDim;
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        tex.image = c;
+        tex.needsUpdate = true;
+      }
+    }
+    return tex;
   }
 
   function pathAt(t, out) {
@@ -665,7 +733,9 @@
     draw(ctx, w, h);
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = renderer ? renderer.capabilities.getMaxAnisotropy() : 4;
+    tex.generateMipmaps = true;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.anisotropy = Math.min(4, renderer ? renderer.capabilities.getMaxAnisotropy() : 4);
     return tex;
   }
 
@@ -685,7 +755,7 @@
   }
 
   function woodTexture() {
-    return makeCanvasTexture(1024, 256, (ctx, w, h) => {
+    return makeCanvasTexture(512, 128, (ctx, w, h) => {
       ctx.fillStyle = "#4e2f18";
       ctx.fillRect(0, 0, w, h);
       const plank = 64;
@@ -741,7 +811,7 @@
 
   function floorGeo(Rinner, Router, th0, th1, segs, y, normalUp) {
     const pos = [], nrm = [], uv = [], idx = [];
-    const radial = 8;
+    const radial = 5;
     for (let i = 0; i <= segs; i++) {
       const t = i / segs;
       const th = th0 + (th1 - th0) * t;
@@ -776,8 +846,8 @@
 
 
   function addBenches() {
-    const wood = new THREE.MeshStandardMaterial({ color: 0x5c3a22, roughness: 0.72, metalness: 0.04 });
-    const dark = new THREE.MeshStandardMaterial({ color: 0x3a2414, roughness: 0.7, metalness: 0.04 });
+    const wood = new THREE.MeshLambertMaterial({ color: 0x5c3a22 });
+    const dark = new THREE.MeshLambertMaterial({ color: 0x3a2414 });
     const step = 10;
     const n = Math.floor(pathLen / step);
     const seatW = 1.55;
@@ -785,31 +855,50 @@
     const seatH = 0.07;
     const h = 0.44;
     const wallDist = cfg.hallW / 2 - 0.48;
+    const poses = [];
     for (let i = 1; i < n; i++) {
       const t = (i * step) / pathLen;
       if (t < 0.04 || t > 0.93) continue;
       const p = pathAt(t);
       const dir = rightDir(p.yaw);
-      const g = new THREE.Group();
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(seatW, seatH, seatD), wood);
-      seat.position.y = h;
-      g.add(seat);
-      const back = new THREE.Mesh(new THREE.BoxGeometry(seatW, 0.28, 0.05), wood);
-      back.position.set(0, h + 0.16, -seatD / 2 + 0.03);
-      g.add(back);
-      [-0.62, 0.62].forEach((x) => {
-        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.07, h, 0.07), dark);
-        leg.position.set(x, h / 2, seatD * 0.28);
-        g.add(leg);
-        const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.07, h, 0.07), dark);
-        leg2.position.set(x, h / 2, -seatD * 0.28);
-        g.add(leg2);
+      poses.push({
+        x: p.x + dir.x * wallDist,
+        z: p.z + dir.z * wallDist,
+        yaw: p.yaw + Math.PI / 2
       });
-      g.position.set(p.x + dir.x * wallDist, 0, p.z + dir.z * wallDist);
-      // Long axis along the hall, back against the right wall
-      g.rotation.y = p.yaw + Math.PI / 2;
-      scene.add(g);
     }
+    if (!poses.length) return;
+    const dummy = new THREE.Object3D();
+    function stamp(mesh, localX, localY, localZ, i, pose) {
+      dummy.position.set(0, 0, 0);
+      dummy.rotation.set(0, 0, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.position.set(localX, localY, localZ);
+      dummy.updateMatrix();
+      const local = dummy.matrix.clone();
+      dummy.position.set(pose.x, 0, pose.z);
+      dummy.rotation.set(0, pose.yaw, 0);
+      dummy.updateMatrix();
+      dummy.matrix.multiply(local);
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    const seats = new THREE.InstancedMesh(new THREE.BoxGeometry(seatW, seatH, seatD), wood, poses.length);
+    const backs = new THREE.InstancedMesh(new THREE.BoxGeometry(seatW, 0.28, 0.05), wood, poses.length);
+    const legs = new THREE.InstancedMesh(new THREE.BoxGeometry(0.07, h, 0.07), dark, poses.length * 4);
+    poses.forEach((pose, i) => {
+      stamp(seats, 0, h, 0, i, pose);
+      stamp(backs, 0, h + 0.16, -seatD / 2 + 0.03, i, pose);
+      let k = 0;
+      [-0.62, 0.62].forEach((x) => {
+        stamp(legs, x, h / 2, seatD * 0.28, i * 4 + k, pose); k++;
+        stamp(legs, x, h / 2, -seatD * 0.28, i * 4 + k, pose); k++;
+      });
+    });
+    seats.instanceMatrix.needsUpdate = true;
+    backs.instanceMatrix.needsUpdate = true;
+    legs.instanceMatrix.needsUpdate = true;
+    seats.frustumCulled = backs.frustumCulled = legs.frustumCulled = false;
+    scene.add(seats, backs, legs);
   }
 
   function buildHallway() {
@@ -819,40 +908,32 @@
     const Rright = Math.max(R - half, 1.2);
     const th0 = -0.1;
     const th1 = cfg.totalAngle + 0.08;
-    const segs = Math.max(80, Math.round(pathLen * 1.4));
+    const segs = Math.max(48, Math.round(pathLen * 0.4));
     const wallH = cfg.wallH;
 
     const plaster = wrapTex(plasterTexture(), 1, 1);
-    const wallMat = new THREE.MeshStandardMaterial({
+    const wallMat = new THREE.MeshLambertMaterial({
       map: plaster,
       color: 0xefe4d0,
-      roughness: 0.9,
-      metalness: 0.02,
       side: THREE.DoubleSide
     });
-    const baseMat = new THREE.MeshStandardMaterial({
+    const baseMat = new THREE.MeshLambertMaterial({
       color: 0x4a2e18,
-      roughness: 0.75,
-      metalness: 0.05,
       side: THREE.DoubleSide
     });
-    const crownMat = new THREE.MeshStandardMaterial({
+    const crownMat = new THREE.MeshLambertMaterial({
       color: 0xd7c4a6,
-      roughness: 0.7,
-      metalness: 0.04,
       side: THREE.DoubleSide
     });
-    const ceilMat = new THREE.MeshStandardMaterial({
+    const ceilMat = new THREE.MeshLambertMaterial({
       color: 0x3a3330,
-      roughness: 0.88,
-      metalness: 0,
       side: THREE.DoubleSide
     });
     const wood = wrapTex(woodTexture(), 1, 1);
-    const floorMat = new THREE.MeshStandardMaterial({
+    const floorMat = new THREE.MeshPhongMaterial({
       map: wood,
-      roughness: 0.72,
-      metalness: 0.04,
+      shininess: 12,
+      specular: 0x3a2a18,
       side: THREE.DoubleSide
     });
 
@@ -877,17 +958,12 @@
     endMesh.rotation.y = end.yaw;
     scene.add(endMesh);
 
-    scene.add(new THREE.HemisphereLight(0xfff6e8, 0x6a4a30, 1.55));
-    scene.add(new THREE.AmbientLight(0x9a8a74, 0.9));
+    scene.add(new THREE.HemisphereLight(0xfff6e8, 0x6a4a30, 1.7));
+    scene.add(new THREE.AmbientLight(0x9a8a74, 1.05));
 
     const nLights = Math.max(7, Math.round(pathLen / 5.6));
-    const fixtureMat = new THREE.MeshStandardMaterial({ color: 0x3a332c, roughness: 0.45, metalness: 0.4 });
-    const bulbMat = new THREE.MeshStandardMaterial({
-      color: 0xfff0c8,
-      emissive: 0xffdca0,
-      emissiveIntensity: 3.2,
-      roughness: 0.35
-    });
+    const fixtureMat = new THREE.MeshLambertMaterial({ color: 0x3a332c });
+    const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffe8b0 });
     const beamMat = new THREE.MeshBasicMaterial({
       color: 0xffd9a0,
       transparent: true,
@@ -895,43 +971,69 @@
       depthWrite: false,
       side: THREE.DoubleSide
     });
+    const railMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.7, 0.025, 0.05), fixtureMat, nLights + 1);
+    const armMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.035, 0.12, 0.035), fixtureMat, nLights + 1);
+    const bulbMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.05, 8, 6), bulbMat, nLights + 1);
+    const coneMesh = new THREE.InstancedMesh(new THREE.ConeGeometry(1.05, 2.5, 12, 1, true), beamMat, nLights + 1);
+    const trackMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.07, 0.03, 1), fixtureMat, nLights);
+    const dummy = new THREE.Object3D();
+    const lightStep = Math.max(4, Math.round(nLights / 8));
+    const fillStep = Math.max(8, Math.round(nLights / 5));
     let prev = null;
     for (let i = 0; i <= nLights; i++) {
       const p = pathAt(i / nLights);
-      const spot = new THREE.SpotLight(0xffe0b0, 22, 14, Math.PI / 6.5, 0.5, 1.0);
-      spot.position.set(p.x, wallH - 0.06, p.z);
-      spot.target.position.set(p.x, 0.05, p.z);
-      scene.add(spot);
-      scene.add(spot.target);
-      const wash = new THREE.PointLight(0xffe3b8, 3.2, 7.5, 1.4);
-      wash.position.set(p.x, wallH - 0.35, p.z);
-      scene.add(wash);
+      if (i % lightStep === 0) {
+        const spot = new THREE.SpotLight(0xffe0b0, 20, 16, Math.PI / 6.5, 0.5, 1.0);
+        spot.position.set(p.x, wallH - 0.06, p.z);
+        spot.target.position.set(p.x, 0.05, p.z);
+        scene.add(spot);
+        scene.add(spot.target);
+      }
+      if (i % fillStep === 0) {
+        const wash = new THREE.PointLight(0xffe3b8, 4.2, 12, 1.4);
+        wash.position.set(p.x, wallH - 0.35, p.z);
+        scene.add(wash);
+      }
+
+      dummy.position.set(p.x, wallH - 0.03, p.z);
+      dummy.rotation.set(0, p.yaw, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      railMesh.setMatrixAt(i, dummy.matrix);
+
+      dummy.position.set(p.x, wallH - 0.09, p.z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix();
+      armMesh.setMatrixAt(i, dummy.matrix);
+
+      dummy.position.set(p.x, wallH - 0.16, p.z);
+      dummy.updateMatrix();
+      bulbMesh.setMatrixAt(i, dummy.matrix);
+
+      dummy.position.set(p.x, wallH - 0.16 - 1.25, p.z);
+      dummy.updateMatrix();
+      coneMesh.setMatrixAt(i, dummy.matrix);
 
       if (prev) {
         const mid = pathAt((i - 0.5) / nLights);
         const dx = p.x - prev.x, dz = p.z - prev.z;
         const len = Math.sqrt(dx * dx + dz * dz) + 0.04;
-        const track = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.03, len), fixtureMat);
-        track.position.set(mid.x, wallH - 0.015, mid.z);
-        track.rotation.y = mid.yaw;
-        scene.add(track);
+        dummy.position.set(mid.x, wallH - 0.015, mid.z);
+        dummy.rotation.set(0, mid.yaw, 0);
+        dummy.scale.set(1, 1, len);
+        dummy.updateMatrix();
+        trackMesh.setMatrixAt(i - 1, dummy.matrix);
       }
-      prev = p;
-
-      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.025, 0.05), fixtureMat);
-      rail.position.set(p.x, wallH - 0.03, p.z);
-      rail.rotation.y = p.yaw;
-      scene.add(rail);
-      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.12, 0.035), fixtureMat);
-      arm.position.set(p.x, wallH - 0.09, p.z);
-      scene.add(arm);
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 14, 10), bulbMat);
-      bulb.position.set(p.x, wallH - 0.16, p.z);
-      scene.add(bulb);
-      const cone = new THREE.Mesh(new THREE.ConeGeometry(1.05, 2.5, 20, 1, true), beamMat);
-      cone.position.set(p.x, wallH - 0.16 - 1.25, p.z);
-      scene.add(cone);
+      prev = { x: p.x, z: p.z };
     }
+    railMesh.instanceMatrix.needsUpdate = true;
+    armMesh.instanceMatrix.needsUpdate = true;
+    bulbMesh.instanceMatrix.needsUpdate = true;
+    coneMesh.instanceMatrix.needsUpdate = true;
+    trackMesh.instanceMatrix.needsUpdate = true;
+    railMesh.frustumCulled = armMesh.frustumCulled = bulbMesh.frustumCulled = false;
+    coneMesh.frustumCulled = trackMesh.frustumCulled = false;
+    scene.add(railMesh, armMesh, bulbMesh, coneMesh, trackMesh);
     const endLight = new THREE.PointLight(0xffe6c0, 8, 12, 1.2);
     const endP = pathAt(0.97);
     endLight.position.set(endP.x, wallH * 0.7, endP.z);
@@ -941,7 +1043,7 @@
   }
 
   function artCanvas(work) {
-    const W = 768, H = 1024;
+    const W = 512, H = 682;
     return makeCanvasTexture(W, H, (ctx) => {
       if (work.empty === "concept") {
         const n = parseInt((work.no || "0").replace(/\D/g, ""), 10) || 2;
@@ -952,30 +1054,30 @@
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
         ctx.strokeStyle = "rgba(212,184,130,0.4)";
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 220 + (n % 5) * 8, 0, Math.PI * 2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 130 + (n % 7) * 6, 0, Math.PI * 2); ctx.stroke();
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 147 + (n % 5) * 5, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(W / 2, H * 0.46, 87 + (n % 7) * 4, 0, Math.PI * 2); ctx.stroke();
         ctx.fillStyle = "rgba(232,214,180,0.78)";
-        ctx.font = "600 42px 'Cormorant Garamond', serif";
+        ctx.font = "600 28px 'Cormorant Garamond', serif";
         ctx.textAlign = "center";
-        ctx.letterSpacing = "8px";
+        ctx.letterSpacing = "5px";
         ctx.fillText("CONCEPT", W / 2, H * 0.5);
-        ctx.font = "600 18px 'Source Sans 3', sans-serif";
+        ctx.font = "600 12px 'Source Sans 3', sans-serif";
         ctx.fillStyle = "rgba(232,214,180,0.55)";
-        ctx.fillText("IMAGE COMING SOON", W / 2, H * 0.5 + 36);
-        ctx.font = "500 22px 'Cormorant Garamond', serif";
+        ctx.fillText("IMAGE COMING SOON", W / 2, H * 0.5 + 24);
+        ctx.font = "500 15px 'Cormorant Garamond', serif";
         ctx.fillText(String(n).padStart(2, "0"), W / 2, H * 0.86);
       } else if (work.empty === "plaque") {
-        const g = ctx.createRadialGradient(W / 2, H * 0.4, 40, W / 2, H * 0.5, 520);
+        const g = ctx.createRadialGradient(W / 2, H * 0.4, 27, W / 2, H * 0.5, 347);
         g.addColorStop(0, "#c4a265");
         g.addColorStop(1, "#7a5a2e");
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
         ctx.fillStyle = "#2a1d0e";
         ctx.textAlign = "center";
-        ctx.font = "600 46px 'Cormorant Garamond', serif";
-        wrapText(ctx, work.title, W / 2, H * 0.46, W * 0.78, 56);
-        ctx.font = "600 20px 'Source Sans 3', sans-serif";
+        ctx.font = "600 31px 'Cormorant Garamond', serif";
+        wrapText(ctx, work.title, W / 2, H * 0.46, W * 0.78, 37);
+        ctx.font = "600 13px 'Source Sans 3', sans-serif";
         ctx.fillText((work.date || "Award").toUpperCase(), W / 2, H * 0.62);
       } else {
         const g = ctx.createLinearGradient(0, 0, W, H);
@@ -985,8 +1087,8 @@
         ctx.fillRect(0, 0, W, H);
         ctx.fillStyle = "rgba(80,58,32,0.55)";
         ctx.textAlign = "center";
-        ctx.font = "600 36px 'Cormorant Garamond', serif";
-        wrapText(ctx, work.emptyLabel || "Photo coming soon", W / 2, H * 0.5, W * 0.7, 44);
+        ctx.font = "600 24px 'Cormorant Garamond', serif";
+        wrapText(ctx, work.emptyLabel || "Photo coming soon", W / 2, H * 0.5, W * 0.7, 29);
       }
     });
   }
@@ -1008,36 +1110,36 @@
   }
 
   function placardTexture(work) {
-    const W = 1024, H = 420;
+    const W = 512, H = 210;
     return makeCanvasTexture(W, H, (ctx) => {
       ctx.fillStyle = "#f3eadc";
       ctx.fillRect(0, 0, W, H);
       ctx.strokeStyle = "#d7c7a8";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(2, 2, W - 4, H - 4);
-      let y = 56;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, 1, W - 2, H - 2);
+      let y = 28;
       ctx.textAlign = "left";
       if (work.no) {
         ctx.fillStyle = "#8d6d3e";
-        ctx.font = "700 28px 'Source Sans 3', sans-serif";
-        ctx.fillText(String(work.no).toUpperCase(), 40, y);
-        y += 52;
+        ctx.font = "700 14px 'Source Sans 3', sans-serif";
+        ctx.fillText(String(work.no).toUpperCase(), 20, y);
+        y += 26;
       }
       ctx.fillStyle = "#1c1712";
-      ctx.font = "600 44px 'Cormorant Garamond', serif";
-      wrapTextLeft(ctx, work.title, 40, y, W - 80, 50);
-      y += 50 * Math.max(1, Math.ceil(ctx.measureText(work.title).width / (W - 80))) + 18;
+      ctx.font = "600 22px 'Cormorant Garamond', serif";
+      wrapTextLeft(ctx, work.title, 20, y, W - 40, 25);
+      y += 25 * Math.max(1, Math.ceil(ctx.measureText(work.title).width / (W - 40))) + 9;
       const meta = [work.date, work.place].filter(Boolean).join("  ·  ");
       if (meta) {
         ctx.fillStyle = "#4a4036";
-        ctx.font = "400 26px 'Source Sans 3', sans-serif";
-        ctx.fillText(meta, 40, y);
-        y += 42;
+        ctx.font = "400 13px 'Source Sans 3', sans-serif";
+        ctx.fillText(meta, 20, y);
+        y += 21;
       }
       if (work.line) {
         ctx.fillStyle = "#2e271f";
-        ctx.font = "400 28px 'Source Sans 3', sans-serif";
-        wrapTextLeft(ctx, work.line, 40, y, W - 80, 36);
+        ctx.font = "400 14px 'Source Sans 3', sans-serif";
+        wrapTextLeft(ctx, work.line, 20, y, W - 40, 18);
       }
     });
   }
@@ -1057,7 +1159,7 @@
   }
 
   function titleTexture(kicker, title, sub) {
-    const W = 1024, H = 420;
+    const W = 512, H = 210;
     return makeCanvasTexture(W, H, (ctx) => {
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, "#f6efe3");
@@ -1065,24 +1167,24 @@
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
       ctx.strokeStyle = "#c4a574";
-      ctx.lineWidth = 6;
-      ctx.strokeRect(3, 3, W - 6, H - 6);
-      ctx.strokeStyle = "#8d6d3e";
       ctx.lineWidth = 3;
-      ctx.strokeRect(18, 18, W - 36, H - 36);
+      ctx.strokeRect(1.5, 1.5, W - 3, H - 3);
+      ctx.strokeStyle = "#8d6d3e";
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(9, 9, W - 18, H - 18);
       ctx.textAlign = "center";
       if (kicker) {
         ctx.fillStyle = "#8d6d3e";
-        ctx.font = "700 24px 'Source Sans 3', sans-serif";
-        ctx.fillText(String(kicker).toUpperCase(), W / 2, 90);
+        ctx.font = "700 12px 'Source Sans 3', sans-serif";
+        ctx.fillText(String(kicker).toUpperCase(), W / 2, 45);
       }
       ctx.fillStyle = "#1c1712";
-      ctx.font = "600 54px 'Cormorant Garamond', serif";
-      wrapText(ctx, title, W / 2, sub ? 190 : 220, W - 120, 62);
+      ctx.font = "600 27px 'Cormorant Garamond', serif";
+      wrapText(ctx, title, W / 2, sub ? 95 : 110, W - 60, 31);
       if (sub) {
         ctx.fillStyle = "#4a4036";
-        ctx.font = "italic 500 28px 'Cormorant Garamond', serif";
-        wrapText(ctx, sub, W / 2, 330, W - 140, 36);
+        ctx.font = "italic 500 14px 'Cormorant Garamond', serif";
+        wrapText(ctx, sub, W / 2, 165, W - 70, 18);
       }
     });
   }
@@ -1101,33 +1203,33 @@
     const group = new THREE.Group();
     const fw = cfg.frameW;
     const fh = cfg.frameH;
-    const gold = new THREE.MeshStandardMaterial({
-      color: 0xc4a574,
-      roughness: 0.35,
-      metalness: 0.6,
-      emissive: 0x2a1c08,
-      emissiveIntensity: 0.22
-    });
-    const matInner = new THREE.MeshStandardMaterial({
-      color: 0x1a1612,
-      roughness: 0.6,
-      metalness: 0
-    });
-    const mould = new THREE.Mesh(new THREE.BoxGeometry(fw + 0.08, fh + 0.08, 0.04), gold);
+    if (!sharedFrame) {
+      sharedFrame = {
+        mouldGeo: new THREE.BoxGeometry(fw + 0.08, fh + 0.08, 0.04),
+        innerGeo: new THREE.BoxGeometry(fw, fh, 0.01),
+        artGeo: new THREE.PlaneGeometry(fw - 0.02, fh - 0.02),
+        gold: new THREE.MeshPhongMaterial({
+          color: 0xc4a574,
+          shininess: 48,
+          specular: 0x8a7040,
+          emissive: 0x2a1c08,
+          emissiveIntensity: 0.22
+        }),
+        inner: new THREE.MeshLambertMaterial({ color: 0x1a1612 })
+      };
+    }
+    const mould = new THREE.Mesh(sharedFrame.mouldGeo, sharedFrame.gold);
     mould.position.z = 0.01;
     group.add(mould);
-    const inner = new THREE.Mesh(new THREE.BoxGeometry(fw, fh, 0.01), matInner);
+    const inner = new THREE.Mesh(sharedFrame.innerGeo, sharedFrame.inner);
     inner.position.z = 0.028;
     group.add(inner);
 
-    const artMat = new THREE.MeshStandardMaterial({
-      roughness: 0.48,
-      metalness: 0.02
-    });
+    const artMat = new THREE.MeshLambertMaterial();
     if (!work.image) {
       artMat.map = artCanvas(work);
     }
-    const art = new THREE.Mesh(new THREE.PlaneGeometry(fw - 0.02, fh - 0.02), artMat);
+    const art = new THREE.Mesh(sharedFrame.artGeo, artMat);
     art.position.z = 0.036;
     group.add(art);
 
@@ -1135,7 +1237,7 @@
     const pH = Math.min(0.46, fw * (380 / 1024));
     const placard = new THREE.Mesh(
       new THREE.PlaneGeometry(fw, pH),
-      new THREE.MeshStandardMaterial({ map: pTex, roughness: 0.7, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.12 })
+      new THREE.MeshLambertMaterial({ map: pTex, emissive: 0x3a3020, emissiveIntensity: 0.12 })
     );
     placard.position.set(0, -fh / 2 - 0.05 - pH / 2, 0.02);
     group.add(placard);
@@ -1162,7 +1264,7 @@
     const w = 1.7, h = 0.7;
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+      new THREE.MeshLambertMaterial({ map: tex, emissive: 0x3a3020, emissiveIntensity: 0.15 })
     );
     placeOnWall(t, "left", cfg.hang + 0.1, mesh);
   }
@@ -1172,7 +1274,7 @@
     const w = 1.9, h = 0.85;
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+      new THREE.MeshLambertMaterial({ map: tex, emissive: 0x3a3020, emissiveIntensity: 0.15 })
     );
     placeOnWall(t, "left", cfg.hang + 0.05, mesh);
   }
@@ -1182,7 +1284,7 @@
     const w = 2.1, h = 0.95;
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(w, h),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0, emissive: 0x3a3020, emissiveIntensity: 0.15 })
+      new THREE.MeshLambertMaterial({ map: tex, emissive: 0x3a3020, emissiveIntensity: 0.15 })
     );
     const p = pathAt(t);
     const f = fwdDir(p.yaw);
@@ -1235,6 +1337,8 @@
   }
 
   function disposeScene() {
+    stopRender();
+    sharedFrame = null;
     if (renderer) {
       renderer.dispose();
       if (renderer.domElement && renderer.domElement.parentNode) {
@@ -1286,8 +1390,15 @@
     lookReady = false;
     texLoader = new THREE.TextureLoader();
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(cfg.mobile ? 1.5 : 2, window.devicePixelRatio || 1));
+    qualityDropped = false;
+    slowFrames = 0;
+    sharedFrame = null;
+    renderer = new THREE.WebGLRenderer({
+      antialias: useAntialias(),
+      alpha: false,
+      powerPreference: "low-power"
+    });
+    renderer.setPixelRatio(pixelCap());
     renderer.setSize(w, h);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1309,11 +1420,9 @@
     }
     loadNearbyTextures();
     applyCamera(true, 0);
-    if (!animating) {
-      animating = true;
-      lastTs = 0;
-      requestAnimationFrame(tick);
-    }
+    if (renderer && scene && camera) renderer.render(scene, camera);
+    kickRender();
+    bindPauseObservers();
     stage.dataset.ready = "1";
   }
 
@@ -1326,7 +1435,11 @@
       mouse.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       mouse.y = -((e.clientY - r.top) / r.height) * 2 + 1;
     }
+    let cursorAt = 0;
     el.addEventListener("mousemove", (e) => {
+      const now = performance.now();
+      if (now - cursorAt < 50) return;
+      cursorAt = now;
       setMouse(e);
       ray.setFromCamera(mouse, camera);
       const hits = ray.intersectObjects(clickables, false);
@@ -1368,21 +1481,34 @@
     if (!texLoader || !workPlaced.length) return;
     const ahead = 18;
     const behind = 8;
+    const dropAhead = 32;
+    const dropBehind = 16;
     for (let i = 0; i < workPlaced.length; i++) {
       const w = workPlaced[i];
-      if (!w.image || w.texState || !w.artMat) continue;
+      if (!w.image || !w.artMat) continue;
       const ds = (w.t - cameraT) * pathLen;
-      if (ds < -behind || ds > ahead) continue;
+      if (w.texState === 2 && (ds < -dropBehind || ds > dropAhead)) {
+        if (w.artMat.map) {
+          w.artMat.map.dispose();
+          w.artMat.map = null;
+          w.artMat.needsUpdate = true;
+        }
+        w.texState = 0;
+        continue;
+      }
+      if (w.texState || ds < -behind || ds > ahead) continue;
       w.texState = 1;
       texLoader.load(ASSET + w.image, (tex) => {
-        if (!renderer || !w.artMat) {
+        if (!renderer || !w.artMat || w.texState === 0) {
           tex.dispose();
           return;
         }
         tex.colorSpace = THREE.SRGBColorSpace;
-        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        capTexture(tex, 1024);
         w.artMat.map = tex;
         w.artMat.needsUpdate = true;
+        w.texState = 2;
+        kickRender();
       });
     }
   }
@@ -1399,6 +1525,7 @@
     if (e.deltaMode === 1) dy *= 16;
     else if (e.deltaMode === 2) dy *= window.innerHeight;
     nudgeTarget(dy * PX_TO_M);
+    kickRender();
   }
 
   function onPointerDown(e) {
@@ -1417,6 +1544,7 @@
     cancelGlide();
     if (e.cancelable) e.preventDefault();
     targetT = clamp01(drag.t - dy * PX_TO_M / pathLen);
+    kickRender();
   }
 
   function onPointerUp(e) {
@@ -1441,16 +1569,58 @@
       e.preventDefault();
       cancelGlide();
       keyFwd = true;
+      kickRender();
     } else if (KEY_BACK.has(e.key)) {
       e.preventDefault();
       cancelGlide();
       keyBack = true;
+      kickRender();
     }
   }
 
   function onKeyUp(e) {
     if (KEY_FWD.has(e.key)) keyFwd = false;
     if (KEY_BACK.has(e.key)) keyBack = false;
+  }
+
+  function onResize() {
+    if (!renderer || !camera) return;
+    const mobile = window.innerWidth < 720;
+    if (mobile !== cfg.mobile) {
+      const t = targetT;
+      build3D();
+      targetT = cameraT = clamp01(t);
+      applyCamera(true, 0);
+      if (renderer && scene && camera) renderer.render(scene, camera);
+    } else {
+      const w = stage.clientWidth || window.innerWidth;
+      const h = stage.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(pixelCap());
+      renderer.setSize(w, h);
+    }
+    kickRender();
+  }
+
+  function bindPauseObservers() {
+    if (pauseBound) return;
+    pauseBound = true;
+    pageHidden = document.hidden;
+    document.addEventListener("visibilitychange", () => {
+      pageHidden = document.hidden;
+      if (pageHidden) stopRender();
+      else kickRender();
+    });
+    if (typeof IntersectionObserver === "function" && stage) {
+      const io = new IntersectionObserver((entries) => {
+        const hit = entries[0];
+        canvasOffscreen = !!(hit && hit.intersectionRatio === 0);
+        if (canvasOffscreen) stopRender();
+        else kickRender();
+      }, { threshold: 0 });
+      io.observe(stage);
+    }
   }
 
   function bindWalkInput() {
@@ -1542,6 +1712,7 @@
     } else {
       _lookAt.lerp(_lookDesired, 1 - Math.exp(-LOOK_RATE * dts));
     }
+    lookErr = _lookAt.distanceToSquared(_lookDesired);
     camera.lookAt(_lookAt);
 
     loadNearbyTextures();
@@ -1559,15 +1730,29 @@
       exitDock.hidden = !showExit;
       exitShown = showExit;
     }
-    if (progressFill) progressFill.style.transform = "scaleX(" + cameraT + ")";
+    if (progressFill && Math.abs(cameraT - lastProgressT) > 0.0002) {
+      progressFill.style.transform = "scaleX(" + cameraT + ")";
+      lastProgressT = cameraT;
+    }
   }
 
   function tick(now) {
+    raf = 0;
+    if (!renderer || pageIsPaused()) return;
     const dt = lastTs ? Math.min(0.05, (now - lastTs) / 1000) : 0.016;
     lastTs = now;
+    if (dt > 0.038) slowFrames++;
+    else if (slowFrames > 0) slowFrames--;
+    if (!qualityDropped && slowFrames > 24) {
+      qualityDropped = true;
+      const w = stage.clientWidth || window.innerWidth;
+      const h = stage.clientHeight || window.innerHeight;
+      renderer.setPixelRatio(pixelCap());
+      renderer.setSize(w, h);
+    }
     applyCamera(false, dt);
-    if (renderer && scene && camera) renderer.render(scene, camera);
-    requestAnimationFrame(tick);
+    if (scene && camera) renderer.render(scene, camera);
+    if (shouldKeepRendering()) raf = requestAnimationFrame(tick);
   }
 
   function updateActiveTab(t) {
@@ -1598,9 +1783,11 @@
     const dur = Math.min(2200, Math.max(700, (dist / 9) * 1000));
     if (dist < 0.05) {
       targetT = t;
+      kickRender();
       return;
     }
     glide = { from, to: t, t0: performance.now(), dur };
+    kickRender();
   }
 
   function buildFlat() {
@@ -1724,21 +1911,8 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(start, start);
       else start();
       window.addEventListener("resize", () => {
-        if (!renderer || !camera) return;
-        const mobile = window.innerWidth < 720;
-        if (mobile !== cfg.mobile) {
-          const t = targetT;
-          build3D();
-          targetT = cameraT = clamp01(t);
-          applyCamera(true, 0);
-        } else {
-          const w = stage.clientWidth || window.innerWidth;
-          const h = stage.clientHeight || window.innerHeight;
-          camera.aspect = w / h;
-          camera.updateProjectionMatrix();
-          renderer.setPixelRatio(Math.min(cfg.mobile ? 1.5 : 2, window.devicePixelRatio || 1));
-          renderer.setSize(w, h);
-        }
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(onResize, 120);
       });
     }
     initNav();
@@ -1762,7 +1936,7 @@
           lookReady = false;
           applyCamera(true, 0);
           if (renderer && scene && camera) renderer.render(scene, camera);
-        }
+        } else kickRender();
       },
       snap: () => {
         cameraT = targetT;

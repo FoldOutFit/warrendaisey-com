@@ -345,3 +345,11 @@
     sections.forEach((s) => sio.observe(s));
   }
 })();
+
+(function () {
+  function sync() {
+    document.documentElement.classList.toggle("is-paused", document.hidden);
+  }
+  document.addEventListener("visibilitychange", sync);
+  sync();
+})();

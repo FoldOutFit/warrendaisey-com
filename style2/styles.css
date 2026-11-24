@@ -4,7 +4,7 @@
   --paper: #f4efe6;
   --gold: #c4a574;
   --gold-deep: #8d6d3e;
-  --bar: rgba(12, 10, 8, 0.86);
+  --bar: rgba(12, 10, 8, 0.94);
   --wall: #e8dcc8;
   --floor-a: #6a4328;
   --floor-b: #52331d;
@@ -57,8 +57,6 @@ html.is-walking .topbar { touch-action: auto; }
   padding: 0.45rem 1rem;
   background: var(--bar);
   border-bottom: 1px solid rgba(196, 165, 116, 0.28);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 .wordmark {
   font-family: var(--font-serif);
@@ -173,7 +171,6 @@ html.is-walking .topbar { touch-action: auto; }
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  will-change: transform;
 }
 .vignette {
   position: absolute;
@@ -220,7 +217,6 @@ html.is-walking .topbar { touch-action: auto; }
   border-radius: 1px;
   transform: scaleX(0);
   transform-origin: left center;
-  will-change: transform;
 }
 
 #scroll-track { width: 1px; pointer-events: none; }
@@ -822,4 +818,8 @@ html.is-walking .topbar { touch-action: auto; }
   #stage, #scroll-track, #walk-progress { display: none !important; }
   .flat[hidden] { display: block !important; }
   body { background: #f3eadc; }
+}
+
+html.is-paused, html.is-paused * {
+  animation-play-state: paused !important;
 }

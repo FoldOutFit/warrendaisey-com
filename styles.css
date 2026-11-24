@@ -393,3 +393,7 @@ main section{padding:5rem 0}
 }
 
 .nav-list a[aria-current="page"]{border-color:var(--coral)}
+
+html.is-paused, html.is-paused * {
+  animation-play-state: paused !important;
+}
