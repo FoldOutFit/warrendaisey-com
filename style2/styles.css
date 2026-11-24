@@ -615,7 +615,7 @@ html.is-walking .topbar { touch-action: auto; }
   position: absolute;
   top: 0.35rem;
   right: 0.45rem;
-  z-index: 2;
+  z-index: 3;
   border: 0;
   background: rgba(0,0,0,0.45);
   color: #fff;
@@ -625,6 +625,24 @@ html.is-walking .topbar { touch-action: auto; }
   cursor: pointer;
   line-height: 1;
 }
+.lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  border: 1px solid rgba(196, 165, 116, 0.55);
+  background: rgba(12, 10, 8, 0.72);
+  color: var(--paper);
+  width: 2.2rem;
+  height: 2.6rem;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.lb-prev { left: 0.4rem; }
+.lb-next { right: 0.4rem; }
+.lb-nav:hover, .lb-nav:focus-visible { border-color: var(--gold); color: #fff; outline: none; }
 .lb-visual {
   min-height: 200px;
   background: #0c0a08;

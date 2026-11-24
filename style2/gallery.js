@@ -529,7 +529,11 @@
   let scene = null;
   let camera = null;
   let clickables = [];
-  let workPlaced = []; // {t, x, y, z, artMat, image, texState}
+  let workPlaced = []; // {t, x, y, z, artMat, image, texState, id, group}
+  let hoverHl = null;
+  let hoverId = null;
+  let lightIndex = -1;
+  let lightSwipe = null;
   let exitDock = null;
   let raf = 0;
   let pageHidden = false;
@@ -569,8 +573,9 @@
       startPad: mobile ? 7 : 8.5,
       sectionPad: mobile ? 2.0 : 2.3,
       endPad: mobile ? 7 : 8,
-      lookBias: mobile ? 0.4 : 0.45,
-      camInset: mobile ? 0.06 : 0.08
+      lookBias: mobile ? 0.95 : 1.25,
+      camInset: mobile ? 0.12 : 0.2,
+      frameToe: mobile ? 0.48 : 0.54
     };
   }
 
@@ -1189,12 +1194,15 @@
     });
   }
 
-  function placeOnWall(t, side, y, mesh) {
+  function placeOnWall(t, side, y, mesh, toe) {
     const p = pathAt(t);
     const dir = side === "left" ? leftDir(p.yaw) : rightDir(p.yaw);
-    const wallDist = cfg.hallW / 2 - 0.03;
+    const phi = toe || 0;
+    const pull = phi ? (cfg.frameW * 0.5) * Math.sin(Math.abs(phi)) + 0.08 : 0;
+    const wallDist = cfg.hallW / 2 - 0.03 - pull;
     mesh.position.set(p.x + dir.x * wallDist, y, p.z + dir.z * wallDist);
-    mesh.rotation.y = side === "left" ? p.yaw + Math.PI / 2 : p.yaw - Math.PI / 2;
+    if (side === "left") mesh.rotation.y = p.yaw + Math.PI / 2 - phi;
+    else mesh.rotation.y = p.yaw - Math.PI / 2 + phi;
     scene.add(mesh);
     return mesh;
   }
@@ -1245,9 +1253,10 @@
     art.userData.id = work.id;
     mould.userData.id = work.id;
     inner.userData.id = work.id;
-    clickables.push(art, mould, inner);
+    placard.userData.id = work.id;
+    clickables.push(art, mould, inner, placard);
 
-    placeOnWall(t, side, cfg.hang, group);
+    placeOnWall(t, side, cfg.hang, group, cfg.frameToe || 0);
     workPlaced.push({
       t,
       x: group.position.x,
@@ -1255,7 +1264,9 @@
       z: group.position.z,
       artMat,
       image: work.image || null,
-      texState: 0
+      texState: 0,
+      id: work.id,
+      group
     });
   }
 
@@ -1339,6 +1350,8 @@
   function disposeScene() {
     stopRender();
     sharedFrame = null;
+    hoverHl = null;
+    hoverId = null;
     if (renderer) {
       renderer.dispose();
       if (renderer.domElement && renderer.domElement.parentNode) {
@@ -1432,28 +1445,78 @@
     const mouse = new THREE.Vector2();
     function setMouse(e) {
       const r = el.getBoundingClientRect();
-      mouse.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-      mouse.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      const w = r.width || 1, h = r.height || 1;
+      mouse.x = ((e.clientX - r.left) / w) * 2 - 1;
+      mouse.y = -((e.clientY - r.top) / h) * 2 + 1;
     }
-    let cursorAt = 0;
-    el.addEventListener("mousemove", (e) => {
-      const now = performance.now();
-      if (now - cursorAt < 50) return;
-      cursorAt = now;
+    function hitWork(e) {
+      if (!camera || !clickables.length) return null;
       setMouse(e);
       ray.setFromCamera(mouse, camera);
       const hits = ray.intersectObjects(clickables, false);
-      el.style.cursor = hits.length ? "pointer" : "default";
+      if (hits[0] && hits[0].object.userData.id) return hits[0].object.userData.id;
+      return null;
+    }
+    window.__galleryHit = hitWork;
+
+    function ensureHoverHl() {
+      if (hoverHl || !scene) return;
+      const fw = cfg.frameW, fh = cfg.frameH;
+      hoverHl = new THREE.Mesh(
+        new THREE.BoxGeometry(fw + 0.11, fh + 0.11, 0.012),
+        new THREE.MeshBasicMaterial({
+          color: 0xf3ddb0,
+          transparent: true,
+          opacity: 0.38,
+          depthWrite: false
+        })
+      );
+      hoverHl.visible = false;
+      hoverHl.raycast = function () {};
+      scene.add(hoverHl);
+    }
+
+    function setHover(id) {
+      if (id === hoverId) return;
+      hoverId = id || null;
+      ensureHoverHl();
+      if (!hoverHl) return;
+      const placed = id ? workPlaced.find((w) => w.id === id) : null;
+      if (placed && placed.group) {
+        const g = placed.group;
+        g.updateMatrixWorld();
+        hoverHl.position.copy(g.position);
+        hoverHl.quaternion.copy(g.quaternion);
+        const off = new THREE.Vector3(0, 0, 0.055).applyQuaternion(g.quaternion);
+        hoverHl.position.add(off);
+        hoverHl.visible = true;
+      } else {
+        hoverHl.visible = false;
+      }
+      if (renderer && scene && camera && !raf) renderer.render(scene, camera);
+    }
+
+    let cursorAt = 0;
+    el.addEventListener("mousemove", (e) => {
+      if (lightOpen()) return;
+      const now = performance.now();
+      if (now - cursorAt < 50) return;
+      cursorAt = now;
+      const id = hitWork(e);
+      el.style.cursor = id ? "pointer" : "default";
+      setHover(id);
+    });
+    el.addEventListener("mouseleave", () => {
+      el.style.cursor = "default";
+      setHover(null);
     });
     el.addEventListener("click", (e) => {
       if (suppressClick) {
         suppressClick = false;
         return;
       }
-      setMouse(e);
-      ray.setFromCamera(mouse, camera);
-      const hits = ray.intersectObjects(clickables, false);
-      if (hits[0] && hits[0].object.userData.id) openLight(hits[0].object.userData.id);
+      const id = hitWork(e);
+      if (id) openLight(id);
     });
   }
 
@@ -1531,14 +1594,15 @@
   function onPointerDown(e) {
     if (reduced || lightOpen() || isWalkUi(e.target)) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    drag = { id: e.pointerId, y: e.clientY, t: targetT, moved: false };
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, t: targetT, moved: false };
     try { stage.setPointerCapture(e.pointerId); } catch (err) {}
   }
 
   function onPointerMove(e) {
     if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
     const dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dy) < 8) return;
+    if (!drag.moved && dx * dx + dy * dy < 144) return;
     drag.moved = true;
     suppressClick = true;
     cancelGlide();
@@ -1549,8 +1613,18 @@
 
   function onPointerUp(e) {
     if (!drag || e.pointerId !== drag.id) return;
-    if (drag.moved) suppressClick = true;
+    const moved = drag.moved;
     drag = null;
+    if (moved) {
+      suppressClick = true;
+      return;
+    }
+    if (lightOpen() || reduced) return;
+    const hit = window.__galleryHit ? window.__galleryHit(e) : null;
+    if (hit) {
+      suppressClick = true;
+      openLight(hit);
+    }
   }
 
   function onTouchMove(e) {
@@ -1564,7 +1638,17 @@
       closeLight();
       return;
     }
-    if (reduced || lightOpen()) return;
+    if (lightOpen()) {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        lightNext();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        lightPrev();
+      }
+      return;
+    }
+    if (reduced) return;
     if (KEY_FWD.has(e.key)) {
       e.preventDefault();
       cancelGlide();
@@ -1674,23 +1758,14 @@
     _camPos.set(p.x + lxdir * inset, cfg.eye, p.z + lzdir * inset);
     camera.position.copy(_camPos);
 
-    const aheadDist = 4.2;
-    const aheadT = Math.min(1, cameraT + aheadDist / pathLen);
-    const ahead = pathAt(aheadT, _ahead);
-    const axdir = -Math.cos(ahead.yaw);
-    const azdir = Math.sin(ahead.yaw);
-    const bias = cfg.lookBias || 0.45;
-    let lx = ahead.x + axdir * bias;
-    let ly = cfg.eye * 0.35 + cfg.hang * 0.65;
-    let lz = ahead.z + azdir * bias;
     let sumW = 0, wx = 0, wy = 0, wz = 0;
-    const peak = 4.2;
-    const sigma = 2.15;
+    const peak = 2.9;
+    const sigma = 1.85;
     const twoSig = 2 * sigma * sigma;
     for (let i = 0; i < workPlaced.length; i++) {
       const w = workPlaced[i];
       const ds = (w.t - cameraT) * pathLen;
-      if (ds < 1.4 || ds > 8.4) continue;
+      if (ds < 0.4 || ds > 6.8) continue;
       const d = ds - peak;
       const wt = Math.exp(-(d * d) / twoSig);
       if (wt < 0.02) continue;
@@ -1699,10 +1774,20 @@
       wz += w.z * wt;
       sumW += wt;
     }
-    if (sumW > 1e-4) {
-      const k = Math.min(0.28, 0.16 + 0.12 * Math.min(1, sumW));
+    const hasArt = sumW > 1e-4;
+    const aheadDist = hasArt ? 3.1 : 4.2;
+    const aheadT = Math.min(1, cameraT + aheadDist / pathLen);
+    const ahead = pathAt(aheadT, _ahead);
+    const axdir = -Math.cos(ahead.yaw);
+    const azdir = Math.sin(ahead.yaw);
+    const bias = hasArt ? (cfg.lookBias || 1.25) : 0.5;
+    let lx = ahead.x + axdir * bias;
+    let ly = cfg.eye * 0.28 + cfg.hang * 0.72;
+    let lz = ahead.z + azdir * bias;
+    if (hasArt) {
+      const k = Math.min(0.45, 0.22 + 0.24 * Math.min(1, sumW));
       lx += (wx / sumW - lx) * k;
-      ly += (wy / sumW - ly) * k * 0.35;
+      ly += (wy / sumW - ly) * k * 0.4;
       lz += (wz / sumW - lz) * k;
     }
     _lookDesired.set(lx, ly, lz);
@@ -1833,9 +1918,7 @@
 
   const workById = Object.fromEntries(WORKS.map((w) => [w.id, w]));
 
-  function openLight(id) {
-    const work = workById[id];
-    if (!work) return;
+  function fillLightbox(work) {
     const visual = document.getElementById("lb-visual");
     const kicker = document.getElementById("lb-kicker");
     const title = document.getElementById("lb-title");
@@ -1857,13 +1940,50 @@
     } else {
       visual.innerHTML = visualHTML(work, false);
     }
-    if (typeof lightbox.showModal === "function") lightbox.showModal();
-    else lightbox.setAttribute("open", "");
+  }
+
+  function openLight(id) {
+    const work = workById[id];
+    if (!work) return;
+    lightIndex = WORKS.findIndex((w) => w.id === id);
+    fillLightbox(work);
+    if (typeof lightbox.showModal === "function") {
+      if (!lightbox.open) lightbox.showModal();
+    } else lightbox.setAttribute("open", "");
   }
 
   function closeLight() {
+    lightSwipe = null;
     if (typeof lightbox.close === "function" && lightbox.open) lightbox.close();
     else lightbox.removeAttribute("open");
+  }
+
+  function lightPrev() {
+    if (!WORKS.length) return;
+    const i = lightIndex < 0 ? 0 : lightIndex;
+    openLight(WORKS[(i - 1 + WORKS.length) % WORKS.length].id);
+  }
+
+  function lightNext() {
+    if (!WORKS.length) return;
+    const i = lightIndex < 0 ? -1 : lightIndex;
+    openLight(WORKS[(i + 1) % WORKS.length].id);
+  }
+
+  function onLightPointerDown(e) {
+    if (!lightOpen()) return;
+    if (e.target.closest(".lb-close, .lb-nav, .lb-thumbs, a, button")) return;
+    lightSwipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
+  }
+
+  function onLightPointerUp(e) {
+    if (!lightSwipe || e.pointerId !== lightSwipe.id) return;
+    const dx = e.clientX - lightSwipe.x;
+    const dy = e.clientY - lightSwipe.y;
+    lightSwipe = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) lightNext();
+    else lightPrev();
   }
 
   function onClick(e) {
@@ -1875,6 +1995,14 @@
         img.alt = thumb.dataset.alt || "";
       }
       thumb.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("is-on", b === thumb));
+      return;
+    }
+    if (e.target.closest(".lb-prev")) {
+      lightPrev();
+      return;
+    }
+    if (e.target.closest(".lb-next")) {
+      lightNext();
       return;
     }
     const open = e.target.closest("[data-open]");
@@ -1920,12 +2048,44 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeLight();
     });
+    if (lightbox) {
+      lightbox.addEventListener("pointerdown", onLightPointerDown);
+      lightbox.addEventListener("pointerup", onLightPointerUp);
+      lightbox.addEventListener("pointercancel", () => { lightSwipe = null; });
+    }
   }
 
   window.__gallery = {
       openLight: (id) => openLight(id),
       closeLight,
       WORKS,
+      clickableIds: () => {
+        const ids3d = new Set();
+        clickables.forEach((o) => { if (o.userData && o.userData.id) ids3d.add(o.userData.id); });
+        const idsDom = new Set();
+        document.querySelectorAll("[data-open]").forEach((el) => { if (el.dataset.open) idsDom.add(el.dataset.open); });
+        const all = new Set([...ids3d, ...idsDom]);
+        return {
+          works: WORKS.length,
+          placed: workPlaced.length,
+          clickable3d: ids3d.size,
+          clickableDom: idsDom.size,
+          missing3d: WORKS.filter((w) => !ids3d.has(w.id)).map((w) => w.id),
+          missingDom: WORKS.filter((w) => !idsDom.has(w.id)).map((w) => w.id)
+        };
+      },
+      project: (id) => {
+        const w = (id && workPlaced.find((x) => x.id === id)) || workPlaced[0];
+        if (!w || !camera || !renderer) return null;
+        const v = new THREE.Vector3(w.x, w.y, w.z).project(camera);
+        const r = renderer.domElement.getBoundingClientRect();
+        return {
+          id: w.id,
+          clientX: r.left + (v.x * 0.5 + 0.5) * r.width,
+          clientY: r.top + (-v.y * 0.5 + 0.5) * r.height,
+          visible: v.z > 0 && v.z < 1
+        };
+      },
       sectionT: () => sectionT,
       progress: () => ({ t: cameraT, target: targetT }),
       goto: (t, immediate) => {
