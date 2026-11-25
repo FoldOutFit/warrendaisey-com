@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Warren Daisey Shop</title>
-  <meta name="description" content="Free 3D-printable downloads from Warren Daisey, starting with the Catan Box Organizer.">
+  <meta name="description" content="3D-printable downloads from Warren Daisey, starting with the Catan Box Organizer.">
   <meta name="theme-color" content="#122033">
   <link rel="canonical" href="https://warrendaisey.com/shop/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Josefin+Sans:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shop.css">
+  <link rel="stylesheet" href="shop-checkout.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -31,7 +32,7 @@
       <header class="store-intro">
         <p class="eyebrow">3D printable downloads</p>
         <h1>Warren Daisey <em>Shop</em></h1>
-        <p class="lede">Free files you can download and print yourself, starting with a Catan storage box.</p>
+        <p class="lede">Files you can download and print yourself, starting with a Catan storage box.</p>
       </header>
       <article class="product" id="listing">
         <figure class="product-photo">
@@ -40,11 +41,15 @@
         <div class="product-copy">
           <p class="tag">3D printable</p>
           <h2>Catan Box Organizer (3D printable)</h2>
-          <p class="price">Free for now</p>
+          <p class="price">$10</p>
           <p class="desc">A 3D-printed Catan storage box with a card holder, top tray, 6 resource bins, a magnetic lid with a dice and card insert, latches, and an optional handle.</p>
-          <a class="btn" href="catan/Catan_Box_Organizer.zip?v=2" download="Catan_Box_Organizer.zip">Download <span aria-hidden="true">↓</span></a>
+          <div id="buy-area">
+            <button type="button" class="btn" id="buy-catan" data-product="catan" data-price-id="price_1UfYtsIk6hu03T5XOQfg2Ohl">Buy — $10</button>
+            <p class="buy-note">Pays through Stripe as Warren Daisey Shop. After payment you can download the zip here.</p>
+          </div>
         </div>
       </article>
+      <section id="more-products" class="more-products" hidden></section>
       <div class="gallery">
         <figure>
           <img src="catan/catan_box_exploded.webp?v=2" width="1800" height="2050" alt="Exploded view of the Catan Box Organizer, showing the lid, lid inlay, lid insert, top tray, card holder, and base.">
@@ -74,5 +79,6 @@
       <a href="https://warrendaisey.com/">warrendaisey.com</a>
     </div>
   </footer>
+  <script src="shop-pay.js" defer></script>
 </body>
 </html>

@@ -245,6 +245,16 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
   box-shadow: 0 10px 0 #0a1524;
 }
 
+button.btn {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--label);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
 /* Gallery */
 .gallery {
   display: grid;
