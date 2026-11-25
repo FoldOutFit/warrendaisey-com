@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Base",
+    "file": "models/catan/Catan_Box_01_Base.stl",
+    "description": "The main storage box body.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Card Holder",
+    "file": "models/catan/Catan_Box_02_Card_Holder.stl",
+    "description": "Holds development and resource cards, with a dice spot and finger notches.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Top Tray",
+    "file": "models/catan/Catan_Box_03_Top_Tray.stl",
+    "description": "Sits above the bins and card holder.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Resource Bin (x6)",
+    "file": "models/catan/Catan_Box_04_Resource_Bin_x6.stl",
+    "description": "Print six of these for the resource pieces.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Lid",
+    "file": "models/catan/Catan_Box_05_Lid.stl",
+    "description": "The magnetic lid.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Lid Inlay",
+    "file": "models/catan/Catan_Box_06_Lid_Inlay.stl",
+    "description": "Decorative inlay for the lid, with finger notches.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Lid Insert",
+    "file": "models/catan/Catan_Box_07_Lid_Insert.stl",
+    "description": "Thin insert that sits in the lid.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Latches",
+    "file": "models/catan/Catan_Box_08_Latches.stl",
+    "description": "The box latches.",
+    "group": "Catan Box Organizer"
+  },
+  {
+    "name": "Handle",
+    "file": "models/catan/Catan_Box_09_Handle.stl",
+    "description": "Optional handle.",
+    "group": "Catan Box Organizer"
+  }
+]

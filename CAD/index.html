@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CAD | Warren Daisey</title>
+  <meta name="description" content="A gallery of 3D-printable models by Warren Daisey, starting with free individual parts for the Catan Box Organizer.">
+  <meta name="theme-color" content="#0f1c30">
+  <link rel="canonical" href="https://warrendaisey.com/CAD/">
+  <link rel="icon" href="/assets/warren-avatar.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Josefin+Sans:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!--
+    Add a model: put the STL in models/<group>/ and append an object to
+    models.json with name, file, and optional description and group.
+    See README.md in this folder for a full example.
+  -->
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="bar">
+    <div class="bar-inner">
+      <a class="brand" href="https://warrendaisey.com/" aria-label="Warren Daisey home">
+        <span class="brand-name">Warren Daisey</span>
+        <span class="brand-label">CAD</span>
+      </a>
+      <a class="home-link" href="https://warrendaisey.com/">warrendaisey.com</a>
+    </div>
+  </header>
+  <main id="main">
+    <div class="wrap">
+      <header class="intro">
+        <p class="eyebrow">A small gallery</p>
+        <h1>3D models you can <em>spin and download</em></h1>
+        <p class="lede">Preview each part in the browser, then download the STL to print. These Catan Box Organizer parts are free individual files. The complete kit is also available in the <a href="/shop/">shop</a>.</p>
+      </header>
+      <div id="gallery">
+        <p class="status">Loading models…</p>
+      </div>
+    </div>
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <p>3D models by Warren Daisey</p>
+      <a href="https://warrendaisey.com/">Back to warrendaisey.com</a>
+    </div>
+  </footer>
+  <script type="module" src="gallery.js"></script>
+  <noscript>
+    <p class="wrap" style="padding:1rem 0 2rem">JavaScript is needed for the 3D previews. You can still open <a href="models.json">models.json</a> for the file list and download each STL directly.</p>
+  </noscript>
+</body>
+</html>
