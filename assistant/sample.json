@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-11-25T12:30:00Z",
+  "date": "2026-11-25",
+  "config": {
+    "action_webhook_url": "https://example.invalid/assistant/actions",
+    "action_webhook_key": "demo-webhook-key",
+    "action_webhook_header": "X-Assistant-Key"
+  },
+  "tasks": [
+    {
+      "id": "task-lab-worksheet",
+      "title": "Turn in the fictional lab worksheet",
+      "source": "Example course site",
+      "due": "2026-11-25T23:00:00Z",
+      "priority": "high",
+      "details": "Made-up class INTRO 101, worksheet 4. This card is sample data for the demo. It is not a real assignment.",
+      "proposed_solution": "Open the example course portal, upload the worksheet PDF you already finished, and submit it before 6:00 PM. If the portal is down, use the email card to tell the fictional instructor instead of waiting.",
+      "links": [
+        {
+          "label": "Example course portal",
+          "url": "https://example.com/course/intro-101"
+        }
+      ],
+      "actions": ["done", "snooze", "copy", "open", "note"]
+    },
+    {
+      "id": "task-study-room",
+      "title": "Reserve a library study room for Thursday",
+      "source": "Library example",
+      "due": "2026-11-26T21:00:00Z",
+      "priority": "medium",
+      "details": "Hold a 90-minute room for a fictional study group called North Quad. Sample only.",
+      "proposed_solution": "Book room 204 from 4:00 to 5:30 PM on Thursday under the name North Quad Study Group, then paste the confirmation into the note.",
+      "links": [
+        {
+          "label": "Example room booking",
+          "url": "https://example.com/library/rooms"
+        }
+      ],
+      "actions": ["done", "snooze", "copy", "open", "note"]
+    },
+    {
+      "id": "task-poster",
+      "title": "Pick up poster board at the campus store",
+      "source": "Personal list",
+      "due": null,
+      "priority": "low",
+      "details": "A made-up errand for a class presentation that does not exist.",
+      "proposed_solution": "Stop by the campus store after lunch and buy one white poster board. Keep the receipt.",
+      "links": [],
+      "actions": ["done", "snooze", "copy", "note"]
+    }
+  ],
+  "emails": [
+    {
+      "id": "email-office-hours",
+      "account": "school",
+      "thread_id": "thread-demo-office-hours",
+      "gmail_url": "https://mail.google.com/mail/u/0/#inbox/thread-demo-office-hours",
+      "from_name": "Professor Avery Quill",
+      "from_email": "avery.quill@example.com",
+      "subject": "Thursday office hours moved",
+      "received_at": "2026-11-25T14:05:00Z",
+      "snippet": "Hi Warren — I need to move Thursday office hours to Friday at 2 PM in room 118. Can you still make it?",
+      "why_it_needs_reply": "A fictional instructor is asking you to confirm a new time. Sample data only. Nobody is waiting on this message.",
+      "draft_to": "avery.quill@example.com",
+      "draft_cc": "",
+      "draft_subject": "Re: Thursday office hours moved",
+      "draft_body": "Hi Professor Quill,\n\nThank you for the note. Friday at 2pm in room 118 work for me, and I will be their.\n\nWarren Daisey"
+    },
+    {
+      "id": "email-film-club",
+      "account": "personal",
+      "thread_id": "thread-demo-film-club",
+      "gmail_url": "https://mail.google.com/mail/u/0/#inbox/thread-demo-film-club",
+      "from_name": "North Quad Film Society",
+      "from_email": "films@example.com",
+      "subject": "Can you introduce Saturday's screening?",
+      "received_at": "2026-11-24T18:40:00Z",
+      "snippet": "Would you introduce the short film on Saturday? It is about two minutes at the mic.",
+      "why_it_needs_reply": "A fictional club asked you to take a small speaking role. They need a yes or a no. Sample data only.",
+      "draft_to": "films@example.com",
+      "draft_cc": "board@example.com",
+      "draft_subject": "Re: Can you introduce Saturday's screening?",
+      "draft_body": "Hi,\n\nI can introduce Saturday's screening. I will keep it to about two minutes and arrive fifteen minutes early.\n\nThanks,\nWarren"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily assistant | Warren Daisey</title>
+  <meta name="description" content="Private daily briefing of tasks and email drafts.">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="same-origin">
+  <meta name="theme-color" content="#13213C">
+  <link rel="icon" href="/assets/warren-avatar.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Josefin+Sans:wght@400;600;700&family=Caveat:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../pages.css">
+  <link rel="stylesheet" href="assistant.css?v=1">
+</head>
+<body class="assistant-page">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="/" aria-label="Warren Daisey home">
+        <span class="logo-mark" aria-hidden="true">WD</span>
+        <span class="logo-name">Warren <em>Daisey</em></span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav aria-label="Primary" id="site-nav">
+        <ul class="nav-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/links/">Links</a></li>
+          <li><a href="/awards/">Awards</a></li>
+          <li><a href="/speaking/">Speaking</a></li>
+          <li><a href="/resume/">Resume</a></li>
+          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/recommendations/">Kind words</a></li>
+          <li><a href="/chatbot/">Chatbot</a></li>
+          <li><a href="/contact/" class="nav-cta">Let’s connect</a></li>
+          <li><a href="/holiday/" class="holiday-link">Holiday</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="dash-hero">
+    <div class="blob blob-1" aria-hidden="true"></div>
+    <div class="blob blob-2" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="script">private</p>
+      <h1>TODAY’S <em>assistant</em></h1>
+      <p class="lead" id="hero-lead">Tasks to finish and emails to answer, with a draft already started.</p>
+      <p class="prepared" id="prepared"></p>
+    </div>
+  </section>
+
+  <main id="main">
+    <div class="dash">
+      <section id="gate" aria-label="Unlock briefing">
+        <div class="gate-card">
+          <h2>Unlock today’s briefing</h2>
+          <p class="gate-status" id="gate-status" role="status">Loading today’s briefing…</p>
+          <form id="unlock" hidden>
+            <div class="field">
+              <label for="passphrase"><span>Passphrase</span></label>
+              <div class="pass-row">
+                <input id="passphrase" name="passphrase" type="password" autocomplete="current-password" required>
+                <button type="button" class="text-btn" id="toggle-pass" aria-pressed="false">Show</button>
+              </div>
+            </div>
+            <label class="check">
+              <input id="remember" type="checkbox">
+              <span>Remember the unlock key in this tab until I close it. The passphrase itself stays off this device’s saved page data.</span>
+            </label>
+            <button class="btn btn-coral unlock" type="submit">Unlock</button>
+          </form>
+          <p class="gate-links" id="gate-links" hidden>
+            <a class="text-btn" href="?demo=1">Open the fictional demo</a>
+            <a class="text-btn" id="sample-link" href="?enc=sample">Unlock the encrypted sample</a>
+          </p>
+        </div>
+      </section>
+
+      <section id="board" hidden aria-label="Daily briefing">
+        <p class="banner" id="demo-banner" hidden><strong>Demo.</strong> These tasks and people are fictional. Proofread still calls the free assistant. Send, Done, and Snooze post to the sample endpoint, which does not accept mail.</p>
+        <div class="summary">
+          <p id="counts" aria-live="polite"></p>
+          <button type="button" class="text-btn" id="lock">Lock</button>
+        </div>
+        <div id="lists"></div>
+      </section>
+      <noscript><p class="noscript-note">This page unlocks the briefing in your browser and needs JavaScript.</p></noscript>
+    </div>
+  </main>
+
+  <p class="toast" id="toast" role="status" hidden></p>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p><span class="logo-mark small" aria-hidden="true">WD</span> Warren Daisey · Private briefing</p>
+      <p class="footer-links">
+        <a href="/">Home</a>
+        <a href="/contact/">Let’s connect</a>
+      </p>
+    </div>
+  </footer>
+  <script src="../script.js"></script>
+  <script src="crypto.js?v=1"></script>
+  <script src="actions.js?v=1"></script>
+  <script src="pollinations.js?v=1"></script>
+  <script src="assistant.js?v=1"></script>
+</body>
+</html>

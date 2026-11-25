@@ -1,0 +1,13 @@
+# Netlify local state, if the CLI is ever used in this repo.
+.netlify
+
+# Plaintext daily briefings. Commit only encrypted files (*.enc.json)
+# and the fictional assistant/sample.json used by ?demo=1.
+assistant/data.json
+assistant/briefing.json
+assistant/plaintext.json
+assistant/decrypted.json
+assistant/*-plain.json
+assistant/*.dec.json
+assistant/*.out.json
+assistant/private/
