@@ -188,17 +188,44 @@ Copy, Open in Gmail, Open link, and Proofread stay in the browser and do not POS
 
 Any HTTP status outside 2xx, a network failure, or a missing URL is a failure. The card stays open and shows **Retry**, which posts again with the current draft and note. The same action can arrive twice if a response is lost. Treat a repeated `send` for the same `item_id` and body as one send.
 
-The endpoint must answer a CORS preflight, because the browser sends `Content-Type: application/json` and a custom header:
-
-```
-Access-Control-Allow-Origin: https://warrendaisey.com
-Access-Control-Allow-Methods: POST, OPTIONS
-Access-Control-Allow-Headers: Content-Type, Accept, X-Assistant-Key
-```
-
-Use the real header name if `action_webhook_header` is not `X-Assistant-Key`. The request uses `credentials: "omit"`.
-
 While a request is in flight the card says “Sending to your assistant…”. Success says it was sent to the assistant (not that the mail already went out). Failure says it did not go through and offers Retry.
+
+`assistant/actions.js` posts to `config.action_webhook_url` and, when `config.action_webhook_key` is set, adds one header: the name is `config.action_webhook_header` (default `X-Assistant-Key`) and the value is `config.action_webhook_key` exactly as stored. The page does not add a `Bearer` prefix. `Authorization` is an allowed header name, so this briefing config reaches the relay unchanged:
+
+```json
+{
+  "action_webhook_url": "https://<site-name>.netlify.app/.netlify/functions/relay",
+  "action_webhook_header": "Authorization",
+  "action_webhook_key": "Bearer <secret>"
+}
+```
+
+The browser sends `Content-Type: application/json`, `Accept: application/json`, and that auth header, with `credentials: "omit"`. The request uses CORS mode, so the URL has to answer a preflight with `Access-Control-Allow-Origin` for `https://warrendaisey.com` (and allow `Authorization`, `Content-Type`, and `Accept`).
+
+The automation webhook’s preflight does not send `Access-Control-Allow-Origin`, so the briefing points at the relay in `assistant-relay/` instead of at the webhook. The relay is the only host the browser talks to.
+
+## CORS relay
+
+`assistant-relay/` is a separate Netlify site. It holds no secret. The bearer token stays in the encrypted briefing. The function does not log headers or bodies.
+
+It accepts only `POST` and `OPTIONS`, and only from `https://warrendaisey.com` and `https://www.warrendaisey.com`. It forwards the raw JSON body (64 KB maximum) and the incoming `Authorization` header, unchanged, to this one URL:
+
+`https://api2.cursor.sh/automations/webhook/f6df5513-f225-5e72-b9dd-2a99de7179aa`
+
+Nothing in the request can choose a different target. The response is the webhook’s status and body, plus CORS headers for the allowed origin.
+
+### Deploy
+
+1. In Netlify, add a site and import this GitHub repo (`FoldOutFit/warrendaisey-com`).
+2. Set the base directory to `assistant-relay`. Leave the build command empty. Publish directory and functions directory come from `assistant-relay/netlify.toml`: publish `.`, functions `netlify/functions`.
+3. Deploy. Do not add the bearer token as a Netlify environment variable. This folder does not read one.
+4. In the encrypted briefing, set `config.action_webhook_url` to:
+
+`https://<site-name>.netlify.app/.netlify/functions/relay`
+
+`https://<site-name>.netlify.app/api/relay` is the same function (a rewrite). Use either URL. Set `action_webhook_header` to `Authorization` and `action_webhook_key` to `Bearer <secret>`.
+
+GitHub Pages still publishes the repo, including this folder’s source. That source has the webhook address and no secret. The Pages site does not run the function.
 
 ## On this device
 

@@ -1,0 +1,24 @@
+# Deploy this folder as its own Netlify site.
+# In the Netlify UI, set the base directory to assistant-relay.
+# Do not also set base here: the UI base and a toml base are joined together.
+
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Short path for the same function. The direct function URL is
+# /.netlify/functions/relay and does not depend on this rewrite.
+[[redirects]]
+  from = "/api/relay"
+  to = "/.netlify/functions/relay"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    X-Content-Type-Options = "nosniff"
