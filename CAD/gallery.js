@@ -5,6 +5,40 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 const MAX_CONCURRENT = 2;
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+let previewEls = [];
+let holdPreviews = false;
+let holdTimer = 0;
+
+function whenScrollSettles(callback) {
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("scrollend", done);
+    clearTimeout(holdTimer);
+    callback();
+  };
+  const onScroll = () => {
+    clearTimeout(holdTimer);
+    holdTimer = window.setTimeout(done, 140);
+  };
+  window.addEventListener("scrollend", done, { once: true });
+  window.addEventListener("scroll", onScroll, { passive: true });
+  holdTimer = window.setTimeout(done, reduceMotion ? 50 : 900);
+}
+
+function setPreviewHold(on) {
+  holdPreviews = on;
+  if (on) return;
+  for (const el of previewEls) {
+    if (el.dataset.visible === "1") {
+      if (!el._viewer) createViewer(el, el.dataset.src);
+      el._viewer?.start();
+    }
+  }
+}
+
 const queue = [];
 let inFlight = 0;
 
@@ -188,10 +222,15 @@ function bindSectionNav(sections) {
     if (!target) return;
     event.preventDefault();
     if (isMobileNav()) setNavOpen(false);
-    ignoreSpyUntil = Date.now() + 700;
+    ignoreSpyUntil = Date.now() + 1200;
     setActive(id);
     history.pushState(null, "", `#${id}`);
+    setPreviewHold(true);
     target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    whenScrollSettles(() => {
+      ignoreSpyUntil = 0;
+      setPreviewHold(false);
+    });
   };
   list.addEventListener("click", onNavClick);
 
@@ -290,7 +329,7 @@ function renderGallery(models) {
   }
 
   const groups = groupModels(models);
-  const previewEls = [];
+  previewEls = [];
   const usedSlugs = new Set();
   const navSections = [];
 
@@ -550,12 +589,12 @@ function observePreviews(els) {
         const el = entry.target;
         const visible = entry.isIntersecting;
         el.dataset.visible = visible ? "1" : "0";
-        if (visible && !el._viewer) {
+        if (visible && !el._viewer && !holdPreviews) {
           createViewer(el, el.dataset.src);
         }
         if (el._viewer) {
-          if (visible) el._viewer.start();
-          else el._viewer.dispose();
+          if (visible && !holdPreviews) el._viewer.start();
+          else if (!visible) el._viewer.dispose();
         }
       }
     },
