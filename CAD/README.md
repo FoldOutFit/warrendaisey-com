@@ -51,4 +51,6 @@ Optional `extras` is a list of additional downloads on the same card (for exampl
 
 3. Commit and push to `main`. GitHub Pages will publish the new card at `/CAD/`.
 
+After unlock, a section navigator is built from the same `group` values in `models.json`. New groups show up in that list automatically.
+
 Keep each file under GitHub's 100 MB limit. Previews lazy-load when a card scrolls into view, so the page's initial load stays light even when a project includes large download files.

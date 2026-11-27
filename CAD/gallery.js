@@ -97,6 +97,189 @@ function renderCredit(attr) {
   return p;
 }
 
+
+function slugify(name) {
+  const slug = String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "section";
+}
+
+function uniqueSlug(name, used) {
+  const base = slugify(name);
+  let slug = base;
+  let n = 2;
+  while (used.has(slug)) {
+    slug = `${base}-${n}`;
+    n += 1;
+  }
+  used.add(slug);
+  return slug;
+}
+
+let navTeardown = null;
+
+function setNavOpen(open) {
+  const nav = document.getElementById("section-nav");
+  const toggle = document.getElementById("section-nav-toggle");
+  if (!nav || !toggle) return;
+  nav.classList.toggle("is-open", open);
+  toggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function isMobileNav() {
+  return window.matchMedia("(max-width: 900px)").matches;
+}
+
+function bindSectionNav(sections) {
+  if (navTeardown) {
+    navTeardown();
+    navTeardown = null;
+  }
+
+  const nav = document.getElementById("section-nav");
+  const list = document.getElementById("section-nav-list");
+  const toggle = document.getElementById("section-nav-toggle");
+  if (!nav || !list || !sections.length) {
+    nav?.setAttribute("hidden", "");
+    return;
+  }
+
+  list.innerHTML = "";
+  const links = new Map();
+  for (const section of sections) {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = `#${section.id}`;
+    a.textContent = section.name;
+    const count = document.createElement("span");
+    count.className = "section-nav-count";
+    count.textContent = String(section.count);
+    a.appendChild(count);
+    li.appendChild(a);
+    list.appendChild(li);
+    links.set(section.id, a);
+  }
+  nav.hidden = false;
+
+  const setActive = (id, { scrollNav = true } = {}) => {
+    for (const [sid, link] of links) {
+      const on = sid === id;
+      link.classList.toggle("is-active", on);
+      if (on) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+      if (on && scrollNav) {
+        link.scrollIntoView({ block: "nearest", inline: "nearest" });
+      }
+    }
+  };
+
+  let ignoreSpyUntil = 0;
+  const onNavClick = (event) => {
+    const link = event.target.closest("a");
+    if (!link || !list.contains(link)) return;
+    const href = link.getAttribute("href") || "";
+    if (!href.startsWith("#")) return;
+    const id = decodeURIComponent(href.slice(1));
+    const target = document.getElementById(id);
+    if (!target) return;
+    event.preventDefault();
+    if (isMobileNav()) setNavOpen(false);
+    ignoreSpyUntil = Date.now() + 700;
+    setActive(id);
+    history.pushState(null, "", `#${id}`);
+    target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  };
+  list.addEventListener("click", onNavClick);
+
+  const onToggle = (event) => {
+    event.preventDefault();
+    setNavOpen(!nav.classList.contains("is-open"));
+  };
+  toggle?.addEventListener("click", onToggle);
+
+  const onDocPointer = (event) => {
+    if (!nav.classList.contains("is-open")) return;
+    if (!nav.contains(event.target)) setNavOpen(false);
+  };
+  document.addEventListener("pointerdown", onDocPointer);
+
+  const onKey = (event) => {
+    if (event.key === "Escape") setNavOpen(false);
+  };
+  document.addEventListener("keydown", onKey);
+
+  const onResize = () => {
+    if (!isMobileNav()) setNavOpen(false);
+  };
+  window.addEventListener("resize", onResize);
+
+  const ratios = new Map();
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        ratios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+      }
+      if (Date.now() < ignoreSpyUntil) return;
+      let bestId = null;
+      let bestRatio = 0;
+      let bestTop = Infinity;
+      const offset = (document.querySelector(".bar")?.getBoundingClientRect().height || 62) + 8;
+      for (const section of sections) {
+        const el = document.getElementById(section.id);
+        const ratio = ratios.get(section.id) || 0;
+        if (!el || ratio <= 0) continue;
+        const top = Math.abs(el.getBoundingClientRect().top - offset);
+        if (ratio > bestRatio + 0.02 || (Math.abs(ratio - bestRatio) <= 0.02 && top < bestTop)) {
+          bestId = section.id;
+          bestRatio = ratio;
+          bestTop = top;
+        }
+      }
+      if (bestId) setActive(bestId);
+    },
+    {
+      rootMargin: "-15% 0px -55% 0px",
+      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+    }
+  );
+  for (const section of sections) {
+    const el = document.getElementById(section.id);
+    if (el) spy.observe(el);
+  }
+
+  const applyHash = () => {
+    const raw = location.hash.replace(/^#/, "");
+    if (!raw) return;
+    let id = raw;
+    try { id = decodeURIComponent(raw); } catch {}
+    const target = document.getElementById(id);
+    if (!target) return;
+    ignoreSpyUntil = Date.now() + 700;
+    setActive(id, { scrollNav: true });
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  };
+  window.addEventListener("hashchange", applyHash);
+  applyHash();
+  if (!location.hash && sections[0]) setActive(sections[0].id, { scrollNav: false });
+
+  navTeardown = () => {
+    list.removeEventListener("click", onNavClick);
+    toggle?.removeEventListener("click", onToggle);
+    document.removeEventListener("pointerdown", onDocPointer);
+    document.removeEventListener("keydown", onKey);
+    window.removeEventListener("resize", onResize);
+    window.removeEventListener("hashchange", applyHash);
+    spy.disconnect();
+    setNavOpen(false);
+  };
+}
+
 function renderGallery(models) {
   const root = document.getElementById("gallery");
   root.innerHTML = "";
@@ -108,15 +291,20 @@ function renderGallery(models) {
 
   const groups = groupModels(models);
   const previewEls = [];
+  const usedSlugs = new Set();
+  const navSections = [];
 
   for (const group of groups) {
     const section = document.createElement("section");
     section.className = "group";
     if (group.name) {
+      const slug = uniqueSlug(group.name, usedSlugs);
+      section.id = slug;
       const heading = document.createElement("h2");
       heading.className = "group-title";
       heading.textContent = group.name;
       section.appendChild(heading);
+      navSections.push({ id: slug, name: group.name, count: group.models.filter((m) => m.name && m.file).length });
     }
     if (group.attribution) {
       section.appendChild(renderCredit(group.attribution));
@@ -194,6 +382,7 @@ function renderGallery(models) {
   }
 
   observePreviews(previewEls);
+  bindSectionNav(navSections);
 }
 
 function fitCamera(camera, controls, object) {
