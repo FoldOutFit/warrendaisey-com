@@ -309,4 +309,4 @@ async function init() {
   }
 }
 
-init();
+export { init };

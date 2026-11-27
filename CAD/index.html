@@ -13,6 +13,15 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Josefin+Sans:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    window.__CAD_UNLOCK_KEY = "wd-cad-gallery-unlock";
+    window.__CAD_UNLOCK_HASH = "f592a73de0e9b32647b6b7868617697bddffde412ef09d512d2d799fe075d6ff";
+    try {
+      if (localStorage.getItem(window.__CAD_UNLOCK_KEY) === window.__CAD_UNLOCK_HASH) {
+        document.documentElement.classList.add("cad-unlocked");
+      }
+    } catch (e) {}
+  </script>
   <script type="importmap">
   {
     "imports": {
@@ -39,7 +48,22 @@
     </div>
   </header>
   <main id="main">
-    <div class="wrap">
+    <div class="wrap gate" id="gate">
+      <header class="intro">
+        <p class="eyebrow">A small gallery</p>
+        <h1>This gallery is <em>locked</em></h1>
+        <p class="lede">Enter the password to view and download the models.</p>
+      </header>
+      <form id="gate-form" class="gate-form" autocomplete="off">
+        <label class="gate-label" for="gate-password">Password</label>
+        <div class="gate-row">
+          <input id="gate-password" name="password" type="password" autocomplete="current-password" required>
+          <button type="submit">Unlock</button>
+        </div>
+        <p class="gate-error" id="gate-error" hidden>That password isn’t right.</p>
+      </form>
+    </div>
+    <div class="wrap gallery-content" id="gallery-content" hidden>
       <header class="intro">
         <p class="eyebrow">A small gallery</p>
         <h1>3D models you can <em>spin and download</em></h1>
@@ -56,9 +80,9 @@
       <a href="https://warrendaisey.com/">Back to warrendaisey.com</a>
     </div>
   </footer>
-  <script type="module" src="gallery.js"></script>
+  <script type="module" src="gate.js"></script>
   <noscript>
-    <p class="wrap" style="padding:1rem 0 2rem">JavaScript is needed for the 3D previews. You can still open <a href="models.json">models.json</a> for the file list and download each STL directly.</p>
+    <p class="wrap" style="padding:1rem 0 2rem">JavaScript is needed to unlock this gallery and view the 3D previews.</p>
   </noscript>
 </body>
 </html>

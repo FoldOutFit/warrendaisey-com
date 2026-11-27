@@ -4,6 +4,8 @@ This folder is the public gallery at https://warrendaisey.com/CAD/.
 
 A lowercase `/cad/` path also exists (`../cad/index.html`) and redirects here, because GitHub Pages URLs are case-sensitive.
 
+The public page asks for a password before loading the model list or previews. The check is client-side (see `gate.js`) and is remembered in localStorage. Direct file URLs are still reachable; this is a convenience gate, not real access control.
+
 ## How to add a model
 
 1. Put the file in `models/<group>/`. STL is the format the viewer already loads.

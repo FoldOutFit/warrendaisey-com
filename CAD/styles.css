@@ -294,3 +294,84 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+html:not(.cad-unlocked) #gallery-content { display: none; }
+html.cad-unlocked #gate { display: none; }
+html.cad-unlocked #gallery-content { display: block; }
+
+.gate { padding-bottom: 3.4rem; }
+
+.gate-form {
+  max-width: 26rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.35rem 1.4rem 1.45rem;
+  box-shadow: 0 16px 36px rgba(15, 28, 48, .08);
+}
+
+.gate-label {
+  display: block;
+  font-family: var(--label);
+  font-size: .68rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #9a4a2e;
+  margin-bottom: .55rem;
+}
+
+.gate-row {
+  display: flex;
+  gap: .6rem;
+  align-items: stretch;
+}
+
+.gate-row input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: .75rem 1.05rem;
+}
+
+.gate-row input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.gate-row input[aria-invalid="true"] {
+  border-color: #9a4a2e;
+}
+
+.gate-row button {
+  font-family: var(--label);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: #fff;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  padding: .75rem 1.2rem .7rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.gate-row button:hover {
+  background: var(--navy-2);
+  border-color: var(--navy-2);
+}
+
+.gate-error {
+  color: #9a4a2e;
+  margin-top: .8rem;
+  font-size: .98rem;
+}
+
+.gate-error[hidden] { display: none; }
