@@ -54,28 +54,28 @@
     "group": "Catan Box Organizer"
   },
   {
-    "name": "All Parts",
-    "file": "models/lid-stay/1_lid-stay_all-parts.stl",
-    "description": "All four lid-stay parts in one file.",
-    "group": "Lid Stay"
+    "name": "Lid Stay",
+    "file": "models/lid-stay/lid-stay_v2.stl",
+    "description": "The complete lid stay, with all parts in one file.",
+    "group": "Fold-Out-Fit"
   },
   {
     "name": "Back Plate",
     "file": "models/lid-stay/2_back-plate.stl",
     "description": "The back plate of the lid stay.",
-    "group": "Lid Stay"
+    "group": "Fold-Out-Fit"
   },
   {
     "name": "Front Plate",
     "file": "models/lid-stay/3_front-plate.stl",
     "description": "The front plate of the lid stay.",
-    "group": "Lid Stay"
+    "group": "Fold-Out-Fit"
   },
   {
     "name": "Pins",
     "file": "models/lid-stay/4_pins.stl",
     "description": "The hinge pins.",
-    "group": "Lid Stay"
+    "group": "Fold-Out-Fit"
   },
   {
     "name": "Multi-part Heel",
