@@ -50,13 +50,48 @@ function groupModels(models) {
   for (const model of models) {
     const key = model.group || "";
     if (!index.has(key)) {
-      const group = { name: key, models: [] };
+      const group = { name: key, models: [], attribution: null };
       index.set(key, group);
       groups.push(group);
     }
-    index.get(key).models.push(model);
+    const group = index.get(key);
+    group.models.push(model);
+    if (!group.attribution && model.attribution) {
+      group.attribution = model.attribution;
+    }
   }
   return groups;
+}
+
+function appendText(node, text) {
+  node.appendChild(document.createTextNode(text));
+}
+
+function creditLink(href, label) {
+  const a = document.createElement("a");
+  a.href = href;
+  a.textContent = label;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  return a;
+}
+
+function renderCredit(attr) {
+  const p = document.createElement("p");
+  p.className = "group-credit";
+  if (attr.creator) {
+    appendText(p, "By ");
+    if (attr.creatorUrl) p.appendChild(creditLink(attr.creatorUrl, attr.creator));
+    else appendText(p, attr.creator);
+  }
+  if (attr.sourceUrl) {
+    appendText(p, p.childNodes.length ? " on " : "On ");
+    p.appendChild(creditLink(attr.sourceUrl, attr.source || "Thingiverse"));
+  }
+  if (attr.license) {
+    appendText(p, ". Licensed under " + attr.license + ".");
+  }
+  return p;
 }
 
 function renderGallery(models) {
@@ -79,6 +114,9 @@ function renderGallery(models) {
       heading.className = "group-title";
       heading.textContent = group.name;
       section.appendChild(heading);
+    }
+    if (group.attribution) {
+      section.appendChild(renderCredit(group.attribution));
     }
 
     const grid = document.createElement("div");

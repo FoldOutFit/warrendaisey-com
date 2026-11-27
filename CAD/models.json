@@ -96,5 +96,295 @@
     "file": "models/heel/heel_6in_v33_raft.stl",
     "description": "A printable raft for the 6-inch heel.",
     "group": "6-inch Heel"
+  },
+  {
+    "name": "S-Hook",
+    "file": "models/more-designs/s-hook.stl",
+    "description": "A single S-shaped hook with a mounting hole.",
+    "group": "More Designs"
+  },
+  {
+    "name": "S-Hooks (Pair)",
+    "file": "models/more-designs/s-hooks-pair.stl",
+    "description": "A pair of S-shaped hooks.",
+    "group": "More Designs"
+  },
+  {
+    "name": "S-Hooks (Set of 4)",
+    "file": "models/more-designs/s-hooks-set-of-4.stl",
+    "description": "Four S-shaped hooks in one file.",
+    "group": "More Designs"
+  },
+  {
+    "name": "S-Hooks, Thick (Set of 4)",
+    "file": "models/more-designs/s-hooks-thick-set-of-4.stl",
+    "description": "A thicker variant of the four S-shaped hooks.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Notched Ring",
+    "file": "models/more-designs/notched-ring.stl",
+    "description": "A large ring with a small notch and gap.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Stepped Tube",
+    "file": "models/more-designs/stepped-tube.stl",
+    "description": "A hollow stepped tube, or sleeve.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Bowl and Lid",
+    "file": "models/more-designs/bowl-and-lid.stl",
+    "description": "A shallow round bowl with a separate lid.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Decorative Arches",
+    "file": "models/more-designs/decorative-arches.stl",
+    "description": "A pair of ridged decorative arch pieces.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Sculpted Cover",
+    "file": "models/more-designs/sculpted-cover.stl",
+    "description": "A sculpted cover with a mounting boss and side slots.",
+    "group": "More Designs"
+  },
+  {
+    "name": "Batarang",
+    "file": "models/batman-vs-superman/batarang.stl",
+    "description": "A bat-shaped throwing piece. The file itself is labeled \u201cbatman vs superman.\u201d",
+    "group": "Batman vs Superman"
+  },
+  {
+    "name": "Embracing Couple",
+    "file": "models/sculptures/embracing-couple.stl",
+    "description": "An abstract sculpture of two figures on a round base.",
+    "group": "Sculptures",
+    "preview": "models/sculptures/embracing-couple.preview.stl"
+  },
+  {
+    "name": "Kneeling Pig",
+    "file": "models/sculptures/kneeling-pig.stl",
+    "description": "A detailed figure of a kneeling anthropomorphic pig holding a tablet.",
+    "group": "Sculptures",
+    "preview": "models/sculptures/kneeling-pig.preview.stl"
+  },
+  {
+    "name": "Sword Hilt",
+    "file": "models/other/sword-hilt.stl",
+    "description": "A sword hilt with a ribbed grip, pommel, and guard.",
+    "group": "Other Models"
+  },
+  {
+    "name": "Whistle",
+    "file": "models/other/whistle.stl",
+    "description": "A classic pea whistle with a lanyard hole.",
+    "group": "Other Models"
+  },
+  {
+    "name": "Recessed Ring",
+    "file": "models/other/recessed-ring.stl",
+    "description": "A ring with a circular recess on one side.",
+    "group": "Other Models"
+  },
+  {
+    "name": "Pin Vise Set",
+    "file": "models/other/pin-vise-set.stl",
+    "description": "A spiral shaft, collet, cap, and base in one file.",
+    "group": "Other Models"
+  },
+  {
+    "name": "Hinge Plate",
+    "file": "models/other/hinge-plate.stl",
+    "description": "A flat hinge strap with knuckles on both ends.",
+    "group": "Other Models"
+  },
+  {
+    "name": "Baracktopus",
+    "file": "models/baracktopus/Baracktopus.stl",
+    "description": "The full Baracktopus model.",
+    "group": "Baracktopus",
+    "preview": "models/baracktopus/Baracktopus.preview.stl",
+    "attribution": {
+      "creator": "CupricReki",
+      "creatorUrl": "https://www.thingiverse.com/CupricReki",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1106914",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Baracktopus Reduced",
+    "file": "models/baracktopus/Baracktopus_Reduced.stl",
+    "description": "A lighter, reduced-polygon version of Baracktopus.",
+    "group": "Baracktopus"
+  },
+  {
+    "name": "Black Panther",
+    "file": "models/black-panther/Black_Panther.stl",
+    "description": "A Black Panther chess piece.",
+    "group": "Marvel Black Panther Chess",
+    "attribution": {
+      "creator": "Houby",
+      "creatorUrl": "https://www.thingiverse.com/Houby",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:3578946",
+      "license": "CC BY-NC"
+    }
+  },
+  {
+    "name": "Alien",
+    "file": "models/among-us/Alien.stl",
+    "description": "The alien Among Us character.",
+    "group": "Among Us",
+    "attribution": {
+      "creator": "Liang0108",
+      "creatorUrl": "https://www.thingiverse.com/Liang0108",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:4605525",
+      "license": "CC BY"
+    }
+  },
+  {
+    "name": "Among Us",
+    "file": "models/among-us/Among_Us.stl",
+    "description": "The classic Among Us crewmate.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Battle Helmet",
+    "file": "models/among-us/Battle_Helmet.stl",
+    "description": "A battle-helmet accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Cheese",
+    "file": "models/among-us/Cheese.stl",
+    "description": "A cheese-wedge accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Doctor Head Mirror",
+    "file": "models/among-us/Doctor_Head_Mirror.stl",
+    "description": "A doctor\u2019s head-mirror accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Horned Viking Helmet",
+    "file": "models/among-us/Horned_Viking_Helmet.stl",
+    "description": "A horned Viking-helmet accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Leaf",
+    "file": "models/among-us/Leaf.stl",
+    "description": "A leaf accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Straw Hat",
+    "file": "models/among-us/Straw_Hat.stl",
+    "description": "A straw-hat accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Toilet Paper",
+    "file": "models/among-us/Toilet_Paper.stl",
+    "description": "A toilet-paper accessory.",
+    "group": "Among Us"
+  },
+  {
+    "name": "Axle",
+    "file": "models/jellyfish/Axle.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art",
+    "attribution": {
+      "creator": "jajaum3d",
+      "creatorUrl": "https://www.thingiverse.com/jajaum3d",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:5655626",
+      "license": "CC BY-NC-SA"
+    }
+  },
+  {
+    "name": "Axle Base Gear",
+    "file": "models/jellyfish/AxleBaseGear.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Base",
+    "file": "models/jellyfish/Base.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Base Lid",
+    "file": "models/jellyfish/BaseLid.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Center Gear",
+    "file": "models/jellyfish/CenterGear.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Crank Axle",
+    "file": "models/jellyfish/CrankAxle.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Crank Axle Gear",
+    "file": "models/jellyfish/CrankAxleGear.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Crank Handle",
+    "file": "models/jellyfish/CrankHandle.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Crank Lock",
+    "file": "models/jellyfish/CrankLock.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Dome",
+    "file": "models/jellyfish/Dome.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Dome Ring",
+    "file": "models/jellyfish/DomeRing.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Dome Under",
+    "file": "models/jellyfish/DomeUnder.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "External Gear",
+    "file": "models/jellyfish/ExternalGear.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "External Tentacle",
+    "file": "models/jellyfish/ExternalTentacle.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Gears Base",
+    "file": "models/jellyfish/GearsBase.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Internal Gear",
+    "file": "models/jellyfish/InternalGear.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Internal Tentacle",
+    "file": "models/jellyfish/InternalTentacle.stl",
+    "group": "Jellyfish Swimming Mechanical Interactive Art"
   }
 ]

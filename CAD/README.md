@@ -23,6 +23,19 @@ The public page asks for a password before loading the model list or previews. T
 
 `name` and `file` are required. `description` and `group` are optional. Models that share a `group` appear together under that heading, in the order they are listed.
 
+
+Optional `attribution` on any model in a group is shown under the section heading (creator, source link, and license). Use this for third-party designs:
+
+```json
+"attribution": {
+  "creator": "Name",
+  "creatorUrl": "https://www.thingiverse.com/name",
+  "source": "Thingiverse",
+  "sourceUrl": "https://www.thingiverse.com/thing:123",
+  "license": "CC BY"
+}
+```
+
 `preview` is optional. When it is set, the on-page 3D viewer loads that lighter mesh instead of `file`. The Download button always serves the exact `file`. Use this for large STLs: keep the full-resolution original as `file`, and add a decimated preview of a few MB or less.
 
 3. Commit and push to `main`. GitHub Pages will publish the new card at `/CAD/`.

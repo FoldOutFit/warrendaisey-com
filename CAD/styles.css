@@ -144,6 +144,15 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
   margin-bottom: 1.2rem;
 }
 
+.group-credit {
+  color: var(--muted);
+  margin: -0.7rem 0 1.2rem;
+  font-size: 0.98rem;
+  max-width: 46rem;
+}
+
+.group-credit a { color: var(--navy); font-weight: 600; }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
