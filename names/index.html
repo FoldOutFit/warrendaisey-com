@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Names | Warren Daisey</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#13213C">
+  <link rel="icon" href="/assets/warren-avatar.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Josefin+Sans:wght@400;600;700&family=Caveat:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#13213C; --navy-2:#1D3157; --ink:#1B2333; --muted:#525C6B;
+      --cream:#FFF7EC; --blush:#FDEBE4; --white:#fff; --line:#EADFD0;
+      --coral:#FF6B5B; --coral-dk:#C8372A; --sun:#FFC845; --teal:#2EC4B6;
+      --gold:#E0B04C; --gold-dk:#B8892C;
+      --serif:"Cormorant Garamond",Garamond,Georgia,serif;
+      --label:"Josefin Sans","Segoe UI",sans-serif;
+      --script:"Caveat","Brush Script MT",cursive;
+      --body:"Source Sans 3","Segoe UI",sans-serif;
+      --header-h:3.4rem;
+      --safe-t:env(safe-area-inset-top,0px);
+      --safe-b:env(safe-area-inset-bottom,0px);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;}
+    body{
+      font-family:var(--body);color:var(--cream);background:var(--navy);
+      line-height:1.5;font-size:1rem;-webkit-font-smoothing:antialiased;
+      overflow:hidden;min-height:100dvh;
+    }
+    body.is-results{overflow:auto}
+    a{color:var(--gold);text-underline-offset:3px}
+    :focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:4px}
+    .skip{position:absolute;left:1rem;top:-4rem;background:#fff;color:var(--navy);padding:.6rem 1rem;z-index:100}
+    .skip:focus{top:calc(var(--safe-t) + 1rem)}
+
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%,rgba(224,176,76,.22),transparent 55%),
+        radial-gradient(circle at 100% 100%,rgba(255,107,91,.08),transparent 40%),
+        repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.015) 3px,rgba(255,255,255,.015) 4px);
+    }
+
+    .app{position:relative;z-index:1;min-height:100dvh;min-height:100vh;display:flex;flex-direction:column}
+
+    header.bar{
+      flex:0 0 auto;
+      padding:calc(var(--safe-t) + .45rem) 1rem .5rem;
+      border-bottom:2px solid rgba(224,176,76,.45);
+      background:rgba(19,33,60,.88);
+      backdrop-filter:blur(10px);
+    }
+    .bar-row{display:flex;align-items:center;gap:.6rem;max-width:42rem;margin:0 auto}
+    .brand{display:flex;align-items:center;gap:.5rem;text-decoration:none;color:var(--cream);min-width:0}
+    .logo-mark{
+      width:1.85rem;height:1.85rem;border-radius:50%;display:grid;place-items:center;
+      background:var(--sun);color:var(--navy);font-family:var(--serif);font-weight:700;
+      border:2px solid var(--cream);font-size:.72rem;flex:none;
+    }
+    .brand-text{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+    .brand-name{font-family:var(--label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.62rem;color:var(--cream)}
+    .brand-label{font-family:var(--script);font-size:1.05rem;color:var(--gold);font-weight:700}
+
+    .tabs{display:flex;gap:.25rem;margin-left:auto;background:rgba(0,0,0,.25);padding:.18rem;border-radius:999px;border:1px solid rgba(224,176,76,.35)}
+    .tabs button{
+      font-family:var(--label);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+      background:transparent;color:rgba(255,247,236,.7);border:0;border-radius:999px;
+      padding:.4rem .7rem;cursor:pointer;
+    }
+    .tabs button[aria-selected="true"]{background:var(--gold);color:var(--navy)}
+
+    .tools{display:flex;justify-content:space-between;align-items:center;gap:.6rem;max-width:42rem;margin:.45rem auto 0}
+    .progress{font-family:var(--label);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+    .progress-bar{flex:1;height:4px;background:rgba(255,247,236,.12);border-radius:99px;overflow:hidden;max-width:9rem}
+    .progress-bar > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--sun));border-radius:99px;transition:width .25s ease}
+    .tool-btns{display:flex;gap:.35rem}
+    .tool-btns button{
+      font-family:var(--label);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+      background:transparent;color:var(--cream);border:1px solid rgba(255,247,236,.3);
+      border-radius:999px;padding:.28rem .65rem;cursor:pointer;
+    }
+    .tool-btns button:hover{border-color:var(--gold);color:var(--gold)}
+    .tool-btns button:disabled{opacity:.35;cursor:default;border-color:rgba(255,247,236,.15);color:inherit}
+
+    #deck{
+      flex:1;display:flex;flex-direction:column;min-height:0;
+      padding:0 1rem calc(var(--safe-b) + .85rem);
+      max-width:42rem;width:100%;margin:0 auto;
+    }
+    .hints{
+      display:flex;justify-content:space-between;gap:1rem;
+      font-family:var(--label);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+      color:rgba(255,247,236,.55);padding:.55rem .15rem .2rem;
+    }
+    .hints .l{color:var(--coral)}
+    .hints .r{color:var(--gold)}
+
+    .stack{
+      flex:1;position:relative;min-height:16rem;
+      touch-action:none;user-select:none;-webkit-user-select:none;
+    }
+    .card{
+      position:absolute;inset:0.4rem 0.15rem 0.6rem;
+      background:var(--cream);color:var(--ink);
+      border:2px solid var(--navy);
+      border-radius:22px;
+      box-shadow:0 0 0 4px var(--gold), 8px 8px 0 rgba(0,0,0,.35);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:1.6rem 1.3rem 1.4rem;
+      overflow:hidden;
+      will-change:transform;
+    }
+    .card::before{
+      content:"";position:absolute;left:0;right:0;top:0;height:10px;
+      background:linear-gradient(90deg,var(--navy),var(--gold),var(--navy));
+    }
+    .card.behind{transform:scale(.965) translateY(10px);box-shadow:0 0 0 3px rgba(224,176,76,.7), 5px 5px 0 rgba(0,0,0,.2);pointer-events:none}
+    .card.behind2{transform:scale(.93) translateY(20px);box-shadow:0 0 0 2px rgba(224,176,76,.45);pointer-events:none}
+    .card.top{z-index:3;cursor:grab}
+    .card.top.dragging{cursor:grabbing;transition:none}
+    .card.fly{pointer-events:none;transition:transform .42s cubic-bezier(.2,.7,.2,1),opacity .42s ease;opacity:0}
+    .card:not(.dragging):not(.fly){transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+
+    .eyebrow{font-family:var(--label);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--coral-dk);margin-bottom:.85rem}
+    .card h1{
+      font-family:var(--serif);font-weight:600;color:var(--navy);
+      font-size:clamp(2rem,8.4vw,3.5rem);line-height:1.08;letter-spacing:-.01em;
+      max-width:18ch;
+    }
+    .card .flourish{width:3.2rem;height:2px;background:var(--gold);margin:1.1rem auto .9rem;position:relative}
+    .card .flourish::before,.card .flourish::after{
+      content:"";position:absolute;top:-3px;width:8px;height:8px;border:2px solid var(--gold);border-radius:50%;
+    }
+    .card .flourish::before{left:-12px}
+    .card .flourish::after{right:-12px}
+    .card .prompt{font-family:var(--script);font-size:1.45rem;color:var(--navy-2)}
+    .seal{
+      position:absolute;bottom:1rem;width:2.5rem;height:2.5rem;border-radius:50%;
+      display:grid;place-items:center;background:var(--navy);color:var(--gold);
+      font-family:var(--serif);font-weight:700;font-size:.72rem;
+      border:2px solid var(--gold);box-shadow:0 0 0 3px var(--navy);
+    }
+
+    .stamp{
+      position:absolute;top:18%;left:50%;padding:.28rem .6rem;border:3px solid currentColor;border-radius:6px;
+      font-family:var(--label);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+      opacity:0;pointer-events:none;background:rgba(255,247,236,.92);white-space:nowrap;z-index:2;
+    }
+    .stamp.left{color:var(--coral-dk);transform:translateX(-50%) rotate(-12deg)}
+    .stamp.right{color:#0E7C72;transform:translateX(-50%) rotate(12deg)}
+    .card.intent-left .stamp.left,.card.intent-right .stamp.right{opacity:var(--stamp,0)}
+
+    .actions{display:flex;justify-content:center;align-items:center;gap:1.1rem;padding:.7rem 0 .15rem;flex:none}
+    .act{
+      width:4.15rem;height:4.15rem;border-radius:50%;border:2px solid var(--cream);
+      display:grid;place-items:center;cursor:pointer;background:var(--navy-2);color:var(--cream);
+      box-shadow:4px 4px 0 rgba(0,0,0,.35);transition:transform .15s ease,background .15s;
+    }
+    .act:hover{transform:translate(-1px,-1px)}
+    .act:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(0,0,0,.35)}
+    .act svg{width:1.55rem;height:1.55rem;display:block}
+    .act.no{background:#3a1c24;border-color:var(--coral);color:var(--coral)}
+    .act.yes{background:#2a2414;border-color:var(--gold);color:var(--gold)}
+    .act.undo-fab{width:2.8rem;height:2.8rem;background:transparent;color:var(--cream);border-color:rgba(255,247,236,.4);box-shadow:none}
+    .act:disabled{opacity:.35;cursor:default;transform:none}
+
+    .done{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:1.5rem .5rem 2rem;
+    }
+    .done h2{font-family:var(--serif);font-size:clamp(2rem,7vw,3rem);font-weight:600;color:var(--gold);line-height:1.1;margin:.4rem 0 .6rem}
+    .done p{color:rgba(255,247,236,.8);max-width:28ch}
+    .done button{
+      margin-top:1.3rem;font-family:var(--label);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+      background:var(--gold);color:var(--navy);border:2px solid var(--sun);border-radius:999px;
+      padding:.75rem 1.3rem;cursor:pointer;box-shadow:4px 4px 0 rgba(0,0,0,.3);
+    }
+
+    #results{
+      display:none;flex:1;min-height:0;overflow:auto;
+      padding:.9rem 1rem calc(var(--safe-b) + 2rem);
+    }
+    body.is-results #results{display:block}
+    body.is-results #deck{display:none}
+    .results-inner{max-width:44rem;margin:0 auto}
+    .status-banner{
+      font-family:var(--label);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+      color:var(--gold);margin:0 0 1rem;text-align:center;
+    }
+    .list-block{margin-bottom:1.6rem}
+    .list-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem;margin-bottom:.7rem;border-bottom:1px solid rgba(224,176,76,.35);padding-bottom:.45rem}
+    .list-head h2{font-family:var(--serif);font-size:1.65rem;font-weight:600;color:var(--cream);line-height:1.1}
+    .list-head .count{font-family:var(--label);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+    .list-actions{display:flex;flex-wrap:wrap;gap:.4rem;margin-left:auto}
+    .copy-btn,.ghost-btn{
+      font-family:var(--label);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+      background:var(--gold);color:var(--navy);border:0;border-radius:999px;padding:.4rem .7rem;cursor:pointer;
+    }
+    .ghost-btn{background:transparent;color:var(--cream);border:1px solid rgba(255,247,236,.35)}
+    .copy-btn:hover{background:var(--sun)}
+    .ghost-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .empty{color:rgba(255,247,236,.55);font-size:.95rem;padding:.4rem 0 .8rem}
+
+    .person{
+      background:var(--cream);color:var(--ink);border:2px solid var(--navy);border-radius:16px;
+      padding:1rem 1rem .9rem;margin:0 0 .75rem;box-shadow:3px 3px 0 rgba(0,0,0,.25);
+    }
+    .person header{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.55rem}
+    .person h3{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--navy);line-height:1.15}
+    .person pre{
+      font-family:var(--body);font-size:.92rem;line-height:1.55;white-space:pre-wrap;
+      background:#fff;border:1px solid var(--line);border-radius:10px;padding:.75rem .85rem;color:var(--ink);
+    }
+    .right-list .person pre{font-size:.95rem}
+
+    .noscript{padding:2rem;color:var(--cream)}
+
+    @media (min-width:720px){
+      .card{inset:.6rem 8% .8rem}
+      .card h1{font-size:clamp(2.4rem,5vw,3.7rem)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .card,.card.fly,.progress-bar > span,.act{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#deck">Skip to cards</a>
+  <div class="app">
+    <header class="bar">
+      <div class="bar-row">
+        <a class="brand" href="https://warrendaisey.com/" aria-label="Warren Daisey home">
+          <span class="logo-mark" aria-hidden="true">WD</span>
+          <span class="brand-text">
+            <span class="brand-name">Warren Daisey</span>
+            <span class="brand-label">Letters</span>
+          </span>
+        </a>
+        <div class="tabs" role="tablist" aria-label="Views">
+          <button type="button" role="tab" id="tab-swipe" aria-selected="true" aria-controls="deck">Swipe</button>
+          <button type="button" role="tab" id="tab-results" aria-selected="false" aria-controls="results">Results</button>
+        </div>
+      </div>
+      <div class="tools">
+        <span class="progress" id="progress" aria-live="polite">0 / 52</span>
+        <div class="progress-bar" aria-hidden="true"><span id="bar"></span></div>
+        <div class="tool-btns">
+          <button type="button" id="undo-btn" disabled>Undo</button>
+          <button type="button" id="reset-btn">Reset</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="deck">
+      <div class="hints">
+        <span class="l">← Don’t know them well</span>
+        <span class="r">Know them better →</span>
+      </div>
+      <div class="stack" id="stack" aria-live="polite"></div>
+      <div class="actions">
+        <button type="button" class="act no" id="btn-left" aria-label="Don’t know them well">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <button type="button" class="act undo-fab" id="undo-fab" aria-label="Undo last choice" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8H5V4"/><path d="M5 8a8 8 0 1 1-1.3 6"/></svg>
+        </button>
+        <button type="button" class="act yes" id="btn-right" aria-label="Know them better">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.4S3.5 15.2 3.5 9.8A4.4 4.4 0 0 1 12 7.6a4.4 4.4 0 0 1 8.5 2.2C20.5 15.2 12 20.4 12 20.4z"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section id="results" role="tabpanel" aria-labelledby="tab-results" hidden>
+      <div class="results-inner" id="results-inner"></div>
+    </section>
+  </div>
+  <noscript><p class="noscript">This page needs JavaScript to swipe through the names.</p></noscript>
+  <script>
+  (function () {
+    const PEOPLE = [
+      "Anna Halverson","Lynda Michaels","Stacy Wagner","Mike Huben","Peter Campbell",
+      "Rashnika","Wren Fritsky","Becky Toth","Russell Huxtable","Joan McDonald",
+      "Ania Holland","Michelle Conway","Mark McCord","Ed Piatkowski","Jerome Manley",
+      "Suzanne Williamson","John Wetzel","Chris Hill","Erin Brummett","Amy DiFebo",
+      "Heather Arters","Todd Shawver","Dan Knorr","Terry Zeigler","Jordan Whynard",
+      "Mary Lenzini Howe","Marc Steckel","Barbra Boyatt Romano","Collin Breidenbach",
+      "Maria McGinty-Ferris","Matthew Meyer","Jamie Pitcavage","Ryan Belding",
+      "Lexi Urbassik","Olivia Rockey","Jenny Ro","Paul Dovidio","Mike Ricci",
+      "Laura Shadle","Sari Daisey","Matt Zoppetti","Roxana Zoppetti","Andreas",
+      "Justin Paul Marta","Jennifer Bryk","Christina Force","Bill Bent","Cait Finn",
+      "David Magolis","Asa Kelly","Steven Laughlin","Kenny Hall"
+    ];
+    const KEY = "wd-names-swipe-v1";
+    const THRESHOLD = 88;
+
+    const $ = (id) => document.getElementById(id);
+    const stackEl = $("stack");
+    const progressEl = $("progress");
+    const barEl = $("bar");
+    const undoBtn = $("undo-btn");
+    const undoFab = $("undo-fab");
+    const resetBtn = $("reset-btn");
+    const btnLeft = $("btn-left");
+    const btnRight = $("btn-right");
+    const tabSwipe = $("tab-swipe");
+    const tabResults = $("tab-results");
+    const resultsEl = $("results");
+    const resultsInner = $("results-inner");
+    const deckEl = $("deck");
+
+    function firstName(full) {
+      return String(full).trim().split(/\s+/)[0];
+    }
+
+    function leftMessage(full) {
+      const first = firstName(full);
+      return [
+        "Subject: Letter of Recommendation Request",
+        "",
+        "Hi " + first + ",",
+        "",
+        "I hope you're doing well! I'm reaching out to ask if you'd be willing to write me a letter of recommendation.",
+        "",
+        "I know we may not have had the most contact, but I believe the way I present myself and the impression you have of me would make for a meaningful letter. It can be short and sweet, and even a few sentences would mean a lot.",
+        "",
+        "Thank you so much for considering it!",
+        "",
+        "Best,",
+        "Warren Daisey"
+      ].join("\n");
+    }
+
+    function rightMessage(full) {
+      const first = firstName(full);
+      return [
+        "Subject: Letter of Recommendation Request",
+        "",
+        "Hi " + first + ", I hope you're doing well! I'd be really grateful if you'd be willing to write me a letter of recommendation. It can be short and sweet. Thank you so much!",
+        "",
+        "Best,",
+        "Warren Daisey"
+      ].join("\n");
+    }
+
+    function load() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (!raw || typeof raw !== "object") return { left: [], right: [], history: [] };
+        const known = new Set(PEOPLE);
+        const left = Array.isArray(raw.left) ? raw.left.filter((n) => known.has(n)) : [];
+        const right = Array.isArray(raw.right) ? raw.right.filter((n) => known.has(n)) : [];
+        const history = Array.isArray(raw.history)
+          ? raw.history.filter((h) => h && known.has(h.name) && (h.side === "left" || h.side === "right"))
+          : [];
+        return { left, right, history };
+      } catch (e) {
+        return { left: [], right: [], history: [] };
+      }
+    }
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    let state = load();
+    let view = "swipe";
+    let busy = false;
+    let drag = null;
+
+    function decided() {
+      return new Set([...state.left, ...state.right]);
+    }
+
+    function remaining() {
+      const done = decided();
+      return PEOPLE.filter((n) => !done.has(n));
+    }
+
+    function updateProgress() {
+      const doneCount = decided().size;
+      progressEl.textContent = doneCount + " / " + PEOPLE.length;
+      barEl.style.width = (doneCount / PEOPLE.length * 100) + "%";
+      const canUndo = state.history.length > 0;
+      undoBtn.disabled = !canUndo;
+      undoFab.disabled = !canUndo;
+      const hasCards = remaining().length > 0 && view === "swipe";
+      btnLeft.disabled = !hasCards;
+      btnRight.disabled = !hasCards;
+    }
+
+    function showView(next) {
+      view = next;
+      const isResults = next === "results";
+      document.body.classList.toggle("is-results", isResults);
+      resultsEl.hidden = !isResults;
+      deckEl.style.display = isResults ? "none" : "";
+      tabSwipe.setAttribute("aria-selected", String(!isResults));
+      tabResults.setAttribute("aria-selected", String(isResults));
+      if (isResults) renderResults();
+      else renderStack();
+      updateProgress();
+    }
+
+    function cardHTML(name, pos) {
+      const cls = pos === 0 ? "card top" : pos === 1 ? "card behind" : "card behind2";
+      return (
+        '<article class="' + cls + '" data-name="' + escapeAttr(name) + '">' +
+          '<div class="stamp left">Don’t know well</div>' +
+          '<div class="stamp right">Know them better</div>' +
+          '<p class="eyebrow">Letter of recommendation</p>' +
+          '<h1>' + escapeHtml(name) + '</h1>' +
+          '<div class="flourish" aria-hidden="true"></div>' +
+          '<p class="prompt">How well do you know them?</p>' +
+          '<span class="seal" aria-hidden="true">WD</span>' +
+        "</article>"
+      );
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    function renderStack() {
+      const left = remaining();
+      if (left.length === 0) {
+        stackEl.innerHTML =
+          '<div class="done">' +
+            '<p class="eyebrow">All set</p>' +
+            '<h2>That’s everyone.</h2>' +
+            '<p>You have sorted all ' + PEOPLE.length + ' names. Open Results to copy the messages.</p>' +
+            '<button type="button" id="to-results">View results</button>' +
+          "</div>";
+        const b = $("to-results");
+        if (b) b.addEventListener("click", () => showView("results"));
+        return;
+      }
+      const show = left.slice(0, 3);
+      stackEl.innerHTML = show.map((n, i) => cardHTML(n, i)).join("");
+      const top = stackEl.querySelector(".card.top");
+      if (top) bindCard(top);
+    }
+
+    function bindCard(card) {
+      const onDown = (e) => {
+        if (busy) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        drag = {
+          id: e.pointerId,
+          x: e.clientX,
+          y: e.clientY,
+          t: performance.now(),
+          dx: 0,
+          dy: 0
+        };
+        card.classList.add("dragging");
+        try { card.setPointerCapture(e.pointerId); } catch (err) {}
+      };
+      const onMove = (e) => {
+        if (!drag || e.pointerId !== drag.id) return;
+        drag.dx = e.clientX - drag.x;
+        drag.dy = e.clientY - drag.y;
+        const rot = drag.dx / 16;
+        card.style.transform = "translate(" + drag.dx + "px," + drag.dy + "px) rotate(" + rot + "deg)";
+        const p = Math.min(1, Math.abs(drag.dx) / THRESHOLD);
+        card.style.setProperty("--stamp", String(p));
+        card.classList.toggle("intent-left", drag.dx < -20);
+        card.classList.toggle("intent-right", drag.dx > 20);
+        e.preventDefault();
+      };
+      const onUp = (e) => {
+        if (!drag || e.pointerId !== drag.id) return;
+        const dx = drag.dx, dy = drag.dy;
+        const dt = Math.max(16, performance.now() - drag.t);
+        const vx = dx / dt;
+        drag = null;
+        card.classList.remove("dragging");
+        if (dx > THRESHOLD || vx > 0.55) decide("right", card);
+        else if (dx < -THRESHOLD || vx < -0.55) decide("left", card);
+        else {
+          card.style.transform = "";
+          card.style.removeProperty("--stamp");
+          card.classList.remove("intent-left", "intent-right");
+        }
+      };
+      card.addEventListener("pointerdown", onDown);
+      card.addEventListener("pointermove", onMove);
+      card.addEventListener("pointerup", onUp);
+      card.addEventListener("pointercancel", onUp);
+    }
+
+    function decide(side, card) {
+      if (busy) return;
+      const name = (card && card.getAttribute("data-name")) || remaining()[0];
+      if (!name) return;
+      busy = true;
+      if (card) {
+        const dir = side === "right" ? 1 : -1;
+        card.classList.add("fly", side === "right" ? "intent-right" : "intent-left");
+        card.style.setProperty("--stamp", "1");
+        card.style.transform = "translate(" + (dir * 130) + "vw," + (-8) + "vh) rotate(" + (dir * 28) + "deg)";
+      }
+      const wait = card && !matchMedia("(prefers-reduced-motion: reduce)").matches ? 380 : 0;
+      setTimeout(function () {
+        if (side === "left") state.left.push(name);
+        else state.right.push(name);
+        state.history.push({ name: name, side: side });
+        save();
+        busy = false;
+        const left = remaining();
+        if (left.length === 0) showView("results");
+        else renderStack();
+        updateProgress();
+      }, wait);
+    }
+
+    function undo() {
+      if (busy || !state.history.length) return;
+      const last = state.history.pop();
+      const list = last.side === "left" ? state.left : state.right;
+      const i = list.lastIndexOf(last.name);
+      if (i >= 0) list.splice(i, 1);
+      save();
+      if (view === "results" && remaining().length) showView("swipe");
+      else if (view === "results") renderResults();
+      else renderStack();
+      updateProgress();
+    }
+
+    function resetAll() {
+      if (!confirm("Clear all your choices and start over?")) return;
+      state = { left: [], right: [], history: [] };
+      save();
+      showView("swipe");
+    }
+
+    function copyText(text, btn) {
+      const done = () => {
+        if (!btn) return;
+        const prev = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = prev; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+      } else fallbackCopy(text, done);
+    }
+
+    function fallbackCopy(text, done) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      done();
+    }
+
+    function renderResults() {
+      const pending = remaining().length;
+      const banner = pending
+        ? '<p class="status-banner">' + decided().size + " of " + PEOPLE.length + " sorted — " + pending + " still in the deck</p>"
+        : '<p class="status-banner">All ' + PEOPLE.length + " names are sorted</p>";
+
+      resultsInner.innerHTML = banner +
+        listBlock("left", "Don’t know them well", state.left, true) +
+        listBlock("right", "Know them better", state.right, false);
+    }
+
+    function listBlock(id, title, names, isLeft) {
+      const actions =
+        '<div class="list-actions">' +
+          (isLeft && names.length ? '<button type="button" class="copy-btn" data-copy-all="' + id + '">Copy all</button>' : "") +
+          (names.length ? '<button type="button" class="ghost-btn" data-copy-names="' + id + '">Copy names</button>' : "") +
+        "</div>";
+      let body;
+      if (!names.length) {
+        body = '<p class="empty">No one in this list yet.</p>';
+      } else {
+        body = names.map((n, i) => {
+          const msg = isLeft ? leftMessage(n) : rightMessage(n);
+          return (
+            '<article class="person">' +
+              "<header>" +
+                "<h3>" + escapeHtml(n) + "</h3>" +
+                '<button type="button" class="copy-btn" data-copy-msg="' + id + '" data-i="' + i + '">Copy</button>' +
+              "</header>" +
+              "<pre>" + escapeHtml(msg) + "</pre>" +
+            "</article>"
+          );
+        }).join("");
+      }
+      return (
+        '<section class="list-block ' + (isLeft ? "left-list" : "right-list") + '" id="list-' + id + '">' +
+          '<div class="list-head">' +
+            "<h2>" + title + "</h2>" +
+            '<span class="count">' + names.length + "</span>" +
+            actions +
+          "</div>" +
+          body +
+        "</section>"
+      );
+    }
+
+    resultsInner.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      if (btn.dataset.copyAll) {
+        const list = btn.dataset.copyAll === "left" ? state.left : state.right;
+        const fn = btn.dataset.copyAll === "left" ? leftMessage : rightMessage;
+        const text = list.map((n) => "=== " + n + " ===\n" + fn(n)).join("\n\n");
+        copyText(text, btn);
+      } else if (btn.dataset.copyNames) {
+        const list = btn.dataset.copyNames === "left" ? state.left : state.right;
+        copyText(list.join("\n"), btn);
+      } else if (btn.dataset.copyMsg) {
+        const list = btn.dataset.copyMsg === "left" ? state.left : state.right;
+        const fn = btn.dataset.copyMsg === "left" ? leftMessage : rightMessage;
+        const i = Number(btn.dataset.i);
+        if (list[i]) copyText(fn(list[i]), btn);
+      }
+    });
+
+    tabSwipe.addEventListener("click", () => showView("swipe"));
+    tabResults.addEventListener("click", () => showView("results"));
+    btnLeft.addEventListener("click", () => {
+      const card = stackEl.querySelector(".card.top");
+      if (card) decide("left", card);
+    });
+    btnRight.addEventListener("click", () => {
+      const card = stackEl.querySelector(".card.top");
+      if (card) decide("right", card);
+    });
+    undoBtn.addEventListener("click", undo);
+    undoFab.addEventListener("click", undo);
+    resetBtn.addEventListener("click", resetAll);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      if (e.key === "ArrowLeft" && view === "swipe") {
+        e.preventDefault();
+        const card = stackEl.querySelector(".card.top");
+        if (card) decide("left", card);
+      } else if (e.key === "ArrowRight" && view === "swipe") {
+        e.preventDefault();
+        const card = stackEl.querySelector(".card.top");
+        if (card) decide("right", card);
+      } else if ((e.key === "z" || e.key === "Z") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        undo();
+      } else if (e.key === "Backspace" && view === "swipe") {
+        e.preventDefault();
+        undo();
+      }
+    });
+
+    showView(remaining().length === 0 && decided().size ? "results" : "swipe");
+  })();
+  </script>
+</body>
+</html>
