@@ -253,6 +253,8 @@ function createViewer(el, url) {
 
   let running = false;
   let raf = 0;
+  let disposed = false;
+  let geometryRef = null;
 
   const resize = () => {
     const width = el.clientWidth || 320;
@@ -282,9 +284,29 @@ function createViewer(el, url) {
     cancelAnimationFrame(raf);
   };
 
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    stop();
+    ro.disconnect();
+    if (geometryRef) geometryRef.dispose();
+    material.dispose();
+    controls.dispose();
+    renderer.dispose();
+    if (typeof renderer.forceContextLoss === "function") renderer.forceContextLoss();
+    canvas.remove();
+    el._viewer = null;
+    setStatus("Preview will load when visible");
+  };
+
   loadSTL(url)
     .then((geometry) => {
+      if (disposed) {
+        geometry.dispose();
+        return;
+      }
       geometry.computeVertexNormals();
+      geometryRef = geometry;
       const mesh = new THREE.Mesh(geometry, material);
       // STLs are typically Z-up; three.js is Y-up.
       mesh.rotation.x = -Math.PI / 2;
@@ -295,11 +317,12 @@ function createViewer(el, url) {
       renderer.render(scene, camera);
     })
     .catch((err) => {
+      if (disposed) return;
       console.error("Failed to load STL", url, err);
       setStatus("Preview couldn’t load");
     });
 
-  el._viewer = { start, stop, resize };
+  el._viewer = { start, stop, resize, dispose };
 }
 
 function observePreviews(els) {
@@ -323,7 +346,7 @@ function observePreviews(els) {
         }
         if (el._viewer) {
           if (visible) el._viewer.start();
-          else el._viewer.stop();
+          else el._viewer.dispose();
         }
       }
     },
