@@ -122,34 +122,34 @@
     "group": "More Designs"
   },
   {
-    "name": "Notched Ring",
-    "file": "models/more-designs/notched-ring.stl",
-    "description": "A large ring with a small notch and gap.",
-    "group": "More Designs"
+    "name": "RGB Sky Light",
+    "file": "models/rgb-sky-light/rgb-sky-light.stl",
+    "description": "A large ring with a small notch and gap, made for an RGB sky light.",
+    "group": "RGB Sky Light"
   },
   {
-    "name": "Stepped Tube",
-    "file": "models/more-designs/stepped-tube.stl",
-    "description": "A hollow stepped tube, or sleeve.",
-    "group": "More Designs"
+    "name": "Pinocchio Mask",
+    "file": "models/pinocchio-mask/pinocchio-mask.stl",
+    "description": "A sculpted Pinocchio mask with a mounting boss and side slots.",
+    "group": "Pinocchio Mask"
   },
   {
-    "name": "Bowl and Lid",
-    "file": "models/more-designs/bowl-and-lid.stl",
-    "description": "A shallow round bowl with a separate lid.",
-    "group": "More Designs"
+    "name": "Pinocchio Nose",
+    "file": "models/pinocchio-mask/pinocchio-nose.stl",
+    "description": "A hollow stepped tube that forms Pinocchio's nose.",
+    "group": "Pinocchio Mask"
   },
   {
-    "name": "Decorative Arches",
-    "file": "models/more-designs/decorative-arches.stl",
-    "description": "A pair of ridged decorative arch pieces.",
-    "group": "More Designs"
+    "name": "MORP Piece",
+    "file": "models/morp-piece/morp-piece.stl",
+    "description": "A MORP piece shaped as a shallow bowl with a lid.",
+    "group": "MORP Piece"
   },
   {
-    "name": "Sculpted Cover",
-    "file": "models/more-designs/sculpted-cover.stl",
-    "description": "A sculpted cover with a mounting boss and side slots.",
-    "group": "More Designs"
+    "name": "Hexasphericon",
+    "file": "models/hexasphericon/hexasphericon.stl",
+    "description": "A pair of ridged hexasphericon pieces.",
+    "group": "Hexasphericon"
   },
   {
     "name": "Batarang",
@@ -158,54 +158,72 @@
     "group": "Batman vs Superman"
   },
   {
-    "name": "Embracing Couple",
-    "file": "models/sculptures/embracing-couple.stl",
-    "description": "An abstract sculpture of two figures on a round base.",
-    "group": "Sculptures",
-    "preview": "models/sculptures/embracing-couple.preview.stl"
+    "name": "Mother Holding Son",
+    "file": "models/mother-holding-son/mother-holding-son.stl",
+    "description": "A sculpture of a mother holding her son, on a round base.",
+    "group": "Mother Holding Son",
+    "preview": "models/mother-holding-son/mother-holding-son.preview.stl"
   },
   {
-    "name": "Kneeling Pig",
-    "file": "models/sculptures/kneeling-pig.stl",
-    "description": "A detailed figure of a kneeling anthropomorphic pig holding a tablet.",
-    "group": "Sculptures",
-    "preview": "models/sculptures/kneeling-pig.preview.stl"
+    "name": "Pig Trash Can",
+    "file": "models/pig-trash-can/pig-trash-can.stl",
+    "description": "A kneeling anthropomorphic pig trash can, holding a tablet.",
+    "group": "Pig Trash Can",
+    "preview": "models/pig-trash-can/pig-trash-can.preview.stl"
   },
   {
-    "name": "Sword Hilt",
-    "file": "models/other/sword-hilt.stl",
-    "description": "A sword hilt with a ribbed grip, pommel, and guard.",
-    "group": "Other Models"
+    "name": "Extendable Sword",
+    "file": "models/extendable-sword/extendable-sword.stl",
+    "description": "The hilt of an extendable sword, with a ribbed grip, pommel, and guard.",
+    "group": "Extendable Sword"
   },
   {
     "name": "Whistle",
-    "file": "models/other/whistle.stl",
+    "file": "models/whistle/whistle.stl",
     "description": "A classic pea whistle with a lanyard hole.",
-    "group": "Other Models"
+    "group": "Whistle"
   },
   {
-    "name": "Recessed Ring",
-    "file": "models/other/recessed-ring.stl",
-    "description": "A ring with a circular recess on one side.",
-    "group": "Other Models"
+    "name": "AirTag Keychain",
+    "file": "models/airtag-keychain/airtag-keychain.stl",
+    "description": "A keychain ring with a circular recess for an AirTag.",
+    "group": "AirTag Keychain"
   },
   {
-    "name": "Pin Vise Set",
-    "file": "models/other/pin-vise-set.stl",
-    "description": "A spiral shaft, collet, cap, and base in one file.",
-    "group": "Other Models"
+    "name": "Spiral Shaft",
+    "file": "models/screw-driver/spiral-shaft.stl",
+    "description": "The spiral-grip shaft with a jawed tip.",
+    "group": "Screw Driver"
   },
   {
-    "name": "Hinge Plate",
-    "file": "models/other/hinge-plate.stl",
-    "description": "A flat hinge strap with knuckles on both ends.",
-    "group": "Other Models"
+    "name": "Collet",
+    "file": "models/screw-driver/collet.stl",
+    "description": "The threaded collet.",
+    "group": "Screw Driver"
+  },
+  {
+    "name": "Cap",
+    "file": "models/screw-driver/cap.stl",
+    "description": "The knurled cap.",
+    "group": "Screw Driver"
+  },
+  {
+    "name": "Base",
+    "file": "models/screw-driver/base.stl",
+    "description": "The stand and base.",
+    "group": "Screw Driver"
+  },
+  {
+    "name": "Surgical Mask Back",
+    "file": "models/surgical-mask-back/surgical-mask-back.stl",
+    "description": "A surgical-mask back strap with knuckles on both ends.",
+    "group": "Surgical Mask Back"
   },
   {
     "name": "King Mewtwo",
-    "file": "models/other/king-mewtwo.stl",
+    "file": "models/king-mewtwo/king-mewtwo.stl",
     "description": "A King Mewtwo figure. The source of this file is unknown.",
-    "group": "Other Models"
+    "group": "King Mewtwo"
   },
   {
     "name": "Baracktopus",
