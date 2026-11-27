@@ -13,6 +13,7 @@ A lowercase `/cad/` path also exists (`../cad/index.html`) and redirects here, b
 {
   "name": "Widget",
   "file": "models/widgets/Widget.stl",
+  "preview": "models/widgets/Widget.preview.stl",
   "description": "Optional short blurb.",
   "group": "Widgets"
 }
@@ -20,6 +21,8 @@ A lowercase `/cad/` path also exists (`../cad/index.html`) and redirects here, b
 
 `name` and `file` are required. `description` and `group` are optional. Models that share a `group` appear together under that heading, in the order they are listed.
 
+`preview` is optional. When it is set, the on-page 3D viewer loads that lighter mesh instead of `file`. The Download button always serves the exact `file`. Use this for large STLs: keep the full-resolution original as `file`, and add a decimated preview of a few MB or less.
+
 3. Commit and push to `main`. GitHub Pages will publish the new card at `/CAD/`.
 
-Keep each file under GitHub's 100 MB limit. Large models are fine, but the first preview of a big STL can take a few seconds to load. Previews lazy-load when a card scrolls into view.
+Keep each file under GitHub's 100 MB limit. Previews lazy-load when a card scrolls into view, so the page's initial load stays light even when a project includes large download files.

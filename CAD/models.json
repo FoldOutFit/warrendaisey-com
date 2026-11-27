@@ -52,5 +52,49 @@
     "file": "models/catan/Catan_Box_09_Handle.stl",
     "description": "Optional handle.",
     "group": "Catan Box Organizer"
+  },
+  {
+    "name": "All Parts",
+    "file": "models/lid-stay/1_lid-stay_all-parts.stl",
+    "description": "All four lid-stay parts in one file.",
+    "group": "Lid Stay"
+  },
+  {
+    "name": "Back Plate",
+    "file": "models/lid-stay/2_back-plate.stl",
+    "description": "The back plate of the lid stay.",
+    "group": "Lid Stay"
+  },
+  {
+    "name": "Front Plate",
+    "file": "models/lid-stay/3_front-plate.stl",
+    "description": "The front plate of the lid stay.",
+    "group": "Lid Stay"
+  },
+  {
+    "name": "Pins",
+    "file": "models/lid-stay/4_pins.stl",
+    "description": "The hinge pins.",
+    "group": "Lid Stay"
+  },
+  {
+    "name": "Multi-part Heel",
+    "file": "models/heel/heel_6in_v33.stl",
+    "preview": "models/heel/heel_6in_v33.preview.stl",
+    "description": "The 6-inch heel as separate printable parts.",
+    "group": "6-inch Heel"
+  },
+  {
+    "name": "One-Piece Heel",
+    "file": "models/heel/heel_6in_v33_one_piece.stl",
+    "preview": "models/heel/heel_6in_v33_one_piece.preview.stl",
+    "description": "The same 6-inch heel as a single one-piece model.",
+    "group": "6-inch Heel"
+  },
+  {
+    "name": "Raft",
+    "file": "models/heel/heel_6in_v33_raft.stl",
+    "description": "A printable raft for the 6-inch heel.",
+    "group": "6-inch Heel"
   }
 ]

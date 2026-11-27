@@ -109,7 +109,7 @@ function renderGallery(models) {
 
       const preview = document.createElement("div");
       preview.className = "preview";
-      preview.dataset.src = model.file;
+      preview.dataset.src = model.preview || model.file;
       preview.setAttribute("role", "img");
       preview.setAttribute("aria-label", `Interactive 3D preview of ${model.name}`);
       const status = document.createElement("div");
