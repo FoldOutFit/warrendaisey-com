@@ -36,6 +36,17 @@ Optional `attribution` on any model in a group is shown under the section headin
 }
 ```
 
+
+Optional `groupNote` on any model in a group is shown under the credit as a short section note.
+
+Optional `extras` is a list of additional downloads on the same card (for example a STEP file):
+
+```json
+"extras": [
+  { "file": "models/widgets/Widget.step", "label": "Download STEP" }
+]
+```
+
 `preview` is optional. When it is set, the on-page 3D viewer loads that lighter mesh instead of `file`. The Download button always serves the exact `file`. Use this for large STLs: keep the full-resolution original as `file`, and add a decimated preview of a few MB or less.
 
 3. Commit and push to `main`. GitHub Pages will publish the new card at `/CAD/`.

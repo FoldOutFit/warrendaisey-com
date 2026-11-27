@@ -50,7 +50,7 @@ function groupModels(models) {
   for (const model of models) {
     const key = model.group || "";
     if (!index.has(key)) {
-      const group = { name: key, models: [], attribution: null };
+      const group = { name: key, models: [], attribution: null, note: null };
       index.set(key, group);
       groups.push(group);
     }
@@ -58,6 +58,9 @@ function groupModels(models) {
     group.models.push(model);
     if (!group.attribution && model.attribution) {
       group.attribution = model.attribution;
+    }
+    if (!group.note && model.groupNote) {
+      group.note = model.groupNote;
     }
   }
   return groups;
@@ -118,6 +121,12 @@ function renderGallery(models) {
     if (group.attribution) {
       section.appendChild(renderCredit(group.attribution));
     }
+    if (group.note) {
+      const note = document.createElement("p");
+      note.className = "group-note";
+      note.textContent = group.note;
+      section.appendChild(note);
+    }
 
     const grid = document.createElement("div");
     grid.className = "grid";
@@ -161,8 +170,19 @@ function renderGallery(models) {
       download.className = "download";
       download.href = model.file;
       download.setAttribute("download", filenameFromPath(model.file));
-      download.textContent = "Download STL";
+      const mainLabel = model.downloadLabel || (String(model.file).toLowerCase().endsWith(".stl") ? "Download STL" : "Download");
+      download.textContent = mainLabel;
       actions.appendChild(download);
+      const extras = Array.isArray(model.extras) ? model.extras : [];
+      for (const extra of extras) {
+        if (!extra || !extra.file) continue;
+        const link = document.createElement("a");
+        link.className = "download secondary";
+        link.href = extra.file;
+        link.setAttribute("download", filenameFromPath(extra.file));
+        link.textContent = extra.label || "Download";
+        actions.appendChild(link);
+      }
 
       card.append(body, preview, actions);
       grid.appendChild(card);

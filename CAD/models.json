@@ -202,6 +202,12 @@
     "group": "Other Models"
   },
   {
+    "name": "King Mewtwo",
+    "file": "models/other/king-mewtwo.stl",
+    "description": "A King Mewtwo figure. The source of this file is unknown.",
+    "group": "Other Models"
+  },
+  {
     "name": "Baracktopus",
     "file": "models/baracktopus/Baracktopus.stl",
     "description": "The full Baracktopus model.",
@@ -386,5 +392,173 @@
     "name": "Internal Tentacle",
     "file": "models/jellyfish/InternalTentacle.stl",
     "group": "Jellyfish Swimming Mechanical Interactive Art"
+  },
+  {
+    "name": "Soap Catcher",
+    "file": "models/laundry-soap-cup-holder/SoapCatcher.STL",
+    "description": "A soap catcher and cup holder that fits around a laundry-detergent spout.",
+    "group": "Laundry Soap Cup Holder",
+    "attribution": {
+      "creator": "scubasonar",
+      "creatorUrl": "https://www.thingiverse.com/scubasonar",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1594848",
+      "license": "CC BY"
+    },
+    "extras": [
+      {
+        "file": "models/laundry-soap-cup-holder/SoapCatcher.STEP",
+        "label": "Download STEP"
+      }
+    ]
+  },
+  {
+    "name": "Dragon Head Wall Hook",
+    "file": "models/dragon-head-wall-hook/Dragon_Head_wall_hook.stl",
+    "preview": "models/dragon-head-wall-hook/Dragon_Head_wall_hook.preview.stl",
+    "description": "A remix of a door knocker and a wall hook.",
+    "group": "Dragon Head Wall Hook",
+    "attribution": {
+      "creator": "cavitycreepX",
+      "creatorUrl": "https://www.thingiverse.com/cavitycreepX",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:4207975",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Tree",
+    "file": "models/spiral-christmas-tree/spiral_christmas_tree.stl",
+    "description": "The spiraling-star tree.",
+    "group": "Spiral Christmas Tree",
+    "attribution": {
+      "creator": "pikafoop",
+      "creatorUrl": "https://www.thingiverse.com/pikafoop",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1170039",
+      "license": "CC BY-NC-SA"
+    }
+  },
+  {
+    "name": "Trunk",
+    "file": "models/spiral-christmas-tree/spiral_christmas_tree_trunk.stl",
+    "description": "The tree trunk.",
+    "group": "Spiral Christmas Tree"
+  },
+  {
+    "name": "Star",
+    "file": "models/spiral-christmas-tree/spiral_christmas_tree_star.stl",
+    "description": "The star for the top of the tree.",
+    "group": "Spiral Christmas Tree"
+  },
+  {
+    "name": "Garland",
+    "file": "models/spiral-christmas-tree/spiral_christmas_tree_garland.stl",
+    "description": "The garland.",
+    "group": "Spiral Christmas Tree"
+  },
+  {
+    "name": "Post",
+    "file": "models/spiral-christmas-tree/spiral_christmas_tree_post.stl",
+    "description": "The post.",
+    "group": "Spiral Christmas Tree"
+  },
+  {
+    "name": "Switch Plate",
+    "file": "models/frankenstein-switch-plate/madsci_switchplate.STL",
+    "description": "A single-gang toggle plate, with built-in supports.",
+    "group": "Frankenstein Light Switch Plate",
+    "attribution": {
+      "creator": "LoboCNC",
+      "creatorUrl": "https://www.printables.com/@LoboCNC",
+      "source": "Printables",
+      "sourceUrl": "https://www.printables.com/model/132335-frankenstein-light-switch-plate",
+      "license": "CC BY-SA"
+    },
+    "groupNote": "A working switch needs a plate, the blade, and a nubbin."
+  },
+  {
+    "name": "Switch Plate (2x)",
+    "file": "models/frankenstein-switch-plate/madsci_switchplate2x.STL",
+    "description": "A two-gang toggle plate, with built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Switch Plate (3x)",
+    "file": "models/frankenstein-switch-plate/madsci_switchplate3x.STL",
+    "description": "A three-gang toggle plate, with built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Switch Plate, No Supports",
+    "file": "models/frankenstein-switch-plate/switchplate_nosupport.STL",
+    "description": "A single-gang toggle plate, without built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Switch Plate (2x), No Supports",
+    "file": "models/frankenstein-switch-plate/switchplate2x_nosupport.STL",
+    "description": "A two-gang toggle plate, without built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Switch Plate (3x), No Supports",
+    "file": "models/frankenstein-switch-plate/switchplate3x_nosupport.STL",
+    "description": "A three-gang toggle plate, without built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Paddle Switch Plate",
+    "file": "models/frankenstein-switch-plate/paddle_switchplate.STL",
+    "description": "A single-gang paddle (Decora) plate, with built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Paddle Switch Plate, No Supports",
+    "file": "models/frankenstein-switch-plate/paddle_switchplate_nosupport.STL",
+    "description": "A single-gang paddle plate, without built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Paddle Switch Plate (3x)",
+    "file": "models/frankenstein-switch-plate/paddle_switchplate3x.STL",
+    "description": "A three-gang paddle plate, with built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Paddle Switch Plate (3x), No Supports",
+    "file": "models/frankenstein-switch-plate/paddle_switchplate3x_nosupport.STL",
+    "description": "A three-gang paddle plate, without built-in supports.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Blade",
+    "file": "models/frankenstein-switch-plate/madsci_blade.STL",
+    "description": "The lever for a single-gang toggle switch.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Blade Nx",
+    "file": "models/frankenstein-switch-plate/madsci_bladeNx.STL",
+    "description": "The lever for 2x and 3x toggle plates.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Nubbin",
+    "file": "models/frankenstein-switch-plate/nubbin.STL",
+    "description": "One nubbin is needed per toggle switch.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Nubbin (Alternate)",
+    "file": "models/frankenstein-switch-plate/nubbin_alternate.STL",
+    "description": "An alternate nubbin for a toggle switch.",
+    "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Paddle Nubbin",
+    "file": "models/frankenstein-switch-plate/paddlenubbin.STL",
+    "description": "The nubbin for paddle (Decora) plates.",
+    "group": "Frankenstein Light Switch Plate"
   }
 ]

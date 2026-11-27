@@ -153,6 +153,15 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
 
 .group-credit a { color: var(--navy); font-weight: 600; }
 
+.group-credit:has(+ .group-note) { margin-bottom: .4rem; }
+
+.group-note {
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+  font-size: 0.98rem;
+  max-width: 46rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -229,6 +238,9 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
 .card-actions {
   padding: 1rem 1.3rem 1.25rem;
   margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
 }
 
 .download {
@@ -251,6 +263,16 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
 .download:hover {
   background: var(--navy-2);
   border-color: var(--navy-2);
+}
+
+.download.secondary {
+  background: #fff;
+  color: var(--navy);
+}
+.download.secondary:hover {
+  background: var(--paper);
+  color: var(--navy);
+  border-color: var(--navy);
 }
 
 .status, .error {
