@@ -1085,5 +1085,464 @@
     "preview": "models/sedan/sedan.preview.stl",
     "description": "A sedan with four separate wheels in one file. The source of this file is unknown.",
     "group": "Sedan"
+  },
+  {
+    "name": "With Supports",
+    "file": "models/thanos-figurine/thanos-throne.stl",
+    "description": "Thanos seated on a throne, with built-in print supports.",
+    "group": "Thanos Figurine",
+    "preview": "models/thanos-figurine/thanos-throne.preview.stl",
+    "attribution": {
+      "creator": "Geoffro",
+      "creatorUrl": "https://www.thingiverse.com/Geoffro",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1752668",
+      "license": "CC BY-NC-ND"
+    }
+  },
+  {
+    "name": "Without Supports",
+    "file": "models/thanos-figurine/thanos-without-supports.stl",
+    "description": "Thanos seated on a throne, without print supports.",
+    "group": "Thanos Figurine",
+    "preview": "models/thanos-figurine/thanos-without-supports.preview.stl"
+  },
+  {
+    "name": "Fist",
+    "file": "models/infinity-gauntlet-dice-cup/fist.stl",
+    "description": "The gauntlet fist, which holds the dice.",
+    "group": "Infinity Gauntlet Dice Cup",
+    "preview": "models/infinity-gauntlet-dice-cup/fist.preview.stl",
+    "attribution": {
+      "creator": "Brendantang",
+      "creatorUrl": "https://www.thingiverse.com/Brendantang",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1315935",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Sleeve",
+    "file": "models/infinity-gauntlet-dice-cup/sleeve.stl",
+    "description": "The forearm sleeve that completes the dice cup.",
+    "group": "Infinity Gauntlet Dice Cup",
+    "preview": "models/infinity-gauntlet-dice-cup/sleeve.preview.stl"
+  },
+  {
+    "name": "Bobbin",
+    "file": "models/115mm-sewing-machine-bobbin-brother/brother-bobbin.stl",
+    "description": "An 11.5 mm bobbin that fits Brother machines using SA156 bobbins.",
+    "group": "11.5mm Sewing Machine Bobbin (Brother)",
+    "attribution": {
+      "creator": "tmat",
+      "creatorUrl": "https://www.thingiverse.com/tmat",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:2265158",
+      "license": "CC BY"
+    }
+  },
+  {
+    "name": "Bobbin Thread Spool Clip",
+    "file": "models/sewing-bobbin-thread-spool-clip/unterfaden-clip.stl",
+    "description": "A clip that keeps a bobbin thread spool from untangling. Best printed in a flexible material.",
+    "group": "Sewing Bobbin Thread Spool Clip",
+    "attribution": {
+      "creator": "RobotMama",
+      "creatorUrl": "https://www.thingiverse.com/RobotMama",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:2052636",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Tray",
+    "file": "models/sticky-note-stencil/tray.stl",
+    "description": "A tray that holds the stencils upright.",
+    "group": "Sticky Note Stencil",
+    "attribution": {
+      "creator": "aaronjasso",
+      "creatorUrl": "https://www.thingiverse.com/aaronjasso",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:6175911",
+      "license": "CC BY-NC-SA"
+    },
+    "subgroup": "Trays"
+  },
+  {
+    "name": "Tray (Angled)",
+    "file": "models/sticky-note-stencil/tray-angled.stl",
+    "description": "A tray that holds the stencils at a slight angle.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Trays"
+  },
+  {
+    "name": "Tray (Under Storage)",
+    "file": "models/sticky-note-stencil/tray-under-storage.stl",
+    "description": "A tray with storage underneath for the stencils.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Trays"
+  },
+  {
+    "name": "To-Do Circles",
+    "file": "models/sticky-note-stencil/to-do-circles.stl",
+    "description": "A to-do stencil with circles.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "To-Do Squares",
+    "file": "models/sticky-note-stencil/to-do-squares.stl",
+    "description": "A to-do stencil with squares.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Two-Column Circles",
+    "file": "models/sticky-note-stencil/two-column-circles.stl",
+    "description": "A two-column stencil with circles.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Two-Column Squares",
+    "file": "models/sticky-note-stencil/two-column-squares.stl",
+    "description": "A two-column stencil with squares.",
+    "group": "Sticky Note Stencil",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Post-it Dispenser",
+    "file": "models/sticky-note-stencil-assortment/post-it-dispenser.stl",
+    "description": "A dispenser and storage slot for the stencils.",
+    "group": "Sticky Note Stencil Assortment",
+    "attribution": {
+      "creator": "JonBoy470",
+      "creatorUrl": "https://www.thingiverse.com/JonBoy470",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:6726417",
+      "license": "CC BY-NC-SA"
+    },
+    "subgroup": "Holder"
+  },
+  {
+    "name": "Holder",
+    "file": "models/sticky-note-stencil-assortment/holder.stl",
+    "description": "A holder for the stencil set.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Holder"
+  },
+  {
+    "name": "Calendar",
+    "file": "models/sticky-note-stencil-assortment/calendar.stl",
+    "description": "A calendar stencil.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "To-Do List",
+    "file": "models/sticky-note-stencil-assortment/to-do-list.stl",
+    "description": "A to-do list stencil.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Hangman",
+    "file": "models/sticky-note-stencil-assortment/hangman.stl",
+    "description": "A hangman-game stencil.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Grid",
+    "file": "models/sticky-note-stencil-assortment/grid.stl",
+    "description": "A grid stencil.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "Plus Signs",
+    "file": "models/sticky-note-stencil-assortment/plus-signs.stl",
+    "description": "A plus-signs stencil.",
+    "group": "Sticky Note Stencil Assortment",
+    "subgroup": "Stencils"
+  },
+  {
+    "name": "All of It",
+    "file": "models/fully-printable-otf-fidget-toy/all-of-it.stl",
+    "description": "All of the parts laid out together.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)",
+    "attribution": {
+      "creator": "LUN5HTIME",
+      "creatorUrl": "https://www.thingiverse.com/LUN5HTIME",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:6344617",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Case",
+    "file": "models/fully-printable-otf-fidget-toy/case.stl",
+    "description": "The fidget toy case.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "Lid",
+    "file": "models/fully-printable-otf-fidget-toy/lid.stl",
+    "description": "The case lid.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "Lock",
+    "file": "models/fully-printable-otf-fidget-toy/lock.stl",
+    "description": "The spring lock.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "Coil",
+    "file": "models/fully-printable-otf-fidget-toy/coil.stl",
+    "description": "The printable coil spring. Try both winding directions.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "Slide Coil",
+    "file": "models/fully-printable-otf-fidget-toy/slide-coil.stl",
+    "description": "The slide coil.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "Double-Edged Blade",
+    "file": "models/fully-printable-otf-fidget-toy/double-edged-blade.stl",
+    "description": "The double-edged blade.",
+    "group": "Fully Printable OTF Fidget Toy (no rubber band)"
+  },
+  {
+    "name": "KB 1",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-1.stl",
+    "description": "Blade KB 1.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "attribution": {
+      "creator": "Bazoozoo",
+      "creatorUrl": "https://www.thingiverse.com/Bazoozoo",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:6401556",
+      "license": "CC BY-NC-SA"
+    },
+    "subgroup": "KB Blades",
+    "groupNote": "Remixed and/or designed by NikJakotic."
+  },
+  {
+    "name": "KB 2",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-2.stl",
+    "description": "Blade KB 2.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 3",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-3.stl",
+    "description": "Blade KB 3.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 4",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-4.stl",
+    "description": "Blade KB 4.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 5",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-5.stl",
+    "description": "Blade KB 5.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 6",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-6.stl",
+    "description": "Blade KB 6.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 7",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-7.stl",
+    "description": "Blade KB 7.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 8",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-8.stl",
+    "description": "Blade KB 8.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 9",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-9.stl",
+    "description": "Blade KB 9.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 10",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-10.stl",
+    "description": "Blade KB 10.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 11",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-11.stl",
+    "description": "Blade KB 11.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KB 12",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-12.stl",
+    "description": "Blade KB 12.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KB Blades"
+  },
+  {
+    "name": "KBH 1",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-1.stl",
+    "description": "Blade KBH 1.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 2",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-2.stl",
+    "description": "Blade KBH 2.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 3",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-3.stl",
+    "description": "Blade KBH 3.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 4",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-4.stl",
+    "description": "Blade KBH 4.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 5",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-5.stl",
+    "description": "Blade KBH 5.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 6",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-6.stl",
+    "description": "Blade KBH 6.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 7",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-7.stl",
+    "description": "Blade KBH 7.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 8",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-8.stl",
+    "description": "Blade KBH 8.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 9",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-9.stl",
+    "description": "Blade KBH 9.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 10",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-10.stl",
+    "description": "Blade KBH 10.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 11",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-11.stl",
+    "description": "Blade KBH 11.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KBH 12",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-12.stl",
+    "description": "Blade KBH 12.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "KBH Blades"
+  },
+  {
+    "name": "KB 1\u201312 Spring",
+    "file": "models/otf-24-blades-6th-finger-pack/kb-1-12-spring.stl",
+    "description": "The spring for blades KB 1 through KB 12.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "Springs"
+  },
+  {
+    "name": "KBH 1\u201312 Spring",
+    "file": "models/otf-24-blades-6th-finger-pack/kbh-1-12-spring.stl",
+    "description": "The spring for blades KBH 1 through KBH 12.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "subgroup": "Springs"
+  },
+  {
+    "name": "24-Blades Pack (for new springs, \u00d72)",
+    "file": "models/otf-24-blades-6th-finger-pack/24-blades-6th-finger-pack-for-new-springs-x2.stl",
+    "description": "The full 24-blade pack for new springs, with two of each.",
+    "group": "OTF 24-Blades 6th-Finger Pack",
+    "preview": "models/otf-24-blades-6th-finger-pack/24-blades-6th-finger-pack-for-new-springs-x2.preview.stl",
+    "subgroup": "Pack"
+  },
+  {
+    "name": "Batmobile",
+    "file": "models/batmobile/batmobile.stl",
+    "description": "A long-nose Batmobile with a canopy and rear fins. The source of this file is unknown.",
+    "group": "Batmobile"
+  },
+  {
+    "name": "Drum Kit",
+    "file": "models/drum-kit/drum-kit.stl",
+    "description": "A drum kit on a base, with two loose pieces. The source of this file is unknown.",
+    "group": "Drum Kit"
+  },
+  {
+    "name": "Visor",
+    "file": "models/visor/visor.stl",
+    "description": "A curved visor with hooked earpieces. The source of this file is unknown.",
+    "group": "Visor"
+  },
+  {
+    "name": "No-Touch Door Opener",
+    "file": "models/no-touch-door-opener/no-touch-door-opener.stl",
+    "description": "A key-shaped hook with a finger hole, for opening doors without touching the handle. The source of this file is unknown.",
+    "group": "No-Touch Door Opener"
+  },
+  {
+    "name": "Coiled Dragon",
+    "file": "models/coiled-dragon/coiled-dragon.stl.zip",
+    "description": "A detailed dragon coiled into a loop. The full STL is 141 MB, so the download is a zip of that file. The source of this file is unknown.",
+    "group": "Coiled Dragon",
+    "preview": "models/coiled-dragon/coiled-dragon.preview.stl",
+    "downloadLabel": "Download STL (zip)"
   }
 ]
