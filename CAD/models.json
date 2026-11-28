@@ -982,16 +982,102 @@
     }
   },
   {
-    "name": "Negative Roller",
-    "file": "models/embosser-rollers-hexagon-pattern/negative-roller.stl",
-    "description": "The negative hexagon-pattern embosser roller.",
-    "group": "Embosser Rollers (Hexagon Pattern)"
+    "name": "Body",
+    "file": "models/embosser/body.stl",
+    "description": "The main body of the embosser.",
+    "group": "Embosser",
+    "subgroup": "Body"
   },
   {
-    "name": "Positive Roller",
-    "file": "models/embosser-rollers-hexagon-pattern/positive-roller.stl",
-    "description": "The positive hexagon-pattern embosser roller.",
-    "group": "Embosser Rollers (Hexagon Pattern)"
+    "name": "Body Top",
+    "file": "models/embosser/body-top.stl",
+    "description": "The top of the embosser body.",
+    "group": "Embosser",
+    "subgroup": "Body"
+  },
+  {
+    "name": "Knob",
+    "file": "models/embosser/knob.stl",
+    "description": "The knob for the embosser.",
+    "group": "Embosser",
+    "subgroup": "Body"
+  },
+  {
+    "name": "Extended Handle",
+    "file": "models/embosser/extended-handle.stl",
+    "description": "An extended handle for the embosser.",
+    "group": "Embosser",
+    "subgroup": "Body"
+  },
+  {
+    "name": "Gear 1",
+    "file": "models/embosser/gear-1.stl",
+    "description": "Gear 1.",
+    "group": "Embosser",
+    "subgroup": "Gears"
+  },
+  {
+    "name": "Gear 2",
+    "file": "models/embosser/gear-2.stl",
+    "description": "Gear 2.",
+    "group": "Embosser",
+    "subgroup": "Gears"
+  },
+  {
+    "name": "Gear 3",
+    "file": "models/embosser/gear-3.stl",
+    "description": "Gear 3.",
+    "group": "Embosser",
+    "subgroup": "Gears"
+  },
+  {
+    "name": "Gear 4",
+    "file": "models/embosser/gear-4.stl",
+    "description": "Gear 4.",
+    "group": "Embosser",
+    "subgroup": "Gears"
+  },
+  {
+    "name": "Confetti Negative",
+    "file": "models/embosser/confetti-negative.stl",
+    "description": "The negative confetti-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Confetti"
+  },
+  {
+    "name": "Confetti Positive",
+    "file": "models/embosser/confetti-positive.stl",
+    "description": "The positive confetti-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Confetti"
+  },
+  {
+    "name": "Zigzag Negative",
+    "file": "models/embosser/zigzag-negative.stl",
+    "description": "The negative zigzag-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Zigzag"
+  },
+  {
+    "name": "Zigzag Positive",
+    "file": "models/embosser/zigzag-positive.stl",
+    "description": "The positive zigzag-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Zigzag"
+  },
+  {
+    "name": "Polkadot Negative",
+    "file": "models/embosser/polkadot-negative.stl",
+    "description": "The negative polkadot-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Polkadot"
+  },
+  {
+    "name": "Polkadot Positive",
+    "file": "models/embosser/polkadot-positive.stl",
+    "description": "The positive polkadot-pattern roller.",
+    "group": "Embosser",
+    "subgroup": "Polkadot"
   },
   {
     "name": "Sedan",
