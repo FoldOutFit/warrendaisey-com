@@ -992,5 +992,12 @@
     "file": "models/embosser-rollers-hexagon-pattern/positive-roller.stl",
     "description": "The positive hexagon-pattern embosser roller.",
     "group": "Embosser Rollers (Hexagon Pattern)"
+  },
+  {
+    "name": "Sedan",
+    "file": "models/sedan/sedan.stl",
+    "preview": "models/sedan/sedan.preview.stl",
+    "description": "A sedan with four separate wheels in one file. The source of this file is unknown.",
+    "group": "Sedan"
   }
 ]
