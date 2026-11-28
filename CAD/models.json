@@ -980,5 +980,17 @@
       "sourceUrl": "https://www.thingiverse.com/thing:358590",
       "license": "CC BY-SA"
     }
+  },
+  {
+    "name": "Negative Roller",
+    "file": "models/embosser-rollers-hexagon-pattern/negative-roller.stl",
+    "description": "The negative hexagon-pattern embosser roller.",
+    "group": "Embosser Rollers (Hexagon Pattern)"
+  },
+  {
+    "name": "Positive Roller",
+    "file": "models/embosser-rollers-hexagon-pattern/positive-roller.stl",
+    "description": "The positive hexagon-pattern embosser roller.",
+    "group": "Embosser Rollers (Hexagon Pattern)"
   }
 ]
