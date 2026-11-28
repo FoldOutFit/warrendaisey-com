@@ -24,6 +24,8 @@ The public page asks for a password before loading the model list or previews. T
 `name` and `file` are required. `description` and `group` are optional. Models that share a `group` appear together under that heading, in the order they are listed.
 
 
+Optional `cardAttribution` (same fields as `attribution`) is shown on that card, for mixed sections that should not get a single section credit.
+
 Optional `attribution` on any model in a group is shown under the section heading (creator, source link, and license). Use this for third-party designs:
 
 ```json

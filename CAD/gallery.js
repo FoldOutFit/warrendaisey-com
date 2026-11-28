@@ -116,9 +116,9 @@ function creditLink(href, label) {
   return a;
 }
 
-function renderCredit(attr) {
+function renderCredit(attr, className) {
   const p = document.createElement("p");
-  p.className = "group-credit";
+  p.className = className || "group-credit";
   if (attr.creator) {
     appendText(p, "By ");
     if (attr.creatorUrl) p.appendChild(creditLink(attr.creatorUrl, attr.creator));
@@ -409,6 +409,10 @@ function renderGallery(models) {
         desc.className = "desc";
         desc.textContent = model.description;
         body.appendChild(desc);
+      }
+      const cardAttr = model.cardAttribution || null;
+      if (cardAttr) {
+        body.appendChild(renderCredit(cardAttr, "card-credit"));
       }
 
       const preview = document.createElement("div");

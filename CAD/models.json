@@ -181,7 +181,46 @@
     "name": "Whistle",
     "file": "models/whistle/whistle.stl",
     "description": "A classic pea whistle with a lanyard hole.",
-    "group": "Whistle"
+    "group": "Whistles"
+  },
+  {
+    "name": "Keychain Whistle",
+    "file": "models/keychain-whistle/Keychain-Whistle.stl",
+    "description": "A loud, compact dual-tone whistle for a keychain.",
+    "group": "Whistles",
+    "cardAttribution": {
+      "creator": "ThreeD-Michael",
+      "creatorUrl": "https://www.thingiverse.com/ThreeD-Michael",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:5846855",
+      "license": "CC BY-NC-ND"
+    }
+  },
+  {
+    "name": "Zaggo Whistle",
+    "file": "models/zaggo-whistle/whistle.stl",
+    "description": "A pea whistle that prints with the pea already inside.",
+    "group": "Whistles",
+    "cardAttribution": {
+      "creator": "Zaggo",
+      "creatorUrl": "https://www.thingiverse.com/Zaggo",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1046",
+      "license": "CC BY-NC"
+    }
+  },
+  {
+    "name": "Zaggo Whistle v2",
+    "file": "models/zaggo-whistle/whistle_v2.stl",
+    "description": "A finer-tuned version that starts with less airflow.",
+    "group": "Whistles",
+    "cardAttribution": {
+      "creator": "Zaggo",
+      "creatorUrl": "https://www.thingiverse.com/Zaggo",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1046",
+      "license": "CC BY-NC"
+    }
   },
   {
     "name": "AirTag Keychain",
@@ -941,37 +980,5 @@
       "sourceUrl": "https://www.thingiverse.com/thing:358590",
       "license": "CC BY-SA"
     }
-  },
-  {
-    "name": "Keychain Whistle",
-    "file": "models/keychain-whistle/Keychain-Whistle.stl",
-    "description": "A loud, compact dual-tone whistle for a keychain.",
-    "group": "Keychain Whistle",
-    "attribution": {
-      "creator": "ThreeD-Michael",
-      "creatorUrl": "https://www.thingiverse.com/ThreeD-Michael",
-      "source": "Thingiverse",
-      "sourceUrl": "https://www.thingiverse.com/thing:5846855",
-      "license": "CC BY-NC-ND"
-    }
-  },
-  {
-    "name": "Whistle",
-    "file": "models/zaggo-whistle/whistle.stl",
-    "description": "A pea whistle that prints with the pea already inside.",
-    "group": "Zaggo Whistle",
-    "attribution": {
-      "creator": "Zaggo",
-      "creatorUrl": "https://www.thingiverse.com/Zaggo",
-      "source": "Thingiverse",
-      "sourceUrl": "https://www.thingiverse.com/thing:1046",
-      "license": "CC BY-NC"
-    }
-  },
-  {
-    "name": "Whistle v2",
-    "file": "models/zaggo-whistle/whistle_v2.stl",
-    "description": "A finer-tuned version that starts with less airflow.",
-    "group": "Zaggo Whistle"
   }
 ]

@@ -241,6 +241,13 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
 
 .card .desc { color: var(--muted); font-size: .98rem; }
 
+.card-credit {
+  color: var(--muted);
+  margin-top: .45rem;
+  font-size: .9rem;
+}
+.card-credit a { color: var(--navy); font-weight: 600; }
+
 .preview {
   position: relative;
   aspect-ratio: 1 / 1;
