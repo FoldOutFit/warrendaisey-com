@@ -294,8 +294,43 @@
       "Justin Paul Marta","Jennifer Bryk","Christina Force","Bill Bent","Cait Finn",
       "David Magolis","Asa Kelly","Steven Laughlin","Kenny Hall"
     ];
+    const DEFAULT_RIGHT = [
+      "Lynda Michaels","Stacy Wagner","Mike Huben","Peter Campbell","Rashnika",
+      "Wren Fritsky","Becky Toth","Joan McDonald","Ed Piatkowski","Suzanne Williamson",
+      "Amy DiFebo","Heather Arters","Dan Knorr","Marc Steckel","Collin Breidenbach",
+      "Maria McGinty-Ferris","Ryan Belding","Olivia Rockey","Jenny Ro","Paul Dovidio",
+      "Sari Daisey","Matt Zoppetti","Roxana Zoppetti","Andreas","Christina Force",
+      "Bill Bent","Asa Kelly","Steven Laughlin","Kenny Hall"
+    ];
+    const DEFAULT_LEFT = [
+      "Anna Halverson","Russell Huxtable","Ania Holland","Michelle Conway","Mark McCord",
+      "Jerome Manley","John Wetzel","Chris Hill","Erin Brummett","Todd Shawver",
+      "Terry Zeigler","Jordan Whynard","Mary Lenzini Howe","Barbra Boyatt Romano",
+      "Matthew Meyer","Jamie Pitcavage","Lexi Urbassik","Mike Ricci","Laura Shadle",
+      "Justin Paul Marta","Jennifer Bryk","Cait Finn","David Magolis"
+    ];
     const KEY = "wd-names-swipe-v1";
     const THRESHOLD = 88;
+
+    function assertDefaultSort() {
+      const all = DEFAULT_LEFT.concat(DEFAULT_RIGHT);
+      const problems = [];
+      if (all.length !== PEOPLE.length) problems.push("count " + all.length + " != " + PEOPLE.length);
+      const seen = new Set();
+      all.forEach(function (n) {
+        if (seen.has(n)) problems.push("duplicate " + n);
+        seen.add(n);
+        if (PEOPLE.indexOf(n) === -1) problems.push("unknown " + n);
+      });
+      PEOPLE.forEach(function (n) {
+        if (!seen.has(n)) problems.push("missing " + n);
+      });
+      DEFAULT_LEFT.forEach(function (n) {
+        if (DEFAULT_RIGHT.indexOf(n) !== -1) problems.push("in both lists: " + n);
+      });
+      if (problems.length) throw new Error("Default name sort is invalid: " + problems.join("; "));
+    }
+    assertDefaultSort();
 
     const $ = (id) => document.getElementById(id);
     const stackEl = $("stack");
@@ -346,19 +381,52 @@
       ].join("\n");
     }
 
+    function defaultState() {
+      return { left: DEFAULT_LEFT.slice(), right: DEFAULT_RIGHT.slice(), history: [], pending: [] };
+    }
+
     function load() {
       try {
         const raw = JSON.parse(localStorage.getItem(KEY) || "null");
-        if (!raw || typeof raw !== "object") return { left: [], right: [], history: [] };
+        if (!raw || typeof raw !== "object") return defaultState();
         const known = new Set(PEOPLE);
-        const left = Array.isArray(raw.left) ? raw.left.filter((n) => known.has(n)) : [];
-        const right = Array.isArray(raw.right) ? raw.right.filter((n) => known.has(n)) : [];
         const history = Array.isArray(raw.history)
           ? raw.history.filter((h) => h && known.has(h.name) && (h.side === "left" || h.side === "right"))
           : [];
-        return { left, right, history };
+        const pending = Array.isArray(raw.pending)
+          ? raw.pending.filter((n, i, arr) => known.has(n) && arr.indexOf(n) === i)
+          : [];
+        const pendingSet = new Set(pending);
+        const assigned = new Set();
+        const left = [];
+        const right = [];
+        (Array.isArray(raw.left) ? raw.left : []).forEach(function (n) {
+          if (known.has(n) && !pendingSet.has(n) && !assigned.has(n)) {
+            left.push(n);
+            assigned.add(n);
+          }
+        });
+        (Array.isArray(raw.right) ? raw.right : []).forEach(function (n) {
+          if (known.has(n) && !pendingSet.has(n) && !assigned.has(n)) {
+            right.push(n);
+            assigned.add(n);
+          }
+        });
+        DEFAULT_LEFT.forEach(function (n) {
+          if (!assigned.has(n) && !pendingSet.has(n)) {
+            left.push(n);
+            assigned.add(n);
+          }
+        });
+        DEFAULT_RIGHT.forEach(function (n) {
+          if (!assigned.has(n) && !pendingSet.has(n)) {
+            right.push(n);
+            assigned.add(n);
+          }
+        });
+        return { left: left, right: right, history: history, pending: pending };
       } catch (e) {
-        return { left: [], right: [], history: [] };
+        return defaultState();
       }
     }
 
@@ -509,6 +577,9 @@
         if (side === "left") state.left.push(name);
         else state.right.push(name);
         state.history.push({ name: name, side: side });
+        if (!state.pending) state.pending = [];
+        const pi = state.pending.indexOf(name);
+        if (pi >= 0) state.pending.splice(pi, 1);
         save();
         busy = false;
         const left = remaining();
@@ -524,6 +595,8 @@
       const list = last.side === "left" ? state.left : state.right;
       const i = list.lastIndexOf(last.name);
       if (i >= 0) list.splice(i, 1);
+      if (!state.pending) state.pending = [];
+      if (state.pending.indexOf(last.name) === -1) state.pending.push(last.name);
       save();
       if (view === "results" && remaining().length) showView("swipe");
       else if (view === "results") renderResults();
@@ -533,9 +606,9 @@
 
     function resetAll() {
       if (!confirm("Clear all your choices and start over?")) return;
-      state = { left: [], right: [], history: [] };
-      save();
-      showView("swipe");
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      state = defaultState();
+      showView("results");
     }
 
     function copyText(text, btn) {
