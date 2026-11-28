@@ -84,7 +84,7 @@ function groupModels(models) {
   for (const model of models) {
     const key = model.group || "";
     if (!index.has(key)) {
-      const group = { name: key, models: [], attribution: null, note: null };
+      const group = { name: key, models: [], attribution: null, note: null, extras: null };
       index.set(key, group);
       groups.push(group);
     }
@@ -95,6 +95,9 @@ function groupModels(models) {
     }
     if (!group.note && model.groupNote) {
       group.note = model.groupNote;
+    }
+    if (!group.extras && Array.isArray(model.groupExtras) && model.groupExtras.length) {
+      group.extras = model.groupExtras;
     }
   }
   return groups;
@@ -354,12 +357,39 @@ function renderGallery(models) {
       note.textContent = group.note;
       section.appendChild(note);
     }
+    if (group.extras) {
+      const extrasWrap = document.createElement("div");
+      extrasWrap.className = "group-extras";
+      for (const extra of group.extras) {
+        if (!extra || !extra.file) continue;
+        const link = document.createElement("a");
+        link.className = "group-extra";
+        link.href = extra.file;
+        link.setAttribute("download", filenameFromPath(extra.file));
+        link.textContent = extra.label || "Download";
+        extrasWrap.appendChild(link);
+      }
+      if (extrasWrap.childNodes.length) section.appendChild(extrasWrap);
+    }
 
-    const grid = document.createElement("div");
-    grid.className = "grid";
+    let grid = null;
+    let currentSubgroup = null;
 
     for (const model of group.models) {
       if (!model.name || !model.file) continue;
+      const subgroup = model.subgroup || "";
+      if (!grid || subgroup !== currentSubgroup) {
+        if (grid) section.appendChild(grid);
+        if (subgroup) {
+          const subhead = document.createElement("h3");
+          subhead.className = "subgroup-title";
+          subhead.textContent = subgroup;
+          section.appendChild(subhead);
+        }
+        grid = document.createElement("div");
+        grid.className = "grid";
+        currentSubgroup = subgroup;
+      }
       const card = document.createElement("article");
       card.className = "card";
 
@@ -416,7 +446,7 @@ function renderGallery(models) {
       previewEls.push(preview);
     }
 
-    section.appendChild(grid);
+    if (grid) section.appendChild(grid);
     root.appendChild(section);
   }
 

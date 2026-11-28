@@ -169,6 +169,38 @@ a { color: var(--navy-2); text-underline-offset: 3px; }
   max-width: 46rem;
 }
 
+.group-extras {
+  margin: -0.4rem 0 1.3rem;
+}
+
+.group-extra {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--label);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--navy);
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  padding: .55rem .9rem .45rem;
+  background: #fff;
+}
+.group-extra:hover { background: var(--paper); }
+
+.subgroup-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0.4rem 0 0.9rem;
+}
+
+.subgroup-title + .grid { margin-bottom: 1.8rem; }
+.group > .grid:last-child { margin-bottom: 0; }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

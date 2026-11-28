@@ -578,5 +578,400 @@
     "file": "models/frankenstein-switch-plate/paddlenubbin.STL",
     "description": "The nubbin for paddle (Decora) plates.",
     "group": "Frankenstein Light Switch Plate"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original",
+    "attribution": {
+      "creator": "Derek",
+      "creatorUrl": "https://www.printables.com/@NothingSpectacular",
+      "source": "Printables",
+      "sourceUrl": "https://www.printables.com/model/13347-christmas-tree-kissmas-treenew-files",
+      "license": "CC BY-NC-ND"
+    },
+    "groupExtras": [
+      {
+        "file": "models/christmas-tree-kissmas-tree/christmas-tree-kissmas-tree-instructions.pdf",
+        "label": "Instructions (PDF)"
+      }
+    ]
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-2.stl",
+    "description": "Piece 2 of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-3.stl",
+    "description": "Piece 3 of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-4.stl",
+    "description": "Piece 4 of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-5.stl",
+    "description": "Piece 5 of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/original-tree-6-top.stl",
+    "description": "Piece 6, the top of the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Original"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/tt-tighter-tolerance-original-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/tt-original-tree-2.stl",
+    "description": "Piece 2 of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/tt-original-tree-3.stl",
+    "description": "Piece 3 of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/tt-original-tree-4.stl",
+    "description": "Piece 4 of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/tt-original-tree-5.stl",
+    "description": "Piece 5 of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/tt-original-tree-6-top.stl",
+    "description": "Piece 6, the top of the tighter-tolerance original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "TT (Tighter Tolerance) Original"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-2.stl",
+    "description": "Piece 2 of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-3.stl",
+    "description": "Piece 3 of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-4.stl",
+    "description": "Piece 4 of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-5.stl",
+    "description": "Piece 5 of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/cupped-tree-6-top.stl",
+    "description": "Piece 6, the top of the cupped-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Cupped"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-2.stl",
+    "description": "Piece 2 of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-3.stl",
+    "description": "Piece 3 of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-4.stl",
+    "description": "Piece 4 of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-5.stl",
+    "description": "Piece 5 of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/deeper-tree-6-top.stl",
+    "description": "Piece 6, the top of the deeper-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Deeper"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-2.stl",
+    "description": "Piece 2 of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-3.stl",
+    "description": "Piece 3 of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-4.stl",
+    "description": "Piece 4 of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-5.stl",
+    "description": "Piece 5 of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/30mm-platform-tree-6-top.stl",
+    "description": "Piece 6, the top of the 30mm-platform tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "30mm Platform"
+  },
+  {
+    "name": "Tree 1 Bottom",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-1-bottom.stl",
+    "description": "Piece 1, the bottom of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Tree 2",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-2.stl",
+    "description": "Piece 2 of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Tree 3",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-3.stl",
+    "description": "Piece 3 of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Tree 4",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-4.stl",
+    "description": "Piece 4 of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Tree 5",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-5.stl",
+    "description": "Piece 5 of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Tree 6 Top",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-tree-6-top.stl",
+    "description": "Piece 6, the top of the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "No Platform"
+  },
+  {
+    "name": "Original Base",
+    "file": "models/christmas-tree-kissmas-tree/original-base.stl",
+    "description": "The base for the original tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "TT Base",
+    "file": "models/christmas-tree-kissmas-tree/1-new-base-tighter-tolerance-tt.stl",
+    "description": "A tighter-tolerance base.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "No Platform Base",
+    "file": "models/christmas-tree-kissmas-tree/no-platform-base.stl",
+    "description": "The base for the platform-less tree.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Star Replacement Tree Top (1 Piece)",
+    "file": "models/christmas-tree-kissmas-tree/starreplacementtreetop-1-piece.stl",
+    "description": "A one-piece star that replaces the tree top.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Star Replacement Tree Top (2 Piece, x2)",
+    "file": "models/christmas-tree-kissmas-tree/starreplacementtreetop-2-piece-x2.stl",
+    "description": "A two-piece replacement star (print two).",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Star Topper for Platform (1 Piece)",
+    "file": "models/christmas-tree-kissmas-tree/startopperforplatform-1-piece.stl",
+    "description": "A one-piece star for the candy platform.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Star Topper for Platform (2 Piece, x2)",
+    "file": "models/christmas-tree-kissmas-tree/startopperforplatform-2-piece-x2.stl",
+    "description": "A two-piece platform star (print two).",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Star Joiner Piece",
+    "file": "models/christmas-tree-kissmas-tree/starjoinerpiece.stl",
+    "description": "The joiner for the two-piece stars.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Exploding Star Replacement Topper (1 Piece)",
+    "file": "models/christmas-tree-kissmas-tree/explodingstarreplacementtopper-1-piece.stl",
+    "description": "A one-piece exploding star that replaces the tree top.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Exploding Star Replacement Topper (2 Piece, x2)",
+    "file": "models/christmas-tree-kissmas-tree/explodingstarreplacementtopper-2-piece-x2.stl",
+    "description": "A two-piece exploding replacement star (print two).",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Exploding Star for Platform (1 Piece)",
+    "file": "models/christmas-tree-kissmas-tree/explodingstarforplatform-1-piece.stl",
+    "description": "A one-piece exploding star for the candy platform.",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "Exploding Star for Platform (2 Piece, x2)",
+    "file": "models/christmas-tree-kissmas-tree/explodingstarforplatform-2-piece-x2.stl",
+    "description": "A two-piece exploding platform star (print two).",
+    "group": "Christmas Tree (Kissmas Tree)",
+    "subgroup": "Bases & Toppers"
+  },
+  {
+    "name": "ROBO THE ROBOT",
+    "file": "models/robo-the-robot/robotherobot.STL",
+    "preview": "models/robo-the-robot/robotherobot.preview.stl",
+    "description": "A simple robot you can print in many colors.",
+    "group": "ROBO THE ROBOT",
+    "attribution": {
+      "creator": "ROBO3D",
+      "creatorUrl": "https://www.thingiverse.com/ROBO3D",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:358590",
+      "license": "CC BY-SA"
+    }
+  },
+  {
+    "name": "Keychain Whistle",
+    "file": "models/keychain-whistle/Keychain-Whistle.stl",
+    "description": "A loud, compact dual-tone whistle for a keychain.",
+    "group": "Keychain Whistle",
+    "attribution": {
+      "creator": "ThreeD-Michael",
+      "creatorUrl": "https://www.thingiverse.com/ThreeD-Michael",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:5846855",
+      "license": "CC BY-NC-ND"
+    }
+  },
+  {
+    "name": "Whistle",
+    "file": "models/zaggo-whistle/whistle.stl",
+    "description": "A pea whistle that prints with the pea already inside.",
+    "group": "Zaggo Whistle",
+    "attribution": {
+      "creator": "Zaggo",
+      "creatorUrl": "https://www.thingiverse.com/Zaggo",
+      "source": "Thingiverse",
+      "sourceUrl": "https://www.thingiverse.com/thing:1046",
+      "license": "CC BY-NC"
+    }
+  },
+  {
+    "name": "Whistle v2",
+    "file": "models/zaggo-whistle/whistle_v2.stl",
+    "description": "A finer-tuned version that starts with less airflow.",
+    "group": "Zaggo Whistle"
   }
 ]

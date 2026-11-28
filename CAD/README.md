@@ -37,6 +37,10 @@ Optional `attribution` on any model in a group is shown under the section headin
 ```
 
 
+Optional `subgroup` on a model starts a labeled sub-heading within the section, so variants can be grouped without adding extra navigator entries.
+
+Optional `groupExtras` on any model in a group is shown under the credit as section-level downloads (for example an instructions PDF).
+
 Optional `groupNote` on any model in a group is shown under the credit as a short section note.
 
 Optional `extras` is a list of additional downloads on the same card (for example a STEP file):
